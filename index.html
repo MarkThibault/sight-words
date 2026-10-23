@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Sight Words">
+  <meta name="theme-color" content="#fff6e0">
+  <title>Sight Words</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Home: earned stickers are scattered across the background -->
+  <main id="home" class="screen">
+    <div id="sticker-board" class="sticker-board" aria-label="My stickers"></div>
+    <div id="home-center" class="home-center">
+      <h1>Sight Words</h1>
+      <button id="start-btn" class="big-btn go" disabled>Let's Read! ▶</button>
+      <p id="sticker-hint" class="sticker-hint"></p>
+    </div>
+    <!-- Grown-ups: press and hold this to open the progress panel -->
+    <button id="progress" class="progress" aria-label="Progress (press and hold for grown-up settings)"></button>
+  </main>
+
+  <!-- Practice: one word at a time -->
+  <main id="practice" class="screen" hidden>
+    <div class="practice-top">
+      <button id="home-btn" class="icon-btn" aria-label="Home">🏠</button>
+      <div id="progress-mini" class="progress-mini"></div>
+    </div>
+    <button id="card" class="card">
+      <span id="word" class="word"></span>
+      <span id="card-star" class="card-star" hidden>⭐</span>
+    </button>
+    <p id="hint" class="hint">👆 Tap the word to hear it</p>
+    <div class="actions">
+      <button id="know-btn" class="big-btn know">I know it! ⭐</button>
+      <button id="next-btn" class="big-btn next">Next ➜</button>
+    </div>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <dialog id="parent-panel" class="panel">
+    <h2>Grown-up corner</h2>
+    <p id="panel-summary"></p>
+    <p class="panel-tip">Tap a sticker button to give or take away a sticker.</p>
+    <ul id="panel-list" class="panel-list"></ul>
+    <div class="panel-actions">
+      <button id="reset-btn" class="danger">Reset all progress</button>
+      <button id="panel-close" class="primary">Done</button>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
