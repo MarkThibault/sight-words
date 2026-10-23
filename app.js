@@ -3,7 +3,6 @@
 // ---------- Settings ----------
 const STORAGE_KEY = 'sightWords.progress.v1';
 const REVIEW_CHANCE = 0.25;  // chance each sticker word comes back for review in a round
-const CELEBRATE_EVERY = 5;   // confetti after this many words heard
 const SPEECH_RATE = 0.8;     // a little slower than normal speech
 const CHEERS = ['Great job!', 'Awesome!', 'You did it!', 'Super reader!', 'Way to go!', 'Fantastic!'];
 const STICKER_COLORS = ['#e03131', '#e8590c', '#e67700', '#2f9e44', '#0c8599', '#1971c2', '#7048e8', '#c2255c'];
@@ -29,7 +28,6 @@ let progress = loadProgress();
 let deck = [];
 let current = null;
 let heardCurrent = false;    // has the current word been heard since it was shown?
-let heardThisSession = 0;
 let newStickers = [];        // stickers earned since the home screen was last shown
 let busy = false;            // true while the "I know it!" animation plays
 
@@ -160,12 +158,7 @@ function hearWord() {
     playAnim(els.star, 'pop');
   }
   updateCounters();
-
-  if (!heardCurrent) {
-    heardCurrent = true;
-    heardThisSession += 1;
-    if (heardThisSession % CELEBRATE_EVERY === 0) celebrate();
-  }
+  heardCurrent = true;
 }
 
 function knowIt() {
@@ -183,6 +176,7 @@ function knowIt() {
   } else {
     showToast(randomCheer());
   }
+  confetti();
 
   busy = true;
   setButtonsDisabled(true);
@@ -331,8 +325,7 @@ function showToast(text) {
 
 const randomCheer = () => CHEERS[Math.floor(Math.random() * CHEERS.length)];
 
-function celebrate() {
-  showToast(randomCheer());
+function confetti() {
   if (reduceMotion) return;
   for (let i = 0; i < 60; i++) {
     const bit = document.createElement('span');
