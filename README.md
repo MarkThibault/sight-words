@@ -3,9 +3,9 @@
 A simple sight-word practice app for young readers. Plain HTML, CSS and JavaScript — no build step.
 
 - Tap the word to hear it read aloud.
-- **Next ➜** moves on. **I know it! ⭐** earns a sticker for that word.
+- **Next ➜** moves on, but only after the word has been heard (until then, tapping it wiggles the word).
+- **I know it! ⭐** gives that word a star and a sticker. Stars are only earned this way.
 - Stickers collect on the home screen. Sticker words still come back now and then for review.
-- A word counts as "practiced" once it has been tapped and heard.
 
 ## Adding words
 
@@ -19,7 +19,7 @@ Keep the quotes and commas. New words show up as not-yet-practiced; existing pro
 
 ## Grown-up corner
 
-Press and hold the **⭐ practiced** counter on the home screen for about a second. From there you can see how many times each word was heard, give or take away stickers, or reset all progress.
+Press and hold the **⭐ stars** counter on the home screen for about a second. From there you can see how many times each word was heard, give or take away stickers, or reset all progress.
 
 ## Where progress is saved
 
