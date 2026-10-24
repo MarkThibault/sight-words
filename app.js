@@ -51,7 +51,6 @@ function stats(word) {
   return progress.words[word];
 }
 
-const practicedCount = () => words.filter((w) => stats(w).heard > 0).length;
 const knownWords = () => words.filter((w) => stats(w).known).sort((a, b) => stats(a).knownAt - stats(b).knownAt);
 const today = () => new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
 
@@ -128,9 +127,10 @@ function showWord() {
   const s = stats(current);
   s.lastSeen = today();
   saveProgress();
-  els.star.hidden = s.heard === 0;
-  els.hint.classList.toggle('off', s.heard > 0);
+  els.star.hidden = !s.known;
+  els.hint.classList.remove('off');
   setButtonsDisabled(false);
+  setNextLocked(true);
   playAnim(els.card, 'slide-in');
 }
 
@@ -153,12 +153,8 @@ function hearWord() {
   s.heard += 1;
   saveProgress();
   els.hint.classList.add('off');
-  if (els.star.hidden) {
-    els.star.hidden = false;
-    playAnim(els.star, 'pop');
-  }
-  updateCounters();
   heardCurrent = true;
+  setNextLocked(false);
 }
 
 function knowIt() {
@@ -172,6 +168,9 @@ function knowIt() {
     saveProgress();
     newStickers.push(current);
     flySticker(current);
+    els.star.hidden = false;
+    playAnim(els.star, 'pop');
+    updateCounters();
     showToast('New sticker! 🎉');
   } else {
     showToast(randomCheer());
@@ -186,6 +185,22 @@ function knowIt() {
 function setButtonsDisabled(disabled) {
   els.know.disabled = disabled;
   els.next.disabled = disabled;
+}
+
+// Next stays tappable while locked so a tap can nudge toward the word instead of doing nothing.
+function setNextLocked(locked) {
+  els.next.classList.toggle('locked', locked);
+  els.next.setAttribute('aria-disabled', String(locked));
+}
+
+function goNext() {
+  if (busy) return;
+  if (!heardCurrent) {
+    playAnim(els.card, 'wiggle');
+    return;
+  }
+  if (canSpeak) speechSynthesis.cancel();
+  showWord();
 }
 
 // ---------- Home screen and stickers ----------
@@ -298,9 +313,9 @@ function flySticker(word) {
 }
 
 function updateCounters() {
-  const done = practicedCount();
-  els.progress.textContent = `⭐ ${done} of ${words.length} practiced`;
-  els.mini.textContent = `⭐ ${done} / ${words.length}`;
+  const stars = knownWords().length;
+  els.progress.textContent = `⭐ ${stars} of ${words.length} stars`;
+  els.mini.textContent = `⭐ ${stars} / ${words.length}`;
 }
 
 function showScreen(name) {
@@ -352,7 +367,8 @@ function playAnim(el, cls) {
 
 function renderPanel() {
   els.panelSummary.textContent =
-    `${practicedCount()} of ${words.length} words practiced · ${knownWords().length} stickers`;
+    `${knownWords().length} of ${words.length} words have a star · ` +
+    `${words.filter((w) => stats(w).heard > 0).length} heard so far`;
   els.panelList.replaceChildren(...words.map((word) => {
     const s = stats(word);
     const row = document.createElement('li');
@@ -430,11 +446,7 @@ async function init() {
   });
   els.card.addEventListener('click', hearWord);
   els.know.addEventListener('click', knowIt);
-  els.next.addEventListener('click', () => {
-    if (busy) return;
-    if (canSpeak) speechSynthesis.cancel();
-    showWord();
-  });
+  els.next.addEventListener('click', goNext);
 
   onLongPress(els.progress, 800, () => {
     renderPanel();
