@@ -290,6 +290,19 @@ h1 {
   background: var(--bg);
   border-radius: 14px;
 }
+.voice-section { margin: 12px 0 16px; padding-bottom: 12px; border-bottom: 2px solid #f1f3f5; }
+.voice-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; margin-bottom: 6px; }
+.voice-row label { font-weight: 700; }
+.voice-row select {
+  min-width: 0;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 1rem;
+  border: 2px solid #ced4da;
+  border-radius: 12px;
+  background: #fff;
+}
+
 .panel-word { font-size: 1.6rem; font-weight: 700; }
 .panel-heard { color: #555; }
 .chip { padding: 6px 14px; background: #fff; border: 2px solid #ced4da; border-radius: 999px; }

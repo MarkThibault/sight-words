@@ -21,6 +21,16 @@ Keep the quotes and commas. New words show up as not-yet-practiced; existing pro
 
 Press and hold the **⭐ stars** counter on the home screen for about a second. From there you can see how many times each word was heard, give or take away stickers, or reset all progress.
 
+## Making the voice sound natural
+
+The app uses the voices built into the device and picks the most natural-sounding one it finds. To choose a different one, open the Grown-up corner, pick from **Voice**, and tap **🔊 Test**. The choice is saved on that device.
+
+Better voices you can add for free:
+
+- **iPad / iPhone:** Settings → Accessibility → Spoken Content → Voices → English. Download an "Enhanced" voice (for example Ava or Samantha), then close and reopen the app.
+- **Android (Chrome):** the "Google US English" voices are usually already there.
+- **Windows (Edge):** the "Online (Natural)" voices such as Aria and Jenny sound best, but need an internet connection.
+
 ## Where progress is saved
 
 In the browser on that device (`localStorage`). A different tablet or browser starts fresh, and clearing the browser's website data erases progress.
