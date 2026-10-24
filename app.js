@@ -3,7 +3,8 @@
 // ---------- Settings ----------
 const STORAGE_KEY = 'sightWords.progress.v1';
 const REVIEW_CHANCE = 0.25;  // chance each sticker word comes back for review in a round
-const SPEECH_RATE = 0.8;     // a little slower than normal speech
+const SPEECH_RATE = 0.9;     // a little slower than normal speech (much slower sounds robotic)
+const VOICE_KEY = 'sightWords.voice.v1';
 const CHEERS = ['Great job!', 'Awesome!', 'You did it!', 'Super reader!', 'Way to go!', 'Fantastic!'];
 const STICKER_COLORS = ['#e03131', '#e8590c', '#e67700', '#2f9e44', '#0c8599', '#1971c2', '#7048e8', '#c2255c'];
 const CONFETTI_COLORS = ['#ff6b6b', '#ffa94d', '#ffd43b', '#69db7c', '#4dabf7', '#9775fa', '#f783ac'];
@@ -19,6 +20,7 @@ const els = {
   hint: $('hint'), know: $('know-btn'), next: $('next-btn'), toast: $('toast'),
   panel: $('parent-panel'), panelSummary: $('panel-summary'), panelList: $('panel-list'),
   panelClose: $('panel-close'), reset: $('reset-btn'),
+  voiceSection: $('voice-section'), voiceSelect: $('voice-select'), voiceTest: $('voice-test'),
 };
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const canSpeak = 'speechSynthesis' in window;
@@ -97,10 +99,38 @@ function shuffle(arr, rand = Math.random) {
 
 let voice = null;
 
+// Apple's joke voices, and older voices that sound robotic. Matched by name since names vary by device.
+const NOVELTY_VOICES = /\b(albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox)\b/i;
+const ROBOTIC_VOICES = /\b(fred|junior|ralph|kathy|eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley|desktop)\b/i;
+
+// Higher score = more natural sounding.
+function voiceScore(v) {
+  let score = 0;
+  if (/^en[-_]US/i.test(v.lang)) score += 3;
+  if (/natural|neural|enhanced|premium/i.test(v.name)) score += 6; // Edge "Natural", iPad "Enhanced"
+  if (/^google/i.test(v.name)) score += 4;                          // Chrome / Android
+  if (/\b(ava|samantha|allison|susan|zoe|jenny|aria|michelle|emma)\b/i.test(v.name)) score += 2;
+  if (ROBOTIC_VOICES.test(v.name)) score -= 4;
+  if (NOVELTY_VOICES.test(v.name)) score -= 20;
+  return score;
+}
+
+function englishVoices() {
+  return speechSynthesis.getVoices()
+    .filter((v) => /^en([-_]|$)/i.test(v.lang))
+    .sort((a, b) => voiceScore(b) - voiceScore(a) || a.name.localeCompare(b.name));
+}
+
+function savedVoiceURI() {
+  try { return localStorage.getItem(VOICE_KEY); } catch (e) { return null; }
+}
+
+// Use the voice chosen in the grown-up corner, otherwise the best-sounding one on this device.
 function pickVoice() {
-  const voices = speechSynthesis.getVoices().filter((v) => /^en([-_]|$)/i.test(v.lang));
-  const us = voices.filter((v) => /^en[-_]US/i.test(v.lang));
-  voice = us.find((v) => v.localService) || us[0] || voices[0] || null;
+  const voices = englishVoices();
+  const saved = savedVoiceURI();
+  voice = voices.find((v) => v.voiceURI === saved) || voices[0] || null;
+  if (els.panel.open) renderVoiceOptions();
 }
 
 function speak(text) {
@@ -376,6 +406,26 @@ function renderPanel() {
   }));
 }
 
+function renderVoiceOptions() {
+  const voices = englishVoices();
+  const best = voices[0] ? ` (${voices[0].name})` : '';
+  els.voiceSelect.replaceChildren(
+    new Option(`Automatic${best}`, ''),
+    ...voices.map((v) => new Option(v.name, v.voiceURI)),
+  );
+  const saved = savedVoiceURI();
+  els.voiceSelect.value = voices.some((v) => v.voiceURI === saved) ? saved : '';
+}
+
+function chooseVoice(uri) {
+  try {
+    if (uri) localStorage.setItem(VOICE_KEY, uri);
+    else localStorage.removeItem(VOICE_KEY);
+  } catch (e) { /* ignore */ }
+  pickVoice();
+  speak('Let’s read!');
+}
+
 function onLongPress(el, ms, fn) {
   let timer = null;
   const cancel = () => {
@@ -438,8 +488,12 @@ async function init() {
 
   onLongPress(els.progress, 800, () => {
     renderPanel();
+    if (canSpeak) renderVoiceOptions();
     els.panel.showModal();
   });
+  els.voiceSection.hidden = !canSpeak;
+  els.voiceSelect.addEventListener('change', () => chooseVoice(els.voiceSelect.value));
+  els.voiceTest.addEventListener('click', () => speak('Let’s read! the, and, you'));
   els.panelClose.addEventListener('click', () => els.panel.close());
   els.panel.addEventListener('close', () => {
     deck = [];
