@@ -132,6 +132,8 @@ h1 {
 }
 .big-btn:active:not(:disabled) { translate: 0 6px; box-shadow: 0 2px 0 var(--btn-shadow); }
 .big-btn:disabled { opacity: 0.6; cursor: default; }
+.big-btn.locked { opacity: 0.45; filter: grayscale(0.6); cursor: default; }
+.big-btn.locked:active { translate: none; box-shadow: 0 8px 0 var(--btn-shadow); }
 .go   { --btn: var(--orange); --btn-shadow: var(--orange-dark); }
 .know { --btn: var(--green);  --btn-shadow: var(--green-dark); }
 .next { --btn: var(--blue);   --btn-shadow: var(--blue-dark); }
