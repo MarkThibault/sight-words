@@ -2,7 +2,6 @@
 
 // ---------- Settings ----------
 const STORAGE_KEY = 'sightWords.progress.v1';
-const REVIEW_CHANCE = 0.25;  // chance each sticker word comes back for review in a round
 const SPEECH_RATE = 0.9;     // a little slower than normal speech (much slower sounds robotic)
 const VOICE_KEY = 'sightWords.voice.v1';
 const CHEERS = ['Great job!', 'Awesome!', 'You did it!', 'Super reader!', 'Way to go!', 'Fantastic!'];
@@ -15,8 +14,10 @@ const FALLBACK_WORDS = ['was', 'you', 'me', 'like', 'my', 'yes', 'for', 'see', '
 const $ = (id) => document.getElementById(id);
 const els = {
   home: $('home'), practice: $('practice'), board: $('sticker-board'), homeCenter: $('home-center'),
-  start: $('start-btn'), stickerHint: $('sticker-hint'), progress: $('progress'),
-  homeBtn: $('home-btn'), mini: $('progress-mini'), card: $('card'), word: $('word'), star: $('card-star'),
+  start: $('start-btn'), missingBtn: $('missing-btn'), timedBtn: $('timed-btn'), bestTime: $('best-time'),
+  stickerHint: $('sticker-hint'), progress: $('progress'),
+  homeBtn: $('home-btn'), timer: $('timer'), mini: $('progress-mini'),
+  roundBar: $('round-bar'), roundFill: $('round-fill'), card: $('card'), word: $('word'), star: $('card-star'),
   hint: $('hint'), know: $('know-btn'), next: $('next-btn'), toast: $('toast'),
   panel: $('parent-panel'), panelSummary: $('panel-summary'), panelList: $('panel-list'),
   panelClose: $('panel-close'), reset: $('reset-btn'),
@@ -32,9 +33,13 @@ let current = null;
 let heardCurrent = false;    // has the current word been heard since it was shown?
 let newStickers = [];        // stickers earned since the home screen was last shown
 let busy = false;            // true while the "I know it!" animation plays
+let round = null;            // the round being played: { mode: 'all' | 'missing', timed, total, learned, startedAt }
+let lastRound = null;        // the round just finished, summarized on the home screen
+let timerId = null;
 
 // ---------- Saved progress ----------
-// Shape: { words: { the: { heard: 3, known: true, knownAt: 1729700000000, lastSeen: "2026-10-23" } } }
+// Shape: { words: { the: { heard: 3, known: true, knownAt: 1729700000000, lastSeen: "2026-10-23" } },
+//          bestTime: { ms: 95000, count: 24 } }
 
 function loadProgress() {
   try {
@@ -54,6 +59,13 @@ function stats(word) {
 }
 
 const knownWords = () => words.filter((w) => stats(w).known).sort((a, b) => stats(a).knownAt - stats(b).knownAt);
+const missingWords = () => words.filter((w) => !stats(w).known);
+
+// A best time only counts for a word list of the same size, so adding words starts a fresh record.
+function bestTime() {
+  const best = progress.bestTime;
+  return best && best.count === words.length ? best.ms : null;
+}
 const today = () => new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
 
 // ---------- Word list ----------
@@ -72,17 +84,6 @@ async function loadWords() {
 function cleanList(list) {
   const seen = new Set();
   return list.map((w) => String(w).trim()).filter((w) => w && !seen.has(w) && seen.add(w));
-}
-
-// New words first, then words still being learned mixed with a few sticker words for review.
-function buildDeck() {
-  const fresh = words.filter((w) => !stats(w).known && stats(w).heard === 0);
-  const learning = words.filter((w) => !stats(w).known && stats(w).heard > 0);
-  const review = words.filter((w) => stats(w).known && Math.random() < REVIEW_CHANCE);
-  let next = [...shuffle(fresh), ...shuffle([...learning, ...review])];
-  if (next.length === 0) next = shuffle(words);
-  if (next.length > 1 && next[0] === current) next.push(next.shift()); // no back-to-back repeats
-  return next;
 }
 
 function shuffle(arr, rand = Math.random) {
@@ -142,11 +143,74 @@ function speak(text) {
   speechSynthesis.speak(u);
 }
 
+// ---------- Rounds ----------
+
+// A round goes through each word once (or each word without a star yet), then returns home.
+function startRound(mode, timed = false) {
+  const list = mode === 'missing' ? missingWords() : words;
+  if (list.length === 0) return;
+  deck = shuffle(list);
+  round = { mode, timed, total: deck.length, learned: [], startedAt: performance.now() };
+  lastRound = null;
+  els.timer.hidden = !timed;
+  els.roundBar.setAttribute('aria-valuemax', String(round.total));
+  showScreen('practice');
+  showWord();
+  if (timed) {
+    updateTimer();
+    timerId = setInterval(updateTimer, 250);
+  }
+  if (!canSpeak) showToast('This browser can’t read words aloud 😕');
+}
+
+function finishRound() {
+  const done = round;
+  stopRound();
+  lastRound = { mode: done.mode, total: done.total, learned: done.learned };
+  if (done.timed) {
+    const ms = Math.round(performance.now() - done.startedAt);
+    const best = bestTime();
+    Object.assign(lastRound, { ms, best, newBest: best === null || ms < best });
+    if (lastRound.newBest) {
+      progress.bestTime = { ms, count: words.length };
+      saveProgress();
+    }
+  }
+  showScreen('home');
+  confetti();
+}
+
+// Leaving mid-round (the 🏠 button) just drops the round: no summary, no time recorded.
+function stopRound() {
+  clearInterval(timerId);
+  timerId = null;
+  round = null;
+  current = null;
+  deck = [];
+  if (canSpeak) speechSynthesis.cancel();
+}
+
+function updateTimer() {
+  if (round) els.timer.textContent = `⏱ ${formatTime(performance.now() - round.startedAt)}`;
+}
+
+function formatTime(ms) {
+  const secs = Math.floor(ms / 1000);
+  return `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
+}
+
 // ---------- Practice screen ----------
 
 function showWord() {
-  if (deck.length === 0) deck = buildDeck();
+  if (!round) return;
+  if (deck.length === 0) {
+    finishRound();
+    return;
+  }
   current = deck.shift();
+  const position = round.total - deck.length;
+  els.roundFill.style.width = `${(position / round.total) * 100}%`;
+  els.roundBar.setAttribute('aria-valuenow', String(position));
   heardCurrent = false;
 
   els.word.textContent = current;
@@ -197,6 +261,7 @@ function knowIt() {
     s.knownAt = Date.now();
     saveProgress();
     newStickers.push(current);
+    round.learned.push(current);
     flySticker(current);
     els.star.hidden = false;
     playAnim(els.star, 'pop');
@@ -235,6 +300,49 @@ function goNext() {
 
 // ---------- Home screen and stickers ----------
 
+function renderHome() {
+  updateCounters();
+
+  const missing = missingWords().length;
+  // Only offer "missing words" when it differs from a full round
+  els.missingBtn.hidden = missing === 0 || missing === words.length;
+  els.missingBtn.textContent = `🎯 Missing words (${missing})`;
+  const best = bestTime();
+  els.bestTime.textContent = best === null ? 'No best time yet' : `Best: ${formatTime(best)}`;
+
+  renderSummary();
+  renderStickers();
+}
+
+function renderSummary() {
+  els.stickerHint.classList.toggle('summary', Boolean(lastRound));
+  if (!lastRound) {
+    const known = knownWords().length;
+    els.stickerHint.textContent = known === 0
+      ? 'Tap “I know it!” to earn stickers'
+      : `You have ${known} sticker${known === 1 ? '' : 's'}!`;
+    return;
+  }
+
+  const n = lastRound.learned.length;
+  const main = document.createElement('span');
+  main.className = 'summary-main';
+  if (n > 0) main.textContent = `🎉 You learned ${n} new word${n === 1 ? '' : 's'}!`;
+  else if (lastRound.mode === 'missing') main.textContent = '🎉 You practiced all your missing words!';
+  else main.textContent = `🎉 You read all ${lastRound.total} words!`;
+  const lines = [main];
+
+  if ('ms' in lastRound) {
+    const time = document.createElement('span');
+    time.className = 'summary-time';
+    time.textContent = lastRound.newBest
+      ? `🏆 New best time: ${formatTime(lastRound.ms)}!`
+      : `⏱ ${formatTime(lastRound.ms)} (best is ${formatTime(lastRound.best)})`;
+    lines.push(time);
+  }
+  els.stickerHint.replaceChildren(...lines);
+}
+
 function makeSticker(word) {
   const h = hash(word);
   const el = document.createElement('div');
@@ -248,9 +356,7 @@ function makeSticker(word) {
 
 function renderStickers() {
   const known = knownWords();
-  els.stickerHint.textContent = known.length === 0
-    ? 'Tap “I know it!” to earn stickers'
-    : `You have ${known.length} sticker${known.length === 1 ? '' : 's'}!`;
+  const learnedLastRound = lastRound ? lastRound.learned : [];
 
   els.board.replaceChildren();
   if (known.length === 0) return;
@@ -261,6 +367,7 @@ function renderStickers() {
     const el = makeSticker(word);
     el.style.left = `${slots[i].x}px`;
     el.style.top = `${slots[i].y}px`;
+    el.classList.toggle('fresh', learnedLastRound.includes(word));
     const newIndex = newStickers.indexOf(word);
     if (newIndex >= 0) {
       el.classList.add('pop');
@@ -351,10 +458,7 @@ function updateCounters() {
 function showScreen(name) {
   els.home.hidden = name !== 'home';
   els.practice.hidden = name !== 'practice';
-  if (name === 'home') {
-    updateCounters();
-    renderStickers();
-  }
+  if (name === 'home') renderHome();
 }
 
 // ---------- Cheerful feedback ----------
@@ -485,13 +589,11 @@ async function init() {
     speechSynthesis.onvoiceschanged = pickVoice;
   }
 
-  els.start.addEventListener('click', () => {
-    showScreen('practice');
-    showWord();
-    if (!canSpeak) showToast('This browser can’t read words aloud 😕');
-  });
+  els.start.addEventListener('click', () => startRound('all'));
+  els.missingBtn.addEventListener('click', () => startRound('missing'));
+  els.timedBtn.addEventListener('click', () => startRound('all', true));
   els.homeBtn.addEventListener('click', () => {
-    if (canSpeak) speechSynthesis.cancel();
+    stopRound();
     showScreen('home');
   });
   els.card.addEventListener('click', hearWord);
@@ -507,13 +609,11 @@ async function init() {
   els.voiceSelect.addEventListener('change', () => chooseVoice(els.voiceSelect.value));
   els.voiceTest.addEventListener('click', () => speak('Let’s read! the, and, you'));
   els.panelClose.addEventListener('click', () => els.panel.close());
-  els.panel.addEventListener('close', () => {
-    deck = [];
-    showScreen('home');
-  });
+  els.panel.addEventListener('close', () => showScreen('home'));
   els.reset.addEventListener('click', () => {
-    if (!confirm('Erase all progress and stickers on this device?')) return;
+    if (!confirm('Erase all progress, stickers and best times on this device?')) return;
     progress = { words: {} };
+    lastRound = null;
     saveProgress();
     renderPanel();
   });
@@ -528,6 +628,7 @@ async function init() {
 
   words = await loadWords();
   els.start.disabled = false;
+  els.timedBtn.disabled = false;
   showScreen('home');
 }
 
