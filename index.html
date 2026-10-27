@@ -20,7 +20,11 @@
     <div id="home-center" class="home-center">
       <h1>Sight Words</h1>
       <button id="start-btn" class="big-btn go" disabled>Let's Read! ▶</button>
-      <p id="sticker-hint" class="sticker-hint"></p>
+      <div class="more-modes">
+        <button id="missing-btn" class="mode-btn missing" hidden>🎯 Missing words</button>
+        <button id="timed-btn" class="mode-btn timed" disabled>⏱ Timed run<small id="best-time"></small></button>
+      </div>
+      <p id="sticker-hint" class="sticker-hint" aria-live="polite"></p>
     </div>
     <!-- Grown-ups: press and hold this to open the progress panel -->
     <button id="progress" class="progress" aria-label="Stars earned (press and hold for grown-up settings)"></button>
@@ -30,7 +34,11 @@
   <main id="practice" class="screen" hidden>
     <div class="practice-top">
       <button id="home-btn" class="icon-btn" aria-label="Home">🏠</button>
-      <div id="progress-mini" class="progress-mini"></div>
+      <div id="timer" class="pill timer" role="timer" hidden></div>
+      <div id="progress-mini" class="pill"></div>
+    </div>
+    <div id="round-bar" class="round-bar" role="progressbar" aria-label="Words in this round" aria-valuemin="0">
+      <div id="round-fill" class="round-fill"></div>
     </div>
     <button id="card" class="card">
       <span id="word" class="word"></span>
