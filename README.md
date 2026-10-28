@@ -5,7 +5,7 @@ A simple sight-word practice app for young readers. Plain HTML, CSS and JavaScri
 - Tap the word to hear it read aloud.
 - **Next ➜** moves on, but only after the word has been heard (until then, tapping it wiggles the word).
 - **I know it! ⭐** gives that word a star and a sticker. Stars are only earned this way.
-- Stickers collect on the home screen.
+- Stickers collect on the home screen. Each one is a surprise kid-friendly emoji (animals, treats, vehicles and more) with its word on a tag, and it stays the same once earned. To change the choices, edit `STICKER_EMOJI` at the top of `app.js`.
 - Each round goes through every word once, then returns to the home screen. Words learned that round glow there.
 
 ## Home screen buttons

@@ -6,6 +6,13 @@ const SPEECH_RATE = 0.9;     // a little slower than normal speech (much slower 
 const VOICE_KEY = 'sightWords.voice.v1';
 const CHEERS = ['Great job!', 'Awesome!', 'You did it!', 'Super reader!', 'Way to go!', 'Fantastic!'];
 const STICKER_COLORS = ['#e03131', '#e8590c', '#e67700', '#2f9e44', '#0c8599', '#1971c2', '#7048e8', '#c2255c'];
+// Surprise stickers: one is picked at random when a word is learned, then saved with that word.
+const STICKER_EMOJI = [
+  '🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔',
+  '🐧', '🐤', '🦉', '🐴', '🦄', '🐝', '🐞', '🦋', '🐢', '🐙', '🦀', '🐠', '🐬', '🐳', '🦕', '🦖',
+  '🦒', '🦓', '🐘', '🦔', '🍎', '🍌', '🍉', '🍓', '🍒', '🍍', '🥕', '🌽', '🍕', '🍩', '🍪', '🧁',
+  '🍦', '🍭', '🎂', '🌈', '🌞', '🌙', '🌻', '🌸', '⛄', '🚀', '🚗', '🚒', '🚌', '🚂', '🚁', '⛵',
+  '🚜', '⚽', '🏀', '🎈', '🎁', '🎨', '🧸', '🥁', '👑'];
 const CONFETTI_COLORS = ['#ff6b6b', '#ffa94d', '#ffd43b', '#69db7c', '#4dabf7', '#9775fa', '#f783ac'];
 // Only used if words.json can't be loaded (for example, when index.html is opened straight from disk).
 const FALLBACK_WORDS = ['was', 'you', 'me', 'like', 'my', 'yes', 'for', 'see', 'as', 'the', 'can', 'he',
@@ -59,6 +66,20 @@ function stats(word) {
 }
 
 const knownWords = () => words.filter((w) => stats(w).known).sort((a, b) => stats(a).knownAt - stats(b).knownAt);
+// The word's saved sticker, picking a surprise one first if it doesn't have one yet.
+// Prefers emoji not already on the board, so stickers repeat only once every one is used.
+function stickerFor(word) {
+  const s = stats(word);
+  if (!s.sticker) {
+    const used = new Set(words.map((w) => stats(w).sticker));
+    const unused = STICKER_EMOJI.filter((e) => !used.has(e));
+    const pool = unused.length ? unused : STICKER_EMOJI;
+    s.sticker = pool[Math.floor(Math.random() * pool.length)];
+    saveProgress();
+  }
+  return s.sticker;
+}
+
 const missingWords = () => words.filter((w) => !stats(w).known);
 
 // A best time only counts for a word list of the same size, so adding words starts a fresh record.
@@ -266,7 +287,7 @@ function knowIt() {
     els.star.hidden = false;
     playAnim(els.star, 'pop');
     updateCounters();
-    showToast('New sticker! 🎉');
+    showToast(`New sticker! ${stickerFor(current)}`);
   } else {
     showToast(randomCheer());
   }
@@ -347,10 +368,15 @@ function makeSticker(word) {
   const h = hash(word);
   const el = document.createElement('div');
   el.className = 'sticker';
-  el.textContent = word;
+  const art = document.createElement('span');
+  art.className = 'sticker-art';
+  art.textContent = stickerFor(word);
+  const label = document.createElement('span');
+  label.className = 'sticker-word';
+  label.textContent = word;
+  el.append(art, label);
   el.style.setProperty('--c', STICKER_COLORS[h % STICKER_COLORS.length]);
   el.style.setProperty('--r', `${(h % 31) - 15}deg`);
-  el.style.setProperty('--len', Math.max(word.length, 2));
   return el;
 }
 
@@ -438,10 +464,10 @@ function flySticker(word) {
     return;
   }
   const anim = el.animate([
-    { left: x0, top: y0, scale: 0 },
-    { left: x0, top: y0, scale: 1.15, offset: 0.3 },
-    { left: x0, top: y0, scale: 1, offset: 0.5 },
-    { left: x1, top: y1, scale: 0.3 },
+    { left: x0, top: y0, scale: 0, rotate: '-360deg' },
+    { left: x0, top: y0, scale: 1.15, rotate: '0deg', offset: 0.3 },
+    { left: x0, top: y0, scale: 1, rotate: '0deg', offset: 0.5 },
+    { left: x1, top: y1, scale: 0.3, rotate: '0deg' },
   ], { duration: 1100, easing: 'ease-in-out' });
   anim.onfinish = () => {
     el.remove();
@@ -514,10 +540,11 @@ function renderPanel() {
     heard.textContent = s.heard ? `heard ${s.heard}×` : 'not yet';
     const chip = document.createElement('button');
     chip.className = `chip${s.known ? ' on' : ''}`;
-    chip.textContent = s.known ? '⭐ Sticker' : 'No sticker';
+    chip.textContent = s.known ? `${stickerFor(word)} Sticker` : 'No sticker';
     chip.addEventListener('click', () => {
       s.known = !s.known;
       s.knownAt = s.known ? Date.now() : 0;
+      if (!s.known) delete s.sticker; // earning it again gives a new surprise
       saveProgress();
       renderPanel();
     });
