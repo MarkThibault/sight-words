@@ -71,7 +71,16 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 
 ## App version
 
-The version (for example `v1.0.0`) shows in the bottom-right corner of the home screen, so you can tell whether a tablet has the latest copy. It comes from `APP_VERSION` in `js/config.js`; bump it whenever you publish changes.
+The version (for example `v1.0.0`) shows in the bottom-right corner of the home screen, so you can tell whether a tablet has the latest copy. It comes from `APP_VERSION` in `js/config.js`.
+
+The version goes up on its own: each time a pull request is merged into `main`, a GitHub Action (`.github/workflows/bump-version.yml`) raises it, commits the change and tags it (for example `v1.0.1`).
+
+- **Patch** (1.0.0 → 1.0.1) happens by default.
+- Add the **`minor`** label to the pull request for 1.0.0 → 1.1.0, or **`major`** for 1.0.0 → 2.0.0. The labels appear after the action has run once.
+- The action also updates the `?v=` stamps on the style and script links in `index.html`, so tablets load the new files instead of old saved copies.
+- Because the bot adds a commit to `main` after each merge, pull `main` before starting a new branch.
+
+To bump by hand, run `bash .github/scripts/bump-version.sh patch` (or `minor` / `major`).
 
 ## Publishing on GitHub Pages
 
