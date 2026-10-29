@@ -403,7 +403,41 @@ h1 {
   background: #fff;
 }
 
-.panel-word { font-size: 1.6rem; font-weight: 700; }
+.panel-word { display: flex; align-items: center; gap: 10px; font-size: 1.6rem; font-weight: 700; }
+.panel-list li.off { background: #f1f3f5; }
+.panel-list li.off .panel-word, .panel-list li.off .panel-heard { color: #adb5bd; }
+.panel-list li.off .chip { opacity: 0.5; }
+
+/* on/off switch for each word */
+.word-switch {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  flex: none;
+  width: 44px;
+  height: 26px;
+  margin: 0;
+  border-radius: 999px;
+  background: #ced4da;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.word-switch::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: translate 0.15s;
+}
+.word-switch:checked { background: var(--green); }
+.word-switch:checked::before { translate: 18px 0; }
+.word-switch:disabled { opacity: 0.5; cursor: default; }
+.word-switch:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
 .panel-heard { color: #555; }
 .chip { padding: 6px 14px; background: #fff; border: 2px solid #ced4da; border-radius: 999px; }
 .chip.on { background: #fff3bf; border-color: var(--yellow-dark); }

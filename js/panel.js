@@ -10,21 +10,37 @@ function openPanel() {
 }
 
 function renderPanel() {
+  const off = state.offWords.size;
   els.panelSummary.textContent =
     `${knownWords().length} of ${state.words.length} words have a star · ` +
-    `${state.words.filter((w) => stats(w).heard > 0).length} heard so far`;
-  els.panelList.replaceChildren(...state.words.map((word) => {
+    `${state.words.filter((w) => stats(w).heard > 0).length} heard so far` +
+    (off ? ` · ${off} turned off` : '');
+  els.panelList.replaceChildren(...state.allWords.map((word) => {
     const s = stats(word);
+    const isOn = !state.offWords.has(word);
     const row = document.createElement('li');
-    const name = document.createElement('span');
+    row.classList.toggle('off', !isOn);
+    // The switch turns a word on or off for practice; at least one word always stays on.
+    const name = document.createElement('label');
     name.className = 'panel-word';
-    name.textContent = word;
+    const toggle = document.createElement('input');
+    toggle.type = 'checkbox';
+    toggle.className = 'word-switch';
+    toggle.setAttribute('role', 'switch');
+    toggle.checked = isOn;
+    toggle.disabled = isOn && state.words.length === 1;
+    toggle.addEventListener('change', () => {
+      setWordOn(word, toggle.checked);
+      renderPanel();
+    });
+    name.append(toggle, word);
     const heard = document.createElement('span');
     heard.className = 'panel-heard';
     heard.textContent = s.heard ? `heard ${s.heard}×` : 'not yet';
     const chip = document.createElement('button');
     chip.className = `chip${s.known ? ' on' : ''}`;
     chip.textContent = s.known ? `${stickerFor(word)} Sticker` : 'No sticker';
+    chip.disabled = !isOn;
     chip.addEventListener('click', () => {
       setKnown(word, !s.known);
       renderPanel();

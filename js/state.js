@@ -17,7 +17,9 @@ const els = {
 };
 
 const state = {
-  words: [],               // the word list, from words.json
+  allWords: [],            // the full word list, from words.json
+  offWords: new Set(),     // words a grown-up turned off in the Grown-up corner
+  words: [],               // the words being practiced: allWords without the turned-off ones
   progress: { words: {} }, // saved progress (see progress.js), loaded at start up
   newStickers: [],         // stickers earned since the home screen was last shown
   lastRound: null,         // the round just finished, summarized on the home screen

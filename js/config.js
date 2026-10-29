@@ -5,6 +5,7 @@
 const APP_VERSION = '1.0.1'; // shown at the bottom of the home screen; bumped automatically when a PR merges into main
 const STORAGE_KEY = 'sightWords.progress.v1';
 const VOICE_KEY = 'sightWords.voice.v1';
+const OFF_WORDS_KEY = 'sightWords.offWords.v1'; // kept apart from progress, so a reset doesn't turn words back on
 const SPEECH_RATE = 0.9;     // a little slower than normal speech (much slower sounds robotic)
 const CHEERS = ['Great job!', 'Awesome!', 'You did it!', 'Super reader!', 'Way to go!', 'Fantastic!'];
 const STICKER_COLORS = ['#e03131', '#e8590c', '#e67700', '#2f9e44', '#0c8599', '#1971c2', '#7048e8', '#c2255c'];

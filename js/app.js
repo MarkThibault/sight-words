@@ -43,7 +43,9 @@ async function init() {
   // The kid-friendly font may arrive after the first word is shown
   document.fonts.ready.then(() => fitWord());
 
-  state.words = await loadWords();
+  state.allWords = await loadWords();
+  state.offWords = loadOffWords();
+  applyOffWords();
   els.start.disabled = false;
   els.timedBtn.disabled = false;
   showScreen('home');
