@@ -3,6 +3,7 @@
 // Grown-up corner (press and hold the ⚙️ button): per-word progress, voice choice and reset.
 
 function openPanel() {
+  showResetConfirm(false);
   renderPanel();
   if (canSpeak) renderVoiceOptions();
   els.panel.showModal();
@@ -49,9 +50,17 @@ function chooseVoice(uri) {
   speak('Let’s read!');
 }
 
+// Asks "are you sure?" inside the panel, in place of the Reset/Done buttons.
+// (confirm() is blocked in some browsers, such as embedded previews.)
+function showResetConfirm(show) {
+  els.panelActions.hidden = show;
+  els.resetConfirm.hidden = !show;
+  (show ? els.resetCancel : els.reset).focus();
+}
+
 function confirmReset() {
-  if (!confirm('Erase all progress, stickers and best times on this device?')) return;
   resetProgress();
   state.lastRound = null;
   renderPanel();
+  showResetConfirm(false);
 }

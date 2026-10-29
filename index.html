@@ -68,9 +68,14 @@
     </div>
     <p class="panel-tip">Tap a sticker button to give or take away a sticker.</p>
     <ul id="panel-list" class="panel-list"></ul>
-    <div class="panel-actions">
+    <div id="panel-actions" class="panel-actions">
       <button id="reset-btn" class="danger">Reset all progress</button>
       <button id="panel-close" class="primary">Done</button>
+    </div>
+    <div id="reset-confirm" class="panel-actions reset-confirm" role="alertdialog" aria-labelledby="reset-question" hidden>
+      <p id="reset-question">Erase all progress, stickers and best times on this device?</p>
+      <button id="reset-cancel" class="primary">Keep everything</button>
+      <button id="reset-yes" class="danger">Yes, erase</button>
     </div>
   </dialog>
 

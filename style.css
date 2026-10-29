@@ -353,7 +353,9 @@ h1 {
 .panel {
   width: min(92vw, 560px);
   max-height: 88vh;
+  max-height: 88dvh; /* phones: leave room for the browser's address bar */
   padding: 24px;
+  overflow: hidden;
   border: 0;
   border-radius: 28px;
   color: var(--ink);
@@ -361,6 +363,9 @@ h1 {
   user-select: text;
   -webkit-user-select: text;
 }
+/* Only the word list scrolls; the heading, voice settings and buttons stay put. */
+.panel[open] { display: flex; flex-direction: column; }
+.panel > * { flex: none; }
 .panel::backdrop { background: rgba(43, 45, 66, 0.5); }
 .panel h2 { margin: 0 0 8px; font-size: 2rem; }
 .panel p { margin: 4px 0; }
@@ -369,7 +374,8 @@ h1 {
 .panel-list {
   display: grid;
   gap: 8px;
-  max-height: 50vh;
+  flex: 1 1 auto;
+  min-height: 6rem;
   margin: 16px 0;
   padding: 0;
   overflow: auto;
@@ -404,5 +410,18 @@ h1 {
 
 .panel-actions { display: flex; justify-content: space-between; gap: 12px; }
 .panel-actions button { padding: 12px 22px; border: 0; border-radius: 14px; font-size: 1.1rem; }
+.reset-confirm { flex-wrap: wrap; align-items: center; }
+.reset-confirm p { flex-basis: 100%; margin: 0 0 4px; font-weight: 700; }
+/* Phones: tighter spacing so more of the word list fits on screen */
+@media (max-width: 560px) {
+  .panel { width: calc(100vw - 24px); padding: 18px; font-size: 1rem; }
+  .panel h2 { font-size: 1.5rem; }
+  .panel-tip { font-size: 0.85rem; }
+  .voice-section { margin: 8px 0 10px; padding-bottom: 8px; }
+  .panel-list { margin: 10px 0 14px; gap: 6px; }
+  .panel-list li { padding: 4px 10px; gap: 8px; }
+  .panel-word { font-size: 1.3rem; }
+  .panel-actions button { padding: 12px 16px; font-size: 1rem; }
+}
 .danger { background: #ffe3e3; color: #c92a2a !important; }
 .primary { background: var(--blue); color: #fff !important; }

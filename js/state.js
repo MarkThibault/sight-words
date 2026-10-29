@@ -11,7 +11,8 @@ const els = {
   roundBar: $('round-bar'), roundFill: $('round-fill'), card: $('card'), word: $('word'), star: $('card-star'),
   hint: $('hint'), know: $('know-btn'), next: $('next-btn'), toast: $('toast'),
   panel: $('parent-panel'), panelSummary: $('panel-summary'), panelList: $('panel-list'),
-  panelClose: $('panel-close'), reset: $('reset-btn'),
+  panelClose: $('panel-close'), reset: $('reset-btn'), panelActions: $('panel-actions'),
+  resetConfirm: $('reset-confirm'), resetYes: $('reset-yes'), resetCancel: $('reset-cancel'),
   voiceSection: $('voice-section'), voiceSelect: $('voice-select'), voiceTest: $('voice-test'),
 };
 
