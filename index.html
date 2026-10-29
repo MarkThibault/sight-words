@@ -72,6 +72,19 @@
     </div>
   </dialog>
 
-  <script src="app.js"></script>
+  <!-- Plain scripts (not modules) so the app still works when index.html is opened straight from disk.
+       Order matters: each file can use anything from the files above it. -->
+  <script src="js/utils.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/words.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/effects.js"></script>
+  <script src="js/stickers.js"></script>
+  <script src="js/home.js"></script>
+  <script src="js/practice.js"></script>
+  <script src="js/panel.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
