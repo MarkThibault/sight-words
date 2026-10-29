@@ -1,0 +1,67 @@
+# When a pull request is merged into main, raise the app version and tag it.
+# Patch by default (1.0.0 -> 1.0.1); label the PR "minor" (-> 1.1.0) or "major" (-> 2.0.0) for bigger steps.
+name: Bump version
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write  # commit the new version and tag it
+  pages: write     # ask GitHub Pages to publish the bumped commit
+  issues: write    # create the minor/major labels
+
+# One bump at a time, so two quick merges can't pick the same number.
+concurrency:
+  group: bump-version
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Pick the bump size from the PR labels
+        id: size
+        env:
+          LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+        run: |
+          if echo "$LABELS" | grep -q '"major"'; then part=major
+          elif echo "$LABELS" | grep -q '"minor"'; then part=minor
+          else part=patch
+          fi
+          echo "part=$part" >> "$GITHUB_OUTPUT"
+
+      - name: Bump the version
+        id: bump
+        run: echo "version=$(bash .github/scripts/bump-version.sh ${{ steps.size.outputs.part }})" >> "$GITHUB_OUTPUT"
+
+      - name: Commit, tag and push
+        env:
+          VERSION: ${{ steps.bump.outputs.version }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Bump version to v$VERSION (#$PR_NUMBER)"
+          git pull --rebase origin main
+          git tag "v$VERSION"
+          git push origin main "v$VERSION"
+
+      # Pushes made by this workflow don't always start a Pages publish on their own.
+      - name: Publish the new version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds" || echo "::warning::Couldn't start a Pages publish; the next merge will publish it."
+
+      - name: Make sure the minor and major labels exist
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create minor --repo "${{ github.repository }}" --color 0E8A16 --description "Bump the minor version (1.0.0 -> 1.1.0) when merged" --force
+          gh label create major --repo "${{ github.repository }}" --color B60205 --description "Bump the major version (1.0.0 -> 2.0.0) when merged" --force
