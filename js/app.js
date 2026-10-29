@@ -31,7 +31,9 @@ async function init() {
   els.voiceTest.addEventListener('click', () => speak('Let’s read! the, and, you'));
   els.panelClose.addEventListener('click', () => els.panel.close());
   els.panel.addEventListener('close', () => showScreen('home'));
-  els.reset.addEventListener('click', confirmReset);
+  els.reset.addEventListener('click', () => showResetConfirm(true));
+  els.resetCancel.addEventListener('click', () => showResetConfirm(false));
+  els.resetYes.addEventListener('click', confirmReset);
 
   let resizeTimer = null;
   window.addEventListener('resize', () => {
@@ -41,7 +43,9 @@ async function init() {
   // The kid-friendly font may arrive after the first word is shown
   document.fonts.ready.then(() => fitWord());
 
-  state.words = await loadWords();
+  state.allWords = await loadWords();
+  state.offWords = loadOffWords();
+  applyOffWords();
   els.start.disabled = false;
   els.timedBtn.disabled = false;
   showScreen('home');

@@ -53,7 +53,7 @@ function setKnown(word, known) {
 function stickerFor(word) {
   const s = stats(word);
   if (!s.sticker) {
-    const used = new Set(state.words.map((w) => stats(w).sticker));
+    const used = new Set(state.allWords.map((w) => stats(w).sticker));
     const unused = STICKER_EMOJI.filter((e) => !used.has(e));
     s.sticker = randomItem(unused.length ? unused : STICKER_EMOJI);
     saveProgress();

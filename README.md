@@ -28,6 +28,8 @@ Keep the quotes and commas. New words show up as not-yet-practiced; existing pro
 
 Press and hold the **⚙️** button in the top-right corner of the home screen for about a second. (A quick tap does nothing, so kids don't open it by accident.) From there you can see how many times each word was heard, give or take away stickers, or reset all progress (including the best time).
 
+Each word also has an on/off switch. A word that's turned off is skipped in every round and left out of the star count, and its sticker is hidden until it's turned back on. Turned-off words are saved separately from progress, so **Reset all progress** leaves them off. At least one word always stays on.
+
 ## Making the voice sound natural
 
 The app uses the voices built into the device and picks the most natural-sounding one it finds. To choose a different one, open the Grown-up corner, pick from **Voice**, and tap **🔊 Test**. The choice is saved on that device.
@@ -59,7 +61,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `utils.js` | General helpers used across files: shuffling, hashing, time formatting, safe `localStorage` access, animations, long-press |
 | `config.js` | Settings and lists: sticker emoji, colors, cheers, fallback word list |
 | `state.js` | Page elements (`els`) and the state shared between files (`state`) |
-| `words.js` | Loading `words.json` |
+| `words.js` | Loading `words.json`, and the words turned off in the Grown-up corner |
 | `progress.js` | Saved progress: stars, stickers, heard counts, best time |
 | `speech.js` | Choosing a voice and reading words aloud |
 | `effects.js` | Toasts and confetti |
