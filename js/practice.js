@@ -77,8 +77,10 @@ function showWord() {
   fitWord();
   els.card.setAttribute('aria-label', `${current}. Tap to hear it.`);
 
-  markSeen(current);
-  els.star.hidden = !stats(current).known;
+  const s = stats(current);
+  s.lastSeen = today();
+  saveProgress();
+  els.star.hidden = !s.known;
   els.hint.classList.remove('off');
   setButtonsDisabled(false);
   setNextLocked(true);
@@ -100,7 +102,8 @@ function fitWord() {
 function hearWord() {
   speak(current);
   playAnim(els.card, 'bounce');
-  markHeard(current);
+  stats(current).heard += 1;
+  saveProgress();
   els.hint.classList.add('off');
   heardCurrent = true;
   setNextLocked(false);
