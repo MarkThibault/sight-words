@@ -1,6 +1,6 @@
 'use strict';
 
-// Grown-up corner (press and hold the stars counter): per-word progress, voice choice and reset.
+// Grown-up corner (press and hold the ⚙️ button): per-word progress, voice choice and reset.
 
 function openPanel() {
   renderPanel();

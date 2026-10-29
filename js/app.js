@@ -24,7 +24,8 @@ async function init() {
   els.know.addEventListener('click', knowIt);
   els.next.addEventListener('click', goNext);
 
-  onLongPress(els.progress, 800, openPanel);
+  els.appVersion.textContent = `v${APP_VERSION}`;
+  onLongPress(els.settingsBtn, 800, openPanel);
   els.voiceSection.hidden = !canSpeak;
   els.voiceSelect.addEventListener('change', () => chooseVoice(els.voiceSelect.value));
   els.voiceTest.addEventListener('click', () => speak('Let’s read! the, and, you'));

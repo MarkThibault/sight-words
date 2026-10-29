@@ -2,6 +2,7 @@
 
 // Settings and content lists. Edit these to change how the app looks and sounds.
 
+const APP_VERSION = '1.0.0'; // shown at the bottom of the home screen; bump it when publishing changes
 const STORAGE_KEY = 'sightWords.progress.v1';
 const VOICE_KEY = 'sightWords.voice.v1';
 const SPEECH_RATE = 0.9;     // a little slower than normal speech (much slower sounds robotic)

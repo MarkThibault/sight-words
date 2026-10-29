@@ -26,7 +26,7 @@ Keep the quotes and commas. New words show up as not-yet-practiced; existing pro
 
 ## Grown-up corner
 
-Press and hold the **⭐ stars** counter on the home screen for about a second. From there you can see how many times each word was heard, give or take away stickers, or reset all progress (including the best time).
+Press and hold the **⚙️** button in the top-right corner of the home screen for about a second. (A quick tap does nothing, so kids don't open it by accident.) From there you can see how many times each word was heard, give or take away stickers, or reset all progress (including the best time).
 
 ## Making the voice sound natural
 
@@ -68,6 +68,10 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `practice.js` | Rounds, the timer, and the word card |
 | `panel.js` | Grown-up corner |
 | `app.js` | Start up and button wiring |
+
+## App version
+
+The version (for example `v1.0.0`) shows in the bottom-right corner of the home screen, so you can tell whether a tablet has the latest copy. It comes from `APP_VERSION` in `js/config.js`; bump it whenever you publish changes.
 
 ## Publishing on GitHub Pages
 
