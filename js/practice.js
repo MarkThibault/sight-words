@@ -1,0 +1,151 @@
+'use strict';
+
+// Practice screen: rounds, the word card, and the "I know it!" / "Next" buttons.
+
+let round = null;            // the round being played: { mode: 'all' | 'missing', timed, total, learned, startedAt }
+let deck = [];               // words still to come this round
+let current = null;          // the word on the card
+let heardCurrent = false;    // has the current word been heard since it was shown?
+let busy = false;            // true while the "I know it!" animation plays
+let timerId = null;
+
+// ---------- Rounds ----------
+
+// A round goes through each word once (or each word without a star yet), then returns home.
+function startRound(mode, timed = false) {
+  const list = mode === 'missing' ? missingWords() : state.words;
+  if (list.length === 0) return;
+  deck = shuffle(list);
+  round = { mode, timed, total: deck.length, learned: [], startedAt: performance.now() };
+  state.lastRound = null;
+  els.timer.hidden = !timed;
+  els.roundBar.setAttribute('aria-valuemax', String(round.total));
+  showScreen('practice');
+  showWord();
+  if (timed) {
+    updateTimer();
+    timerId = setInterval(updateTimer, 250);
+  }
+  if (!canSpeak) showToast('This browser can’t read words aloud 😕');
+}
+
+function finishRound() {
+  const done = round;
+  stopRound();
+  const last = { mode: done.mode, total: done.total, learned: done.learned };
+  if (done.timed) {
+    const ms = Math.round(performance.now() - done.startedAt);
+    const best = bestTime();
+    Object.assign(last, { ms, best, newBest: best === null || ms < best });
+    if (last.newBest) saveBestTime(ms);
+  }
+  state.lastRound = last;
+  showScreen('home');
+  confetti();
+}
+
+// Leaving mid-round (the 🏠 button) just drops the round: no summary, no time recorded.
+function stopRound() {
+  clearInterval(timerId);
+  timerId = null;
+  round = null;
+  current = null;
+  deck = [];
+  stopSpeaking();
+}
+
+function updateTimer() {
+  if (round) els.timer.textContent = `⏱ ${formatTime(performance.now() - round.startedAt)}`;
+}
+
+// ---------- Word card ----------
+
+function showWord() {
+  if (!round) return;
+  if (deck.length === 0) {
+    finishRound();
+    return;
+  }
+  current = deck.shift();
+  const position = round.total - deck.length;
+  els.roundFill.style.width = `${(position / round.total) * 100}%`;
+  els.roundBar.setAttribute('aria-valuenow', String(position));
+  heardCurrent = false;
+
+  els.word.textContent = current;
+  els.word.style.setProperty('--len', current.length);
+  fitWord();
+  els.card.setAttribute('aria-label', `${current}. Tap to hear it.`);
+
+  markSeen(current);
+  els.star.hidden = !stats(current).known;
+  els.hint.classList.remove('off');
+  setButtonsDisabled(false);
+  setNextLocked(true);
+  playAnim(els.card, 'slide-in');
+}
+
+// Start from the big CSS size and shrink only if the word is wider than the card.
+function fitWord() {
+  if (!current) return;
+  els.word.style.fontSize = '';
+  const room = els.card.clientWidth - 48;
+  const width = els.word.getBoundingClientRect().width;
+  if (width > room) {
+    const size = parseFloat(getComputedStyle(els.word).fontSize);
+    els.word.style.fontSize = `${Math.floor(size * room / width)}px`;
+  }
+}
+
+function hearWord() {
+  speak(current);
+  playAnim(els.card, 'bounce');
+  markHeard(current);
+  els.hint.classList.add('off');
+  heardCurrent = true;
+  setNextLocked(false);
+}
+
+function knowIt() {
+  if (busy) return;
+  if (!heardCurrent) hearWord(); // knowing it still counts as hearing it
+
+  if (!stats(current).known) {
+    setKnown(current, true);
+    state.newStickers.push(current);
+    round.learned.push(current);
+    flySticker(current);
+    els.star.hidden = false;
+    playAnim(els.star, 'pop');
+    updateCounters();
+    showToast(`New sticker! ${stickerFor(current)}`);
+  } else {
+    showToast(randomCheer());
+  }
+  confetti();
+
+  busy = true;
+  setButtonsDisabled(true);
+  setTimeout(() => { busy = false; showWord(); }, 1200);
+}
+
+function goNext() {
+  if (busy) return;
+  if (!heardCurrent) {
+    playAnim(els.card, 'wiggle');
+    return;
+  }
+  stopSpeaking();
+  showWord();
+}
+
+function setButtonsDisabled(disabled) {
+  els.know.disabled = disabled;
+  els.next.disabled = disabled;
+}
+
+// Next stays tappable while locked so a tap can nudge toward the word instead of doing nothing.
+function setNextLocked(locked) {
+  els.next.classList.toggle('locked', locked);
+  els.next.setAttribute('aria-disabled', String(locked));
+}
