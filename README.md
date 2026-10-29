@@ -59,6 +59,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `utils.js` | General helpers used across files: shuffling, hashing, time formatting, safe `localStorage` access, animations, long-press |
 | `config.js` | Settings and lists: sticker emoji, colors, cheers, fallback word list |
 | `state.js` | Page elements (`els`) and the state shared between files (`state`) |
+| `words.js` | Loading `words.json` |
 | `progress.js` | Saved progress: stars, stickers, heard counts, best time |
 | `speech.js` | Choosing a voice and reading words aloud |
 | `effects.js` | Toasts and confetti |
@@ -66,7 +67,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `home.js` | Home screen and switching screens |
 | `practice.js` | Rounds, the timer, and the word card |
 | `panel.js` | Grown-up corner |
-| `app.js` | Start up: loading `words.json` and button wiring |
+| `app.js` | Start up and button wiring |
 
 ## Publishing on GitHub Pages
 

@@ -30,6 +30,16 @@ function stats(word) {
 const knownWords = () => state.words.filter((w) => stats(w).known).sort((a, b) => stats(a).knownAt - stats(b).knownAt);
 const missingWords = () => state.words.filter((w) => !stats(w).known);
 
+function markSeen(word) {
+  stats(word).lastSeen = today();
+  saveProgress();
+}
+
+function markHeard(word) {
+  stats(word).heard += 1;
+  saveProgress();
+}
+
 function setKnown(word, known) {
   const s = stats(word);
   s.known = known;
