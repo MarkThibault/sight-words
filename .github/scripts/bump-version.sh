@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Raises APP_VERSION in js/config.js and the matching ?v= stamps in index.html,
+# Raises APP_VERSION in js/config.js and the matching ?v= stamps in index.html and recorder.html,
 # so tablets load the new files instead of old cached copies.
 # Usage: bump-version.sh patch|minor|major   (prints the new version)
 set -euo pipefail
@@ -22,5 +22,5 @@ esac
 next="$major.$minor.$patch"
 
 sed -i "s/^const APP_VERSION = '$current'/const APP_VERSION = '$next'/" js/config.js
-sed -i "s/?v=[0-9.]*\"/?v=$next\"/g" index.html
+sed -i "s/?v=[0-9.]*\"/?v=$next\"/g" index.html recorder.html
 echo "$next"

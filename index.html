@@ -28,6 +28,8 @@
     </div>
     <div id="progress" class="progress"></div>
     <!-- Grown-ups: press and hold this to open the settings panel -->
+    <!-- The sound recorder: only shown when running on this computer (it saves into the project folder) -->
+    <a id="recorder-btn" class="settings-btn recorder-btn" href="recorder.html" aria-label="Sound recorder" title="Sound recorder" hidden>🎙️</a>
     <button id="settings-btn" class="settings-btn" aria-label="Grown-up settings (press and hold)" title="Press and hold for grown-up settings">⚙️</button>
     <p id="app-version" class="app-version"></p>
   </main>
@@ -47,6 +49,7 @@
       <span id="card-star" class="card-star" hidden>⭐</span>
     </button>
     <p id="hint" class="hint">👆 Tap the word to hear it</p>
+    <button id="sound-out-btn" class="mode-btn sound-out">🧩 Sound it out</button>
     <div class="actions">
       <button id="know-btn" class="big-btn know">I know it! ⭐</button>
       <button id="next-btn" class="big-btn next">Next ➜</button>
@@ -87,6 +90,8 @@
   <script src="js/words.js?v=1.1.0"></script>
   <script src="js/progress.js?v=1.1.0"></script>
   <script src="js/speech.js?v=1.1.0"></script>
+  <script src="js/phonics.js?v=1.1.0"></script>
+  <script src="js/audio.js?v=1.1.0"></script>
   <script src="js/effects.js?v=1.1.0"></script>
   <script src="js/stickers.js?v=1.1.0"></script>
   <script src="js/home.js?v=1.1.0"></script>

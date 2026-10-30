@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sound Recorder · Sight Words</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap">
+  <link rel="stylesheet" href="recorder.css?v=1.1.0">
+</head>
+<body>
+  <header>
+    <div class="title-row">
+      <h1>🎙️ Sound Recorder</h1>
+      <a class="home-link" href="index.html" aria-label="Back to the app">🏠 <span>Back to the app</span></a>
+    </div>
+    <div class="box">
+      <p>Record each word and each sound once, and the app plays your recordings on every device.
+        Anything not recorded yet uses the device's own voice.</p>
+      <ol class="steps">
+        <li>On a computer, run <code>python serve.py</code> in the project folder and open <a href="recorder.html">localhost:8000/recorder.html</a>. Recordings then save straight into <code>audio/words/</code> and <code>audio/sounds/</code>.</li>
+        <li id="folder-step">Not using <code>serve.py</code>? Tap <b>Choose project folder</b> once and pick the <code>sight-words</code> folder (Chrome or Edge), and it's remembered next time.</li>
+        <li>Tap 🎙️, say the word or sound, then tap ⏹. Listen, and tap 💾 to keep it or 🎙️ to try again.</li>
+        <li>Commit the new files in <code>audio/</code> so every device gets them.</li>
+      </ol>
+      <p class="tip"><b>Sounds:</b> keep them short and clean: "b", not "buh". Hold the ones that can be held, like "mmm" and "sss", for about a second.</p>
+      <div class="toolbar">
+        <button id="folder-btn">📁 Choose project folder</button>
+        <span id="folder-name" class="muted"></span>
+        <label><input id="missing-only" type="checkbox"> Show only what still needs recording</label>
+      </div>
+    </div>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+  </header>
+
+  <main>
+    <div class="tabs" role="tablist" aria-label="What to record">
+      <button id="words-tab" class="tab" role="tab" aria-selected="true" aria-controls="words-panel">Words <span id="word-count" class="count"></span></button>
+      <button id="sounds-tab" class="tab" role="tab" aria-selected="false" aria-controls="sounds-panel" tabindex="-1">Sounds <span id="sound-count" class="count"></span></button>
+    </div>
+    <section id="words-panel" role="tabpanel" aria-labelledby="words-tab">
+      <p class="muted">Saved to <code>audio/words/</code>.</p>
+      <p id="no-parts" class="warn" hidden></p>
+      <ul id="word-list" class="clip-list"></ul>
+    </section>
+    <section id="sounds-panel" role="tabpanel" aria-labelledby="sounds-tab" hidden>
+      <p class="muted">Saved to <code>audio/sounds/</code>. Sounds used by your words come first; the rest (<span id="extra-count"></span>) are ready for words you add later.</p>
+      <ul id="sound-list" class="clip-list"></ul>
+    </section>
+  </main>
+
+  <script src="js/utils.js?v=1.1.0"></script>
+  <script src="js/config.js?v=1.1.0"></script>
+  <script src="js/words.js?v=1.1.0"></script>
+  <script src="js/speech.js?v=1.1.0"></script>
+  <script src="js/phonics.js?v=1.1.0"></script>
+  <script src="js/audio.js?v=1.1.0"></script>
+  <script src="js/recorder.js?v=1.1.0"></script>
+</body>
+</html>

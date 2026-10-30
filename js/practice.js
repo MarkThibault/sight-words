@@ -8,6 +8,8 @@ let current = null;          // the word on the card
 let heardCurrent = false;    // has the current word been heard since it was shown?
 let busy = false;            // true while the "I know it!" animation plays
 let timerId = null;
+let soundingOut = false;     // true while the word is being sounded out
+let soundRun = 0;            // counts sound-outs, so a stopped one knows to stop
 
 // ---------- Rounds ----------
 
@@ -26,7 +28,7 @@ function startRound(mode, timed = false) {
     updateTimer();
     timerId = setInterval(updateTimer, 250);
   }
-  if (!canSpeak) showToast('This browser can’t read words aloud 😕');
+  if (!canSpeak && !audioCtx) showToast('This browser can’t read words aloud 😕');
 }
 
 function finishRound() {
@@ -48,10 +50,11 @@ function finishRound() {
 function stopRound() {
   clearInterval(timerId);
   timerId = null;
+  stopSoundOut();
   round = null;
   current = null;
   deck = [];
-  stopSpeaking();
+  stopAudio();
 }
 
 function updateTimer() {
@@ -66,7 +69,9 @@ function showWord() {
     finishRound();
     return;
   }
+  stopSoundOut();
   current = deck.shift();
+  preloadClips(deck.length ? [current, deck[0]] : [current]); // this word and the next, not the whole round
   const position = round.total - deck.length;
   els.roundFill.style.width = `${(position / round.total) * 100}%`;
   els.roundBar.setAttribute('aria-valuenow', String(position));
@@ -80,6 +85,7 @@ function showWord() {
   markSeen(current);
   els.star.hidden = !stats(current).known;
   els.hint.classList.remove('off');
+  els.soundOut.classList.toggle('unavailable', !wordParts(current)); // only words with their sounds listed in js/phonics.js
   setButtonsDisabled(false);
   setNextLocked(true);
   playAnim(els.card, 'slide-in');
@@ -98,16 +104,78 @@ function fitWord() {
 }
 
 function hearWord() {
-  speak(current);
+  stopSoundOut();
+  sayWord(current);
   playAnim(els.card, 'bounce');
+  noteHeard();
+}
+
+function noteHeard() {
   markHeard(current);
   els.hint.classList.add('off');
   heardCurrent = true;
   setNextLocked(false);
 }
 
+// ---------- Sounding out ----------
+
+// Plays each sound in turn, lighting up its letters on the card, then the whole word.
+// Tapping again starts over; tapping the word, "I know it!" or "Next" stops it.
+function soundOut() {
+  if (busy) return;
+  stopSoundOut();
+  const run = soundRun;
+  const parts = wordParts(current);
+  const spans = parts.map(([letters, id]) => {
+    const span = document.createElement('span');
+    span.className = id ? 'part' : 'part silent';
+    span.textContent = letters;
+    return span;
+  });
+  els.word.replaceChildren(...spans);
+  els.word.classList.add('split');
+  fitWord();
+  soundingOut = true;
+  noteHeard(); // the whole word is said at the end, so this counts as hearing it
+
+  const sounds = parts.map(([, id], i) => [spans[i], id]).filter(([, id]) => id);
+  let next = 0;
+  const step = () => {
+    if (run !== soundRun) return;
+    spans.forEach((span) => span.classList.remove('on'));
+    if (next < sounds.length) {
+      const [span, id] = sounds[next++];
+      span.classList.add('on');
+      saySound(id, () => setTimeout(step, SOUND_GAP_MS));
+    } else {
+      soundingOut = false;
+      showWholeWord();
+      sayWord(current);
+      playAnim(els.card, 'bounce');
+    }
+  };
+  step();
+}
+
+function stopSoundOut() {
+  soundRun += 1;
+  if (!soundingOut) return;
+  soundingOut = false;
+  stopAudio();
+  showWholeWord();
+}
+
+function showWholeWord() {
+  els.word.classList.remove('split');
+  els.word.textContent = current;
+  fitWord();
+}
+
+// ---------- Buttons ----------
+
 function knowIt() {
   if (busy) return;
+  stopSoundOut();
   if (!heardCurrent) hearWord(); // knowing it still counts as hearing it
 
   if (!stats(current).known) {
@@ -135,13 +203,14 @@ function goNext() {
     playAnim(els.card, 'wiggle');
     return;
   }
-  stopSpeaking();
+  stopAudio();
   showWord();
 }
 
 function setButtonsDisabled(disabled) {
   els.know.disabled = disabled;
   els.next.disabled = disabled;
+  els.soundOut.disabled = disabled;
 }
 
 // Next stays tappable while locked so a tap can nudge toward the word instead of doing nothing.

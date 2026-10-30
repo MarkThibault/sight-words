@@ -128,6 +128,8 @@ h1 {
   transition: scale 0.15s;
 }
 .settings-btn.pressing { scale: 1.2; transition: scale 0.8s; }
+/* beside the ⚙️ button, same look */
+.recorder-btn { right: calc(max(16px, env(safe-area-inset-right)) + 68px); color: inherit; text-decoration: none; }
 
 .app-version {
   position: absolute;
@@ -277,6 +279,25 @@ h1 {
 
 .hint { margin: 0; min-height: 1.6em; font-size: 1.6rem; animation: nudge 1.6s ease-in-out infinite; }
 .hint.off { visibility: hidden; }
+
+/* Sounding out: the word splits into its sounds, and each one lights up as it's spoken */
+.sound-out { --mode: #7048e8; flex-shrink: 0; }
+.sound-out.unavailable { visibility: hidden; } /* keeps its space, so the buttons below don't jump */
+.word.split { display: inline-flex; gap: 0.18em; }
+.part { position: relative; display: inline-block; transition: color 0.15s, scale 0.15s; }
+/* each part that makes a sound is underlined, so "th" and "ee" read as one sound; silent letters aren't */
+.part:not(.silent)::after {
+  content: '';
+  position: absolute;
+  left: 0.04em;
+  right: 0.04em;
+  bottom: 0.02em;
+  height: 0.06em;
+  border-radius: 999px;
+  background: currentColor;
+}
+.part.on { color: #7048e8; scale: 1.12; }
+.part.silent { opacity: 0.3; }
 
 .actions { display: flex; gap: 20px; width: min(100%, 900px); padding-bottom: 8px; }
 .actions .big-btn { flex: 1; }

@@ -43,13 +43,18 @@ function pickVoice() {
   voice = voices.find((v) => v.voiceURI === saved) || voices[0] || null;
 }
 
-function speak(text) {
+// onEnd runs once speaking stops, whether it finished or was cut off.
+function speak(text, { rate = SPEECH_RATE, onEnd } = {}) {
   if (!canSpeak) return;
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   if (voice) u.voice = voice;
   u.lang = voice ? voice.lang : 'en-US';
-  u.rate = SPEECH_RATE;
+  u.rate = rate;
+  if (onEnd) {
+    u.onend = onEnd;
+    u.onerror = onEnd;
+  }
   speechSynthesis.speak(u);
 }
 

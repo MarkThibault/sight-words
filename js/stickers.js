@@ -48,7 +48,8 @@ function stickerSlots(count) {
   const W = els.board.clientWidth;
   const H = els.board.clientHeight;
   const origin = els.board.getBoundingClientRect();
-  const blockers = [els.homeCenter, els.progress, els.settingsBtn, els.appVersion].map((el) => el.getBoundingClientRect());
+  const blockers = [els.homeCenter, els.progress, els.settingsBtn, els.recorderBtn, els.appVersion]
+    .filter((el) => !el.hidden).map((el) => el.getBoundingClientRect());
   let size = Math.min(150, Math.max(70, Math.min(W, H) / 5));
 
   for (;;) {
