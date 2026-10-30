@@ -5,6 +5,7 @@
 const APP_VERSION = '1.1.1'; // shown at the bottom of the home screen; bumped automatically when a PR merges into main
 const STORAGE_KEY = 'sightWords.progress.v1';
 const VOICE_KEY = 'sightWords.voice.v1';
+const STICKER_SPOTS_KEY = 'sightWords.stickerSpots.v1'; // where stickers were dragged to on the home screen
 const OFF_WORDS_KEY = 'sightWords.offWords.v1'; // kept apart from progress, so a reset doesn't turn words back on
 const SPEECH_RATE = 0.9;     // a little slower than normal speech (much slower sounds robotic)
 const SOUND_RATE = 0.75;     // sounds not recorded yet, said by the device's voice when sounding a word out

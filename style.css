@@ -178,6 +178,11 @@ h1 {
 }
 .sticker.flying { position: fixed; z-index: 20; }
 
+/* stickers can be picked up and moved around the home screen */
+.sticker-board .sticker { pointer-events: auto; touch-action: none; cursor: grab; }
+.sticker.dragging { z-index: 2; cursor: grabbing; scale: 1.15; filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.2)); transition: scale 0.1s; }
+.sticker.returning { transition: left 0.3s ease-out, top 0.3s ease-out; }
+
 /* words learned in the round that just finished: a pulsing ring behind the sticker */
 .sticker.fresh { z-index: 1; }
 .sticker.fresh::before {

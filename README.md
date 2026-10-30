@@ -6,7 +6,7 @@ A simple sight-word practice app for young readers. Plain HTML, CSS and JavaScri
 - **🧩 Sound it out** plays the word one sound at a time, lighting up each part, then says the whole word. Each part that makes a sound is underlined. Letters that make one sound together, like "th", "ch" and "ee", stay together, and silent letters (like the "e" in "like") are shown faded and skipped. The button only shows for words whose sounds are listed (see [Adding words](#adding-words)).
 - **Next ➜** moves on, but only after the word has been heard (until then, tapping it wiggles the word).
 - **I know it! ⭐** gives that word a star and a sticker. Stars are only earned this way.
-- Stickers collect on the home screen. Each one is a surprise kid-friendly emoji (animals, treats, vehicles and more) with its word on a tag, and it stays the same once earned. To change the choices, edit `STICKER_EMOJI` in `js/config.js`.
+- Stickers collect on the home screen. Each one is a surprise kid-friendly emoji (animals, treats, vehicles and more) with its word on a tag, and it stays the same once earned. To change the choices, edit `STICKER_EMOJI` in `js/config.js`. Stickers can be dragged anywhere on the home screen and stay where they're put (dropping one on the title or a button slides it back). **Reset all progress** puts them back in their usual spots.
 - Each round goes through every word once, then returns to the home screen. Words learned that round glow there.
 
 ## Home screen buttons
@@ -91,7 +91,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `phonics.js` | The sounds, and how each word splits into them for **Sound it out** |
 | `audio.js` | Playing the recordings in `audio/`, or the device's voice for anything not recorded |
 | `effects.js` | Toasts and confetti |
-| `stickers.js` | Drawing stickers and laying them out on the home screen |
+| `stickers.js` | Drawing stickers, laying them out on the home screen, and dragging them around |
 | `home.js` | Home screen and switching screens |
 | `practice.js` | Rounds, the timer, the word card and sounding words out |
 | `panel.js` | Grown-up corner |
