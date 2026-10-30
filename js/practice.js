@@ -18,7 +18,6 @@ function startRound(mode, timed = false) {
   const list = mode === 'missing' ? missingWords() : state.words;
   if (list.length === 0) return;
   deck = shuffle(list);
-  preloadClips(deck);
   round = { mode, timed, total: deck.length, learned: [], startedAt: performance.now() };
   state.lastRound = null;
   els.timer.hidden = !timed;
@@ -72,6 +71,7 @@ function showWord() {
   }
   stopSoundOut();
   current = deck.shift();
+  preloadClips(deck.length ? [current, deck[0]] : [current]); // this word and the next, not the whole round
   const position = round.total - deck.length;
   els.roundFill.style.width = `${(position / round.total) * 100}%`;
   els.roundBar.setAttribute('aria-valuenow', String(position));

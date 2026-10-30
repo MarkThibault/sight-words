@@ -25,6 +25,7 @@ function loadClip(path) {
 }
 
 // Loads the clips for these words and their sounds ahead of time, so taps play right away.
+// Each clip loads only once; asking again reuses it.
 function preloadClips(words) {
   words.forEach((word) => {
     loadClip(wordClip(word));
