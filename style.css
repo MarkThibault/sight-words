@@ -360,14 +360,15 @@ h1 {
 @keyframes slide-in { from { translate: 60px 0; opacity: 0; } to { translate: 0 0; opacity: 1; } }
 @keyframes bounce { 0%, 100% { scale: 1; } 30% { scale: 1.08; } 60% { scale: 0.97; } }
 @keyframes pop { 0% { scale: 0; } 70% { scale: 1.25; } 100% { scale: 1; } }
-/* the 🎲 is tossed up and to the left, tumbles back over the middle and settles with a little bounce */
+/* the 🎲 hops left, arcs up and over to the right, and lands back in the middle with a little bounce */
 .roll     { animation: roll 0.9s cubic-bezier(0.25, 0.8, 0.35, 1); }
 @keyframes roll {
   0%   { rotate: 0deg; translate: 0 0; scale: 1; }
-  18%  { rotate: 200deg; translate: -6px -18px; scale: 1.25; }
-  40%  { rotate: 470deg; translate: 0 -4px; scale: 1.1; }
-  52%  { rotate: 560deg; translate: 2px 0; scale: 0.95; }
-  64%  { rotate: 640deg; translate: 1px -7px; scale: 1.05; }
+  8%   { rotate: 50deg; translate: -10px -6px; scale: 1.1; }
+  20%  { rotate: 200deg; translate: -5px -18px; scale: 1.25; }
+  40%  { rotate: 470deg; translate: 1px -4px; scale: 1.1; }
+  52%  { rotate: 560deg; translate: 0 0; scale: 0.95; }
+  64%  { rotate: 640deg; translate: 0 -7px; scale: 1.05; }
   78%  { rotate: 700deg; translate: 0 0; scale: 0.97; }
   88%  { rotate: 715deg; translate: 0 -2px; scale: 1; }
   100% { rotate: 720deg; translate: 0 0; scale: 1; }
