@@ -23,6 +23,7 @@ function renderStickers() {
   const learnedLastRound = state.lastRound ? state.lastRound.learned : [];
 
   els.board.replaceChildren();
+  els.shuffleBtn.hidden = known.length === 0;
   if (known.length === 0) return;
 
   const slots = stickerSlots(known.length);
@@ -35,6 +36,7 @@ function renderStickers() {
     .sort((a, b) => (a.spot ? a.spot[2] : 0) - (b.spot ? b.spot[2] : 0));
   order.forEach(({ word, i, spot }) => {
     const el = makeSticker(word);
+    el.dataset.word = word;
     el.style.left = `${spot ? spot[0] * W : slots[i].x}px`;
     el.style.top = `${spot ? spot[1] * H : slots[i].y}px`;
     makeDraggable(el, word);
@@ -50,7 +52,7 @@ function renderStickers() {
 }
 
 // Lay the screen out as a grid of sticker-sized cells, skipping cells behind the title and buttons.
-// Cells are taken in a fixed random order, so stickers stay put as more are added.
+// Cells are taken in a fixed random order, so stickers stay put as more are added (🎲 picks a new order).
 function stickerSlots(count) {
   const W = els.board.clientWidth;
   const H = els.board.clientHeight;
@@ -77,7 +79,7 @@ function stickerSlots(count) {
       }
     }
     if (free.length >= count || size <= 50) {
-      const rand = mulberry32(7);
+      const rand = mulberry32(Number(readStorage(STICKER_SEED_KEY)) || 7);
       const order = [...shuffle(free, rand), ...shuffle(covered, rand)];
       const slots = Array.from({ length: count }, (_, i) => {
         const p = order[i % order.length];
@@ -91,7 +93,7 @@ function stickerSlots(count) {
 }
 
 // The title, buttons and counters on the home screen, which stickers stay out from behind.
-const blockerRects = () => [els.homeCenter, els.progress, els.settingsBtn, els.recorderBtn, els.appVersion]
+const blockerRects = () => [els.homeCenter, els.progress, els.settingsBtn, els.recorderBtn, els.shuffleBtn, els.appVersion]
   .filter((el) => !el.hidden).map((el) => el.getBoundingClientRect());
 
 // ---------- Dragging ----------
@@ -131,18 +133,8 @@ function makeDraggable(el, word) {
       el.removeEventListener('pointercancel', drop);
       el.classList.remove('dragging');
       if (!moved) return;
-      // Dropped behind the title or a button? Slide back, so it can't get lost there.
       const x = parseFloat(el.style.left);
       const y = parseFloat(el.style.top);
-      const hidden = blockerRects().some((b) =>
-        x + board.left > b.left && x + board.left < b.right && y + board.top > b.top && y + board.top < b.bottom);
-      if (hidden) {
-        el.classList.add('returning');
-        el.style.left = `${start.x}px`;
-        el.style.top = `${start.y}px`;
-        setTimeout(() => el.classList.remove('returning'), 300);
-        return;
-      }
       const spots = loadStickerSpots();
       spots[word] = [+(x / board.width).toFixed(4), +(y / board.height).toFixed(4), Date.now()];
       writeStorage(STICKER_SPOTS_KEY, JSON.stringify(spots));
@@ -151,6 +143,26 @@ function makeDraggable(el, word) {
     el.addEventListener('pointerup', drop);
     el.addEventListener('pointercancel', drop);
   });
+}
+
+// Forgets where stickers were dragged and slides them onto a new random grid around the title.
+function shuffleStickers() {
+  writeStorage(STICKER_SPOTS_KEY, null);
+  writeStorage(STICKER_SEED_KEY, String(1 + Math.floor(Math.random() * 1e9)));
+  const known = knownWords();
+  const slots = stickerSlots(known.length);
+  els.board.style.setProperty('--s', `${slots.size}px`);
+  known.forEach((word, i) => {
+    const el = [...els.board.children].find((s) => s.dataset.word === word);
+    if (!el) return;
+    el.classList.remove('pop');
+    el.classList.add('gliding');
+    el.style.left = `${slots[i].x}px`;
+    el.style.top = `${slots[i].y}px`;
+    setTimeout(() => el.classList.remove('gliding'), 600);
+  });
+  playAnim(els.shuffleDie, 'roll');
+  playAnim(els.shuffleShadow, 'roll-shadow');
 }
 
 // A new sticker pops out of the word card and flies into the 🏠 button.
