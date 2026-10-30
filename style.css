@@ -180,13 +180,12 @@ h1 {
 .sticker.flying { position: fixed; z-index: 20; }
 
 /* stickers can be picked up and moved around the home screen */
-.sticker-board .sticker { pointer-events: auto; touch-action: none; cursor: grab; }
-.sticker.placed { z-index: 2; } /* dragged stickers can cover the title and buttons; 🔀 tidies them up */
+/* above the title and buttons (z-index 1), so they're never hidden behind them; 🔀 stays on top to tidy them up */
+.sticker-board .sticker { z-index: 2; pointer-events: auto; touch-action: none; cursor: grab; }
 .sticker.dragging { z-index: 3; cursor: grabbing; scale: 1.15; filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.2)); transition: scale 0.1s; }
 .sticker.gliding { transition: left 0.5s ease-in-out, top 0.5s ease-in-out, width 0.5s, height 0.5s, margin 0.5s; }
 
 /* words learned in the round that just finished: a pulsing ring behind the sticker */
-.sticker.fresh { z-index: 1; }
 .sticker.fresh::before {
   content: '';
   position: absolute;

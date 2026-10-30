@@ -39,7 +39,6 @@ function renderStickers() {
     el.dataset.word = word;
     el.style.left = `${spot ? spot[0] * W : slots[i].x}px`;
     el.style.top = `${spot ? spot[1] * H : slots[i].y}px`;
-    el.classList.toggle('placed', Boolean(spot));
     makeDraggable(el, word);
     el.classList.toggle('fresh', learnedLastRound.includes(word));
     const newIndex = state.newStickers.indexOf(word);
@@ -134,7 +133,6 @@ function makeDraggable(el, word) {
       el.removeEventListener('pointercancel', drop);
       el.classList.remove('dragging');
       if (!moved) return;
-      el.classList.add('placed'); // dragged stickers sit on top of the title and buttons
       const x = parseFloat(el.style.left);
       const y = parseFloat(el.style.top);
       const spots = loadStickerSpots();
@@ -157,7 +155,7 @@ function shuffleStickers() {
   known.forEach((word, i) => {
     const el = [...els.board.children].find((s) => s.dataset.word === word);
     if (!el) return;
-    el.classList.remove('placed', 'pop');
+    el.classList.remove('pop');
     el.classList.add('gliding');
     el.style.left = `${slots[i].x}px`;
     el.style.top = `${slots[i].y}px`;
