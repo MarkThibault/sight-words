@@ -120,7 +120,7 @@ function row(item) {
   const buttons = document.createElement('span');
   buttons.className = 'clip-buttons';
   buttons.append(
-    button(isRecording ? '⏹ Stop' : '🎙 Record', () => (isRecording ? stopRecording() : startRecording(item)), isRecording ? 'rec on' : 'rec'),
+    button(isRecording ? '⏹ Stop' : '🎙️ Record', () => (isRecording ? stopRecording() : startRecording(item)), isRecording ? 'rec on' : 'rec'),
     button('▶ Saved', () => playSaved(item), '', !recorded.has(item.path)),
   );
   if (take) buttons.append(button('▶ New', () => playBlob(take)), button('💾 Save', () => saveTake(item), 'save'));
@@ -169,7 +169,7 @@ async function startRecording(item) {
     try {
       const take = await tidyClip(new Blob(chunks, { type: recorder.mimeType }));
       takes.set(item.path, take);
-      say(`Listen back to “${item.name}”, then 💾 Save it or 🎙 Record again.`);
+      say(`Listen back to “${item.name}”, then 💾 Save it or 🎙️ Record again.`);
       playBlob(take);
     } catch (e) {
       say(`Didn’t hear anything for “${item.name}”. Try again a little closer to the microphone.`);

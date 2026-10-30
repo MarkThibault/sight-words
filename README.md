@@ -37,7 +37,7 @@ Each part is the letters shown, then the sound they make, from the list of sound
 
 Every word and sound plays from a recording in `audio/`, so it sounds the same on every device. Anything not recorded yet uses the device's own voice instead, which sounds different from one tablet to the next.
 
-To record them, run `python serve.py` in the project folder on a computer and open http://localhost:8000/recorder.html (or use the link in the Grown-up corner).
+To record them, run `python serve.py` in the project folder on a computer and open http://localhost:8000/recorder.html (or tap the 🎙 button next to ⚙️ on the home screen, which only shows when the app runs on this computer).
 
 - Words and sounds are on separate tabs, each showing which are recorded and which are still missing. Tick **Show only what still needs recording** for a to-do list. It also points out words with no sounds listed in `WORD_PARTS`. **🏠 Back to the app** returns to the practice app.
 - Tap 🎙, say the word or sound, tap ⏹, listen back, then 💾 Save. Silence is trimmed and the volume is evened out for you.
@@ -48,7 +48,7 @@ To record them, run `python serve.py` in the project folder on a computer and op
 
 ## Grown-up corner
 
-Press and hold the **⚙️** button in the top-right corner of the home screen for about a second. (A quick tap does nothing, so kids don't open it by accident.) From there you can see how many times each word was heard, open the sound recorder, give or take away stickers, or reset all progress (including the best time).
+Press and hold the **⚙️** button in the top-right corner of the home screen for about a second. (A quick tap does nothing, so kids don't open it by accident.) From there you can see how many times each word was heard, give or take away stickers, or reset all progress (including the best time).
 
 Each word also has an on/off switch. A word that's turned off is skipped in every round and left out of the star count, and its sticker is hidden until it's turned back on. Turned-off words are saved separately from progress, so **Reset all progress** leaves them off. At least one word always stays on.
 

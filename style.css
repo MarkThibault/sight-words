@@ -128,6 +128,8 @@ h1 {
   transition: scale 0.15s;
 }
 .settings-btn.pressing { scale: 1.2; transition: scale 0.8s; }
+/* beside the ⚙️ button, same look */
+.recorder-btn { right: calc(max(16px, env(safe-area-inset-right)) + 68px); color: inherit; text-decoration: none; }
 
 .app-version {
   position: absolute;
