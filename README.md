@@ -39,9 +39,9 @@ Every word and sound plays from a recording in `audio/`, so it sounds the same o
 
 To record them, open **recorder.html** on a computer: run the local server (see [Trying it on your computer](#trying-it-on-your-computer)) and go to http://localhost:8000/recorder.html, or use the link in the Grown-up corner.
 
-- It lists every word and sound, which are recorded, and which are still missing. Tick **Show only what still needs recording** for a to-do list. It also points out words with no sounds listed in `WORD_PARTS`.
+- Words and sounds are on separate tabs, each showing which are recorded and which are still missing. Tick **Show only what still needs recording** for a to-do list. It also points out words with no sounds listed in `WORD_PARTS`. **🏠 Back to the app** returns to the practice app.
 - Tap 🎙, say the word or sound, tap ⏹, listen back, then 💾 Save. Silence is trimmed and the volume is evened out for you.
-- In Chrome or Edge, tap **Choose project folder** once and pick the `sight-words` folder, and 💾 saves straight into `audio/words/` or `audio/sounds/`. Other browsers download the file instead, and you move it there yourself.
+- In Chrome or Edge, tap **Choose project folder** once and pick the `sight-words` folder (or its `audio` folder). From then on, 💾 saves words into `audio/words/` and sounds into `audio/sounds/`, and the folder is remembered for next time (the browser may ask you to allow it again). Other browsers download the file instead, and you move it there yourself.
 - Say sounds short and clean, "b" not "buh", and hold the ones that can be held, like "mmm" and "sss", for about a second.
 - Commit the new files in `audio/` so every device gets them.
 

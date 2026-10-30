@@ -5,7 +5,8 @@
 
 const CLIP_RATE = 22050;     // samples per second: plenty for a voice, and keeps the files small
 const canPickFolder = 'showDirectoryPicker' in window; // Chrome and Edge
-let projectDir = null;       // the chosen sight-words folder
+let audioDir = null;         // the project's audio folder, once chosen and allowed
+let savedAudioDir = null;    // the audio folder chosen on an earlier visit, until it's allowed again
 let micStream = null;        // kept open between takes, so recording starts instantly
 let recording = null;        // { item, recorder } while the mic is on
 let items = [];              // every word and sound: { kind, name, path, ... }
@@ -16,6 +17,7 @@ const rec = {
   folderBtn: $('folder-btn'), folderName: $('folder-name'), folderStep: $('folder-step'),
   missingOnly: $('missing-only'), status: $('status'), noParts: $('no-parts'),
   wordList: $('word-list'), soundList: $('sound-list'), wordCount: $('word-count'), soundCount: $('sound-count'),
+  extraCount: $('extra-count'), tabs: [$('words-tab'), $('sounds-tab')],
 };
 
 async function initRecorder() {
@@ -46,6 +48,16 @@ async function initRecorder() {
   }
   rec.folderBtn.addEventListener('click', chooseFolder);
   rec.missingOnly.addEventListener('change', render);
+  rec.tabs.forEach((tab) => {
+    tab.addEventListener('click', () => showTab(tab));
+    tab.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      const other = rec.tabs.find((t) => t !== tab);
+      showTab(other);
+      other.focus();
+    });
+  });
+  if (canPickFolder) loadSavedFolder();
 
   await Promise.all(items.map(async (item) => {
     try {
@@ -65,9 +77,9 @@ function render() {
   const neededSounds = sounds.filter((item) => item.usedBy.length);
   const done = (list) => list.filter((item) => recorded.has(item.path)).length;
 
-  rec.wordCount.textContent = `${done(words)} of ${words.length} recorded`;
-  rec.soundCount.textContent = `${done(neededSounds)} of ${neededSounds.length} needed recorded` +
-    (sounds.length > neededSounds.length ? ` · ${done(sounds) - done(neededSounds)} of ${sounds.length - neededSounds.length} extra` : '');
+  rec.wordCount.textContent = `${done(words)} of ${words.length}`;
+  rec.soundCount.textContent = `${done(neededSounds)} of ${neededSounds.length}`;
+  rec.extraCount.textContent = `${done(sounds) - done(neededSounds)} of ${sounds.length - neededSounds.length} recorded`;
 
   const show = (item) => !missingOnly || !recorded.has(item.path) && (item.kind === 'word' || item.usedBy.length) ||
     item.kind === 'word' && !item.parts || takes.has(item.path);
@@ -109,6 +121,15 @@ function row(item) {
 
   li.append(name, badge, detail, buttons);
   return li;
+}
+
+function showTab(tab) {
+  rec.tabs.forEach((t) => {
+    const on = t === tab;
+    t.setAttribute('aria-selected', String(on));
+    t.tabIndex = on ? 0 : -1;
+    $(t.getAttribute('aria-controls')).hidden = !on;
+  });
 }
 
 function button(label, onClick, cls = '', disabled = false) {
@@ -242,12 +263,52 @@ async function playSaved(item) {
   if (res.ok) playBlob(await res.blob());
 }
 
+// ---------- The audio folder ----------
+// Words save into audio/words/ and sounds into audio/sounds/ inside the chosen project folder.
+// Chrome and Edge can remember the folder in IndexedDB, so it only needs choosing once.
+
+function folderStore(mode, use) {
+  return new Promise((resolve, reject) => {
+    const open = indexedDB.open('sightWords.recorder', 1);
+    open.onupgradeneeded = () => open.result.createObjectStore('folders');
+    open.onerror = () => reject(open.error);
+    open.onsuccess = () => {
+      const req = use(open.result.transaction('folders', mode).objectStore('folders'));
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    };
+  });
+}
+
+async function loadSavedFolder() {
+  try {
+    const dir = await folderStore('readonly', (store) => store.get('audio'));
+    if (!dir) return;
+    if (await dir.queryPermission({ mode: 'readwrite' }) === 'granted') useAudioDir(dir);
+    else {
+      savedAudioDir = dir;
+      rec.folderName.textContent = 'Using the folder from last time (💾 asks to allow it again).';
+    }
+  } catch (e) { /* nothing remembered */ }
+}
+
+function useAudioDir(dir) {
+  audioDir = dir;
+  savedAudioDir = null;
+  rec.folderName.textContent = 'Words save to audio/words/, sounds to audio/sounds/.';
+}
+
+// The sight-words folder (or its audio folder) both work.
 async function chooseFolder() {
   try {
-    const dir = await window.showDirectoryPicker({ mode: 'readwrite' });
-    await dir.getFileHandle('words.json'); // throws if this isn't the project folder
-    projectDir = dir;
-    rec.folderName.textContent = `Saving into ${dir.name}/audio/`;
+    const dir = await window.showDirectoryPicker({ id: 'sight-words', mode: 'readwrite', startIn: audioDir || savedAudioDir || 'documents' });
+    let audio = dir;
+    if (dir.name !== 'audio') {
+      await dir.getFileHandle('words.json'); // throws if this isn't the project folder
+      audio = await dir.getDirectoryHandle('audio', { create: true });
+    }
+    useAudioDir(audio);
+    folderStore('readwrite', (store) => store.put(audio, 'audio')).catch(() => {});
     say('Folder chosen. 💾 now saves straight into it.');
   } catch (e) {
     if (e.name !== 'AbortError') say('That folder has no words.json. Pick the sight-words project folder.');
@@ -258,8 +319,10 @@ async function saveTake(item) {
   const take = takes.get(item.path);
   const folder = item.kind === 'word' ? 'words' : 'sounds';
   const fileName = `${item.name}.wav`;
-  if (projectDir) {
-    const audioDir = await projectDir.getDirectoryHandle('audio', { create: true });
+  if (!audioDir && savedAudioDir && await savedAudioDir.requestPermission({ mode: 'readwrite' }) === 'granted') {
+    useAudioDir(savedAudioDir);
+  }
+  if (audioDir) {
     const dir = await audioDir.getDirectoryHandle(folder, { create: true });
     const writable = await (await dir.getFileHandle(fileName, { create: true })).createWritable();
     await writable.write(take);

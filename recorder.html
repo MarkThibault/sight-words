@@ -9,12 +9,13 @@
 </head>
 <body>
   <header>
+    <a class="home-link" href="index.html">🏠 Back to the app</a>
     <h1>🎙 Sound Recorder</h1>
     <p>Record each word and each sound once, and the app plays your recordings on every device.
       Anything not recorded yet uses the device's own voice.</p>
     <ol class="steps">
       <li>Open this page on a computer, from the project folder (<code>python -m http.server 8000</code>, then <a href="recorder.html">localhost:8000/recorder.html</a>).</li>
-      <li id="folder-step">Tap <b>Choose project folder</b> and pick the <code>sight-words</code> folder, so recordings save straight into <code>audio/</code>.</li>
+      <li id="folder-step">Tap <b>Choose project folder</b> once and pick the <code>sight-words</code> folder. Words then save straight into <code>audio/words/</code> and sounds into <code>audio/sounds/</code>, and the folder is remembered next time.</li>
       <li>Tap 🎙, say the word or sound, then tap ⏹. Listen, and tap 💾 to keep it or 🎙 to try again.</li>
       <li>Commit the new files in <code>audio/</code> so every device gets them.</li>
     </ol>
@@ -28,14 +29,17 @@
   </header>
 
   <main>
-    <section>
-      <h2>Words <span id="word-count" class="count"></span></h2>
+    <div class="tabs" role="tablist" aria-label="What to record">
+      <button id="words-tab" class="tab" role="tab" aria-selected="true" aria-controls="words-panel">Words <span id="word-count" class="count"></span></button>
+      <button id="sounds-tab" class="tab" role="tab" aria-selected="false" aria-controls="sounds-panel" tabindex="-1">Sounds <span id="sound-count" class="count"></span></button>
+    </div>
+    <section id="words-panel" role="tabpanel" aria-labelledby="words-tab">
+      <p class="muted">Saved to <code>audio/words/</code>.</p>
       <p id="no-parts" class="warn" hidden></p>
       <ul id="word-list" class="clip-list"></ul>
     </section>
-    <section>
-      <h2>Sounds <span id="sound-count" class="count"></span></h2>
-      <p class="muted">Sounds used by your words come first. The rest are ready for words you add later.</p>
+    <section id="sounds-panel" role="tabpanel" aria-labelledby="sounds-tab" hidden>
+      <p class="muted">Saved to <code>audio/sounds/</code>. Sounds used by your words come first; the rest (<span id="extra-count"></span>) are ready for words you add later.</p>
       <ul id="sound-list" class="clip-list"></ul>
     </section>
   </main>
