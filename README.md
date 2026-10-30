@@ -37,11 +37,12 @@ Each part is the letters shown, then the sound they make, from the list of sound
 
 Every word and sound plays from a recording in `audio/`, so it sounds the same on every device. Anything not recorded yet uses the device's own voice instead, which sounds different from one tablet to the next.
 
-To record them, open **recorder.html** on a computer: run the local server (see [Trying it on your computer](#trying-it-on-your-computer)) and go to http://localhost:8000/recorder.html, or use the link in the Grown-up corner.
+To record them, run `python serve.py` in the project folder on a computer and open http://localhost:8000/recorder.html (or use the link in the Grown-up corner).
 
 - Words and sounds are on separate tabs, each showing which are recorded and which are still missing. Tick **Show only what still needs recording** for a to-do list. It also points out words with no sounds listed in `WORD_PARTS`. **🏠 Back to the app** returns to the practice app.
 - Tap 🎙, say the word or sound, tap ⏹, listen back, then 💾 Save. Silence is trimmed and the volume is evened out for you.
-- In Chrome or Edge, tap **Choose project folder** once and pick the `sight-words` folder (or its `audio` folder). From then on, 💾 saves words into `audio/words/` and sounds into `audio/sounds/`, and the folder is remembered for next time (the browser may ask you to allow it again). Other browsers download the file instead, and you move it there yourself.
+- With `serve.py` running, 💾 saves words straight into `audio/words/` and sounds into `audio/sounds/`, in any browser.
+- Without it (for example with `python -m http.server`), Chrome and Edge ask for the project folder the first time you tap 💾 and remember it after that. Other browsers download the file, and you move it into `audio/words/` or `audio/sounds/` yourself.
 - Say sounds short and clean, "b" not "buh", and hold the ones that can be held, like "mmm" and "sss", for about a second.
 - Commit the new files in `audio/` so every device gets them.
 
@@ -70,8 +71,10 @@ In the browser on that device (`localStorage`). A different tablet or browser st
 Browsers won't load `words.json` when you double-click `index.html` (it falls back to a built-in copy of the list). To test with your real list, run this in the folder and open http://localhost:8000:
 
 ```
-python -m http.server 8000
+python serve.py
 ```
+
+`serve.py` works like `python -m http.server 8000`, and also lets the sound recorder save into `audio/`. It only answers this computer; to try the app on a tablet on the same Wi-Fi, use `python -m http.server 8000` instead.
 
 ## How the code is organized
 

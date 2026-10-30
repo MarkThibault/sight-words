@@ -17,8 +17,8 @@
       <p>Record each word and each sound once, and the app plays your recordings on every device.
         Anything not recorded yet uses the device's own voice.</p>
       <ol class="steps">
-        <li>Open this page on a computer, from the project folder (<code>python -m http.server 8000</code>, then <a href="recorder.html">localhost:8000/recorder.html</a>).</li>
-        <li id="folder-step">Tap <b>Choose project folder</b> once and pick the <code>sight-words</code> folder. Words then save straight into <code>audio/words/</code> and sounds into <code>audio/sounds/</code>, and the folder is remembered next time.</li>
+        <li>On a computer, run <code>python serve.py</code> in the project folder and open <a href="recorder.html">localhost:8000/recorder.html</a>. Recordings then save straight into <code>audio/words/</code> and <code>audio/sounds/</code>.</li>
+        <li id="folder-step">Not using <code>serve.py</code>? Tap <b>Choose project folder</b> once and pick the <code>sight-words</code> folder (Chrome or Edge), and it's remembered next time.</li>
         <li>Tap 🎙, say the word or sound, then tap ⏹. Listen, and tap 💾 to keep it or 🎙 to try again.</li>
         <li>Commit the new files in <code>audio/</code> so every device gets them.</li>
       </ol>

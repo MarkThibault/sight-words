@@ -5,6 +5,7 @@
 
 const CLIP_RATE = 22050;     // samples per second: plenty for a voice, and keeps the files small
 const canPickFolder = 'showDirectoryPicker' in window; // Chrome and Edge
+let serverSaves = false;     // true when the page comes from serve.py, which saves into audio/ itself
 let audioDir = null;         // the project's audio folder, once chosen and allowed
 let savedAudioDir = null;    // the audio folder chosen on an earlier visit, until it's allowed again
 let micStream = null;        // kept open between takes, so recording starts instantly
@@ -42,7 +43,12 @@ async function initRecorder() {
     unknown.length && `<code>WORD_PARTS</code> uses sounds that aren't in <code>SOUNDS</code>: <b>${unknown.join(', ')}</b>.`,
   ].filter(Boolean).join('<br>');
 
-  if (!canPickFolder) {
+  serverSaves = await checkServerSaves();
+  if (serverSaves) {
+    rec.folderBtn.hidden = true;
+    rec.folderStep.hidden = true;
+    rec.folderName.textContent = '💾 saves words to audio/words/ and sounds to audio/sounds/.';
+  } else if (!canPickFolder) {
     rec.folderBtn.hidden = true;
     rec.folderStep.innerHTML = 'This browser can’t save into folders, so 💾 downloads each file. Move it into <code>audio/words/</code> or <code>audio/sounds/</code> in the project folder (Chrome or Edge can save there for you).';
   }
@@ -57,7 +63,7 @@ async function initRecorder() {
       other.focus();
     });
   });
-  if (canPickFolder) loadSavedFolder();
+  if (canPickFolder && !serverSaves) loadSavedFolder();
 
   await Promise.all(items.map(async (item) => {
     try {
@@ -264,8 +270,24 @@ async function playSaved(item) {
 }
 
 // ---------- The audio folder ----------
-// Words save into audio/words/ and sounds into audio/sounds/ inside the chosen project folder.
-// Chrome and Edge can remember the folder in IndexedDB, so it only needs choosing once.
+// Words save into audio/words/ and sounds into audio/sounds/. Three ways, best first:
+// 1. serve.py writes them there itself (any browser).
+// 2. Chrome and Edge write into a folder you choose, remembered in IndexedDB so it only needs choosing once.
+// 3. Otherwise the file downloads, and you move it.
+
+async function checkServerSaves() {
+  try {
+    const res = await fetch('words.json', { method: 'HEAD', cache: 'no-store' });
+    return res.headers.get('X-Recorder-Save') === '1';
+  } catch (e) {
+    return false;
+  }
+}
+
+async function saveToServer(path, take) {
+  const res = await fetch(path, { method: 'PUT', body: take, headers: { 'Content-Type': 'audio/wav' } });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+}
 
 function folderStore(mode, use) {
   return new Promise((resolve, reject) => {
@@ -319,9 +341,23 @@ async function saveTake(item) {
   const take = takes.get(item.path);
   const folder = item.kind === 'word' ? 'words' : 'sounds';
   const fileName = `${item.name}.wav`;
+  if (serverSaves) {
+    try {
+      await saveToServer(item.path, take);
+      recorded.add(item.path);
+      say(`Saved audio/${folder}/${fileName}.`);
+      takes.delete(item.path);
+      render();
+      return;
+    } catch (e) {
+      say('Couldn’t save. Is serve.py still running?');
+      return;
+    }
+  }
   if (!audioDir && savedAudioDir && await savedAudioDir.requestPermission({ mode: 'readwrite' }) === 'granted') {
     useAudioDir(savedAudioDir);
   }
+  if (!audioDir && canPickFolder) await chooseFolder(); // asks once, instead of downloading
   if (audioDir) {
     const dir = await audioDir.getDirectoryHandle(folder, { create: true });
     const writable = await (await dir.getFileHandle(fileName, { create: true })).createWritable();
