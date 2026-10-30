@@ -9,21 +9,25 @@
 </head>
 <body>
   <header>
-    <a class="home-link" href="index.html">🏠 Back to the app</a>
-    <h1>🎙 Sound Recorder</h1>
-    <p>Record each word and each sound once, and the app plays your recordings on every device.
-      Anything not recorded yet uses the device's own voice.</p>
-    <ol class="steps">
-      <li>Open this page on a computer, from the project folder (<code>python -m http.server 8000</code>, then <a href="recorder.html">localhost:8000/recorder.html</a>).</li>
-      <li id="folder-step">Tap <b>Choose project folder</b> once and pick the <code>sight-words</code> folder. Words then save straight into <code>audio/words/</code> and sounds into <code>audio/sounds/</code>, and the folder is remembered next time.</li>
-      <li>Tap 🎙, say the word or sound, then tap ⏹. Listen, and tap 💾 to keep it or 🎙 to try again.</li>
-      <li>Commit the new files in <code>audio/</code> so every device gets them.</li>
-    </ol>
-    <p class="tip"><b>Sounds:</b> keep them short and clean: "b", not "buh". Hold the ones that can be held, like "mmm" and "sss", for about a second.</p>
-    <div class="toolbar">
-      <button id="folder-btn">📁 Choose project folder</button>
-      <span id="folder-name" class="muted"></span>
-      <label><input id="missing-only" type="checkbox"> Show only what still needs recording</label>
+    <div class="title-row">
+      <h1>🎙 Sound Recorder</h1>
+      <a class="home-link" href="index.html" aria-label="Back to the app">🏠 <span>Back to the app</span></a>
+    </div>
+    <div class="box">
+      <p>Record each word and each sound once, and the app plays your recordings on every device.
+        Anything not recorded yet uses the device's own voice.</p>
+      <ol class="steps">
+        <li>Open this page on a computer, from the project folder (<code>python -m http.server 8000</code>, then <a href="recorder.html">localhost:8000/recorder.html</a>).</li>
+        <li id="folder-step">Tap <b>Choose project folder</b> once and pick the <code>sight-words</code> folder. Words then save straight into <code>audio/words/</code> and sounds into <code>audio/sounds/</code>, and the folder is remembered next time.</li>
+        <li>Tap 🎙, say the word or sound, then tap ⏹. Listen, and tap 💾 to keep it or 🎙 to try again.</li>
+        <li>Commit the new files in <code>audio/</code> so every device gets them.</li>
+      </ol>
+      <p class="tip"><b>Sounds:</b> keep them short and clean: "b", not "buh". Hold the ones that can be held, like "mmm" and "sss", for about a second.</p>
+      <div class="toolbar">
+        <button id="folder-btn">📁 Choose project folder</button>
+        <span id="folder-name" class="muted"></span>
+        <label><input id="missing-only" type="checkbox"> Show only what still needs recording</label>
+      </div>
     </div>
     <p id="status" class="status" role="status" aria-live="polite"></p>
   </header>
