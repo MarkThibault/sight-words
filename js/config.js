@@ -2,7 +2,7 @@
 
 // Settings and content lists. Edit these to change how the app looks and sounds.
 
-const APP_VERSION = '1.2.0'; // shown at the bottom of the home screen; bumped automatically when a PR merges into main
+const APP_VERSION = '1.2.1'; // shown at the bottom of the home screen; bumped automatically when a PR merges into main
 const STORAGE_KEY = 'sightWords.progress.v1';
 const VOICE_KEY = 'sightWords.voice.v1';
 const STICKER_SPOTS_KEY = 'sightWords.stickerSpots.v1'; // where stickers were dragged to on the home screen
