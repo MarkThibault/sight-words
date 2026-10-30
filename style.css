@@ -131,6 +131,17 @@ h1 {
 /* beside the ⚙️ button, same look */
 .shuffle-btn { right: auto; left: max(16px, env(safe-area-inset-left)); z-index: 4; } /* always reachable, even under dragged stickers */
 .die { display: inline-block; }
+.die-shadow {
+  position: absolute;
+  top: calc(50% + 0.75rem);
+  left: calc(50% - 0.7rem);
+  width: 1.4rem;
+  height: 0.2rem;
+  border-radius: 50%;
+  background: rgba(43, 45, 66, 0.9);
+  opacity: 0;
+  pointer-events: none;
+}
 .recorder-btn { right: calc(max(16px, env(safe-area-inset-right)) + 68px); color: inherit; text-decoration: none; }
 
 .app-version {
@@ -360,18 +371,30 @@ h1 {
 @keyframes slide-in { from { translate: 60px 0; opacity: 0; } to { translate: 0 0; opacity: 1; } }
 @keyframes bounce { 0%, 100% { scale: 1; } 30% { scale: 1.08; } 60% { scale: 0.97; } }
 @keyframes pop { 0% { scale: 0; } 70% { scale: 1.25; } 100% { scale: 1; } }
-/* the 🎲 is tossed up, tumbles over a few times and settles with a little bounce;
-   its shadow grows the higher (bigger) it gets, and is gone when it's resting */
-.roll     { animation: roll 0.9s cubic-bezier(0.25, 0.8, 0.35, 1); }
+/* the 🎲 is tossed up, tumbles over a few times and settles with a little bounce,
+   with a thin shadow on the "floor" below it whenever it's off the ground */
+.roll        { animation: roll 0.9s cubic-bezier(0.25, 0.8, 0.35, 1); }
+.roll-shadow { animation: roll-shadow 0.9s cubic-bezier(0.25, 0.8, 0.35, 1); }
 @keyframes roll {
-  0%   { rotate: 0deg; translate: 0 0; scale: 1; filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0)); }
-  18%  { rotate: 200deg; translate: 6px -18px; scale: 1.25; filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.4)); }
-  40%  { rotate: 470deg; translate: 10px -4px; scale: 1.1; filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.25)); }
-  52%  { rotate: 560deg; translate: 8px 0; scale: 0.95; filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0)); }
-  64%  { rotate: 640deg; translate: 4px -7px; scale: 1.05; filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.15)); }
-  78%  { rotate: 700deg; translate: 1px 0; scale: 0.97; filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0)); }
-  88%  { rotate: 715deg; translate: 0 -2px; scale: 1; filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0)); }
-  100% { rotate: 720deg; translate: 0 0; scale: 1; filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0)); }
+  0%   { rotate: 0deg; translate: 0 0; scale: 1; }
+  18%  { rotate: 200deg; translate: 6px -18px; scale: 1.25; }
+  40%  { rotate: 470deg; translate: 10px -4px; scale: 1.1; }
+  52%  { rotate: 560deg; translate: 8px 0; scale: 0.95; }
+  64%  { rotate: 640deg; translate: 4px -7px; scale: 1.05; }
+  78%  { rotate: 700deg; translate: 1px 0; scale: 0.97; }
+  88%  { rotate: 715deg; translate: 0 -2px; scale: 1; }
+  100% { rotate: 720deg; translate: 0 0; scale: 1; }
+}
+/* follows the die sideways; darker and wider the higher it's tossed, gone when it's resting */
+@keyframes roll-shadow {
+  0%   { translate: 0 0; scale: 0.8 1; opacity: 0; }
+  18%  { translate: 6px 0; scale: 1.25 1; opacity: 0.5; }
+  40%  { translate: 10px 0; scale: 1.1 1; opacity: 0.3; }
+  52%  { translate: 8px 0; scale: 0.9 1; opacity: 0; }
+  64%  { translate: 4px 0; scale: 1.05 1; opacity: 0.25; }
+  78%  { translate: 1px 0; scale: 0.95 1; opacity: 0; }
+  88%  { translate: 0 0; scale: 1 1; opacity: 0.1; }
+  100% { translate: 0 0; scale: 1 1; opacity: 0; }
 }
 @keyframes wiggle { 0%, 100% { rotate: 0deg; } 25% { rotate: -14deg; } 75% { rotate: 14deg; } }
 @keyframes nudge { 0%, 100% { translate: 0 0; } 50% { translate: 0 -6px; } }

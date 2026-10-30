@@ -6,7 +6,7 @@
 const els = {
   home: $('home'), practice: $('practice'), board: $('sticker-board'), homeCenter: $('home-center'),
   start: $('start-btn'), missingBtn: $('missing-btn'), timedBtn: $('timed-btn'), bestTime: $('best-time'),
-  stickerHint: $('sticker-hint'), progress: $('progress'), settingsBtn: $('settings-btn'), recorderBtn: $('recorder-btn'), shuffleBtn: $('shuffle-btn'), shuffleDie: $('shuffle-die'), appVersion: $('app-version'),
+  stickerHint: $('sticker-hint'), progress: $('progress'), settingsBtn: $('settings-btn'), recorderBtn: $('recorder-btn'), shuffleBtn: $('shuffle-btn'), shuffleDie: $('shuffle-die'), shuffleShadow: $('shuffle-shadow'), appVersion: $('app-version'),
   homeBtn: $('home-btn'), timer: $('timer'), mini: $('progress-mini'),
   roundBar: $('round-bar'), roundFill: $('round-fill'), card: $('card'), word: $('word'), star: $('card-star'),
   hint: $('hint'), soundOut: $('sound-out-btn'), know: $('know-btn'), next: $('next-btn'), toast: $('toast'),

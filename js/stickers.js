@@ -162,6 +162,7 @@ function shuffleStickers() {
     setTimeout(() => el.classList.remove('gliding'), 600);
   });
   playAnim(els.shuffleDie, 'roll');
+  playAnim(els.shuffleShadow, 'roll-shadow');
 }
 
 // A new sticker pops out of the word card and flies into the 🏠 button.
