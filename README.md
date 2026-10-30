@@ -3,7 +3,7 @@
 A simple sight-word practice app for young readers. Plain HTML, CSS and JavaScript — no build step.
 
 - Tap the word to hear it read aloud.
-- **🧩 Sound it out** plays the word one sound at a time, lighting up each part, then says the whole word. Letters that make one sound together, like "th", "ch" and "ee", stay together, and silent letters (like the "e" in "like") are shown faded and skipped. The button only shows for words whose sounds are listed (see [Adding words](#adding-words)).
+- **🧩 Sound it out** plays the word one sound at a time, lighting up each part, then says the whole word. Each part that makes a sound is underlined. Letters that make one sound together, like "th", "ch" and "ee", stay together, and silent letters (like the "e" in "like") are shown faded and skipped. The button only shows for words whose sounds are listed (see [Adding words](#adding-words)).
 - **Next ➜** moves on, but only after the word has been heard (until then, tapping it wiggles the word).
 - **I know it! ⭐** gives that word a star and a sticker. Stars are only earned this way.
 - Stickers collect on the home screen. Each one is a surprise kid-friendly emoji (animals, treats, vehicles and more) with its word on a tag, and it stays the same once earned. To change the choices, edit `STICKER_EMOJI` in `js/config.js`.
