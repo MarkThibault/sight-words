@@ -1,6 +1,6 @@
 'use strict';
 
-// Stickers: drawing them, scattering them on the home screen, and flying a new one home.
+// Stickers: drawing them, scattering them on the home screen, dragging them around, and flying a new one home.
 
 function makeSticker(word) {
   const h = hash(word);
@@ -27,10 +27,17 @@ function renderStickers() {
 
   const slots = stickerSlots(known.length);
   els.board.style.setProperty('--s', `${slots.size}px`);
-  known.forEach((word, i) => {
+  const spots = loadStickerSpots();
+  const W = els.board.clientWidth;
+  const H = els.board.clientHeight;
+  // Stickers that were dragged go on top, the most recently moved last.
+  const order = known.map((word, i) => ({ word, i, spot: spots[word] }))
+    .sort((a, b) => (a.spot ? a.spot[2] : 0) - (b.spot ? b.spot[2] : 0));
+  order.forEach(({ word, i, spot }) => {
     const el = makeSticker(word);
-    el.style.left = `${slots[i].x}px`;
-    el.style.top = `${slots[i].y}px`;
+    el.style.left = `${spot ? spot[0] * W : slots[i].x}px`;
+    el.style.top = `${spot ? spot[1] * H : slots[i].y}px`;
+    makeDraggable(el, word);
     el.classList.toggle('fresh', learnedLastRound.includes(word));
     const newIndex = state.newStickers.indexOf(word);
     if (newIndex >= 0) {
@@ -48,8 +55,7 @@ function stickerSlots(count) {
   const W = els.board.clientWidth;
   const H = els.board.clientHeight;
   const origin = els.board.getBoundingClientRect();
-  const blockers = [els.homeCenter, els.progress, els.settingsBtn, els.recorderBtn, els.appVersion]
-    .filter((el) => !el.hidden).map((el) => el.getBoundingClientRect());
+  const blockers = blockerRects();
   let size = Math.min(150, Math.max(70, Math.min(W, H) / 5));
 
   for (;;) {
@@ -82,6 +88,69 @@ function stickerSlots(count) {
     }
     size *= 0.88;
   }
+}
+
+// The title, buttons and counters on the home screen, which stickers stay out from behind.
+const blockerRects = () => [els.homeCenter, els.progress, els.settingsBtn, els.recorderBtn, els.appVersion]
+  .filter((el) => !el.hidden).map((el) => el.getBoundingClientRect());
+
+// ---------- Dragging ----------
+// Saved as { word: [x, y, when] }, with x and y as fractions of the screen so they fit any screen size.
+
+function loadStickerSpots() {
+  try {
+    const spots = JSON.parse(readStorage(STICKER_SPOTS_KEY));
+    if (spots && typeof spots === 'object') return spots;
+  } catch (e) { /* corrupt: back to the usual layout */ }
+  return {};
+}
+
+function makeDraggable(el, word) {
+  el.addEventListener('pointerdown', (e) => {
+    if (e.button > 0) return;
+    e.preventDefault();
+    const board = els.board.getBoundingClientRect();
+    const start = { x: parseFloat(el.style.left), y: parseFloat(el.style.top) };
+    const grab = { x: e.clientX - board.left - start.x, y: e.clientY - board.top - start.y };
+    let moved = false;
+    els.board.append(el); // on top of the others (before capturing: moving it would drop the capture)
+    el.setPointerCapture(e.pointerId);
+    el.classList.remove('pop');
+    el.classList.add('dragging');
+
+    const move = (ev) => {
+      const x = Math.min(board.width, Math.max(0, ev.clientX - board.left - grab.x));
+      const y = Math.min(board.height, Math.max(0, ev.clientY - board.top - grab.y));
+      moved ||= Math.hypot(x - start.x, y - start.y) > 4;
+      el.style.left = `${x}px`;
+      el.style.top = `${y}px`;
+    };
+    const drop = () => {
+      el.removeEventListener('pointermove', move);
+      el.removeEventListener('pointerup', drop);
+      el.removeEventListener('pointercancel', drop);
+      el.classList.remove('dragging');
+      if (!moved) return;
+      // Dropped behind the title or a button? Slide back, so it can't get lost there.
+      const x = parseFloat(el.style.left);
+      const y = parseFloat(el.style.top);
+      const hidden = blockerRects().some((b) =>
+        x + board.left > b.left && x + board.left < b.right && y + board.top > b.top && y + board.top < b.bottom);
+      if (hidden) {
+        el.classList.add('returning');
+        el.style.left = `${start.x}px`;
+        el.style.top = `${start.y}px`;
+        setTimeout(() => el.classList.remove('returning'), 300);
+        return;
+      }
+      const spots = loadStickerSpots();
+      spots[word] = [+(x / board.width).toFixed(4), +(y / board.height).toFixed(4), Date.now()];
+      writeStorage(STICKER_SPOTS_KEY, JSON.stringify(spots));
+    };
+    el.addEventListener('pointermove', move);
+    el.addEventListener('pointerup', drop);
+    el.addEventListener('pointercancel', drop);
+  });
 }
 
 // A new sticker pops out of the word card and flies into the 🏠 button.
