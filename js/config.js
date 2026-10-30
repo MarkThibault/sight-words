@@ -2,7 +2,7 @@
 
 // Settings and content lists. Edit these to change how the app looks and sounds.
 
-const APP_VERSION = '1.1.0'; // shown at the bottom of the home screen; bumped automatically when a PR merges into main
+const APP_VERSION = '1.1.1'; // shown at the bottom of the home screen; bumped automatically when a PR merges into main
 const STORAGE_KEY = 'sightWords.progress.v1';
 const VOICE_KEY = 'sightWords.voice.v1';
 const OFF_WORDS_KEY = 'sightWords.offWords.v1'; // kept apart from progress, so a reset doesn't turn words back on
