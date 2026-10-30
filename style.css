@@ -130,6 +130,7 @@ h1 {
 .settings-btn.pressing { scale: 1.2; transition: scale 0.8s; }
 /* beside the ⚙️ button, same look */
 .shuffle-btn { right: auto; left: max(16px, env(safe-area-inset-left)); z-index: 4; } /* always reachable, even under dragged stickers */
+.die { display: inline-block; }
 .recorder-btn { right: calc(max(16px, env(safe-area-inset-right)) + 68px); color: inherit; text-decoration: none; }
 
 .app-version {
@@ -180,7 +181,7 @@ h1 {
 .sticker.flying { position: fixed; z-index: 20; }
 
 /* stickers can be picked up and moved around the home screen */
-/* above the title and buttons (z-index 1), so they're never hidden behind them; 🔀 stays on top to tidy them up */
+/* above the title and buttons (z-index 1), so they're never hidden behind them; 🎲 stays on top to tidy them up */
 .sticker-board .sticker { z-index: 2; pointer-events: auto; touch-action: none; cursor: grab; }
 .sticker.dragging { z-index: 3; cursor: grabbing; scale: 1.15; filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.2)); transition: scale 0.1s; }
 .sticker.gliding { transition: left 0.5s ease-in-out, top 0.5s ease-in-out, width 0.5s, height 0.5s, margin 0.5s; }
@@ -359,6 +360,18 @@ h1 {
 @keyframes slide-in { from { translate: 60px 0; opacity: 0; } to { translate: 0 0; opacity: 1; } }
 @keyframes bounce { 0%, 100% { scale: 1; } 30% { scale: 1.08; } 60% { scale: 0.97; } }
 @keyframes pop { 0% { scale: 0; } 70% { scale: 1.25; } 100% { scale: 1; } }
+/* the 🎲 is tossed up, tumbles over a few times and settles with a little bounce */
+.roll     { animation: roll 0.9s cubic-bezier(0.25, 0.8, 0.35, 1); }
+@keyframes roll {
+  0%   { rotate: 0deg; translate: 0 0; scale: 1; }
+  18%  { rotate: 200deg; translate: 6px -18px; scale: 1.25; }
+  40%  { rotate: 470deg; translate: 10px -4px; scale: 1.1; }
+  52%  { rotate: 560deg; translate: 8px 0; scale: 0.95; }
+  64%  { rotate: 640deg; translate: 4px -7px; scale: 1.05; }
+  78%  { rotate: 700deg; translate: 1px 0; scale: 0.97; }
+  88%  { rotate: 715deg; translate: 0 -2px; scale: 1; }
+  100% { rotate: 720deg; translate: 0 0; scale: 1; }
+}
 @keyframes wiggle { 0%, 100% { rotate: 0deg; } 25% { rotate: -14deg; } 75% { rotate: 14deg; } }
 @keyframes nudge { 0%, 100% { translate: 0 0; } 50% { translate: 0 -6px; } }
 @keyframes glow {

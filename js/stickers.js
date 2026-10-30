@@ -52,7 +52,7 @@ function renderStickers() {
 }
 
 // Lay the screen out as a grid of sticker-sized cells, skipping cells behind the title and buttons.
-// Cells are taken in a fixed random order, so stickers stay put as more are added (🔀 picks a new order).
+// Cells are taken in a fixed random order, so stickers stay put as more are added (🎲 picks a new order).
 function stickerSlots(count) {
   const W = els.board.clientWidth;
   const H = els.board.clientHeight;
@@ -161,7 +161,7 @@ function shuffleStickers() {
     el.style.top = `${slots[i].y}px`;
     setTimeout(() => el.classList.remove('gliding'), 600);
   });
-  playAnim(els.shuffleBtn, 'wiggle');
+  playAnim(els.shuffleDie, 'roll');
 }
 
 // A new sticker pops out of the word card and flies into the 🏠 button.

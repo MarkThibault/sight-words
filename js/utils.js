@@ -66,7 +66,7 @@ function writeStorage(key, value) {
 
 // Restart a CSS animation class (and stop any other one running on the element).
 function playAnim(el, cls) {
-  el.classList.remove('slide-in', 'bounce', 'pop', 'wiggle');
+  el.classList.remove('slide-in', 'bounce', 'pop', 'wiggle', 'roll');
   void el.offsetWidth;
   el.classList.add(cls);
 }
