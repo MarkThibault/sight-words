@@ -129,6 +129,7 @@ h1 {
 }
 .settings-btn.pressing { scale: 1.2; transition: scale 0.8s; }
 /* beside the ⚙️ button, same look */
+.shuffle-btn { right: auto; left: max(16px, env(safe-area-inset-left)); z-index: 4; } /* always reachable, even under dragged stickers */
 .recorder-btn { right: calc(max(16px, env(safe-area-inset-right)) + 68px); color: inherit; text-decoration: none; }
 
 .app-version {
@@ -180,8 +181,9 @@ h1 {
 
 /* stickers can be picked up and moved around the home screen */
 .sticker-board .sticker { pointer-events: auto; touch-action: none; cursor: grab; }
-.sticker.dragging { z-index: 2; cursor: grabbing; scale: 1.15; filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.2)); transition: scale 0.1s; }
-.sticker.returning { transition: left 0.3s ease-out, top 0.3s ease-out; }
+.sticker.placed { z-index: 2; } /* dragged stickers can cover the title and buttons; 🔀 tidies them up */
+.sticker.dragging { z-index: 3; cursor: grabbing; scale: 1.15; filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.2)); transition: scale 0.1s; }
+.sticker.gliding { transition: left 0.5s ease-in-out, top 0.5s ease-in-out, width 0.5s, height 0.5s, margin 0.5s; }
 
 /* words learned in the round that just finished: a pulsing ring behind the sticker */
 .sticker.fresh { z-index: 1; }

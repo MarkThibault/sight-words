@@ -20,6 +20,7 @@ function resetProgress() {
   state.progress = { words: {} };
   saveProgress();
   writeStorage(STICKER_SPOTS_KEY, null);
+  writeStorage(STICKER_SEED_KEY, null);
 }
 
 function stats(word) {

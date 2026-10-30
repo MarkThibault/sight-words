@@ -28,6 +28,7 @@ async function init() {
   els.appVersion.textContent = `v${APP_VERSION}`;
   els.recorderBtn.hidden = !['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
   onLongPress(els.settingsBtn, 800, openPanel);
+  els.shuffleBtn.addEventListener('click', shuffleStickers);
   els.voiceSection.hidden = !canSpeak;
   els.voiceSelect.addEventListener('change', () => chooseVoice(els.voiceSelect.value));
   els.voiceTest.addEventListener('click', () => speak('Let’s read! the, and, you'));
