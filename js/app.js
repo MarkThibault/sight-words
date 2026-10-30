@@ -21,6 +21,7 @@ async function init() {
     showScreen('home');
   });
   els.card.addEventListener('click', hearWord);
+  els.soundOut.addEventListener('click', soundOut);
   els.know.addEventListener('click', knowIt);
   els.next.addEventListener('click', goNext);
 

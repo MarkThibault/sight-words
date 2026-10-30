@@ -278,6 +278,14 @@ h1 {
 .hint { margin: 0; min-height: 1.6em; font-size: 1.6rem; animation: nudge 1.6s ease-in-out infinite; }
 .hint.off { visibility: hidden; }
 
+/* Sounding out: the word splits into its sounds, and each one lights up as it's spoken */
+.sound-out { --mode: #7048e8; flex-shrink: 0; }
+.sound-out.unavailable { visibility: hidden; } /* keeps its space, so the buttons below don't jump */
+.word.split { display: inline-flex; gap: 0.18em; }
+.part { display: inline-block; transition: color 0.15s, scale 0.15s; }
+.part.on { color: #7048e8; scale: 1.12; }
+.part.silent { opacity: 0.3; }
+
 .actions { display: flex; gap: 20px; width: min(100%, 900px); padding-bottom: 8px; }
 .actions .big-btn { flex: 1; }
 

@@ -3,6 +3,7 @@
 A simple sight-word practice app for young readers. Plain HTML, CSS and JavaScript — no build step.
 
 - Tap the word to hear it read aloud.
+- **🧩 Sound it out** plays the word one sound at a time, lighting up each part, then says the whole word. Letters that make one sound together, like "th", "ch" and "ee", stay together, and silent letters (like the "e" in "like") are shown faded and skipped. The button only shows for words whose sounds are listed (see [Adding words](#adding-words)).
 - **Next ➜** moves on, but only after the word has been heard (until then, tapping it wiggles the word).
 - **I know it! ⭐** gives that word a star and a sticker. Stars are only earned this way.
 - Stickers collect on the home screen. Each one is a surprise kid-friendly emoji (animals, treats, vehicles and more) with its word on a tag, and it stays the same once earned. To change the choices, edit `STICKER_EMOJI` in `js/config.js`.
@@ -24,15 +25,35 @@ Edit `words.json`. It's a plain list:
 
 Keep the quotes and commas. New words show up as not-yet-practiced; existing progress is kept.
 
+Sight words often don't follow the usual sounding-out rules ("said", "of", "was"), so how each word splits into sounds is written out by hand in `WORD_PARTS` in `js/phonics.js`. A new word that isn't listed there has no **Sound it out** button until you add it, for example:
+
+```js
+the: [['th', 'DH'], ['e', 'UH']],
+```
+
+Each part is the letters shown, then the sound they make, from the list of sounds in `SOUNDS` just above it (`''` for a silent letter). Then record the new word, and any sounds it uses that aren't recorded yet (see below).
+
+## Recording the words and sounds
+
+Every word and sound plays from a recording in `audio/`, so it sounds the same on every device. Anything not recorded yet uses the device's own voice instead, which sounds different from one tablet to the next.
+
+To record them, open **recorder.html** on a computer: run the local server (see [Trying it on your computer](#trying-it-on-your-computer)) and go to http://localhost:8000/recorder.html, or use the link in the Grown-up corner.
+
+- It lists every word and sound, which are recorded, and which are still missing. Tick **Show only what still needs recording** for a to-do list. It also points out words with no sounds listed in `WORD_PARTS`.
+- Tap 🎙, say the word or sound, tap ⏹, listen back, then 💾 Save. Silence is trimmed and the volume is evened out for you.
+- In Chrome or Edge, tap **Choose project folder** once and pick the `sight-words` folder, and 💾 saves straight into `audio/words/` or `audio/sounds/`. Other browsers download the file instead, and you move it there yourself.
+- Say sounds short and clean, "b" not "buh", and hold the ones that can be held, like "mmm" and "sss", for about a second.
+- Commit the new files in `audio/` so every device gets them.
+
 ## Grown-up corner
 
-Press and hold the **⚙️** button in the top-right corner of the home screen for about a second. (A quick tap does nothing, so kids don't open it by accident.) From there you can see how many times each word was heard, give or take away stickers, or reset all progress (including the best time).
+Press and hold the **⚙️** button in the top-right corner of the home screen for about a second. (A quick tap does nothing, so kids don't open it by accident.) From there you can see how many times each word was heard, open the sound recorder, give or take away stickers, or reset all progress (including the best time).
 
 Each word also has an on/off switch. A word that's turned off is skipped in every round and left out of the star count, and its sticker is hidden until it's turned back on. Turned-off words are saved separately from progress, so **Reset all progress** leaves them off. At least one word always stays on.
 
 ## Making the voice sound natural
 
-The app uses the voices built into the device and picks the most natural-sounding one it finds. To choose a different one, open the Grown-up corner, pick from **Voice**, and tap **🔊 Test**. The choice is saved on that device.
+Recorded words and sounds (see above) sound the same everywhere. For anything not recorded yet, the app uses the voices built into the device and picks the most natural-sounding one it finds. To choose a different one, open the Grown-up corner, pick from **Voice**, and tap **🔊 Test**. The choice is saved on that device.
 
 Better voices you can add for free:
 
@@ -64,12 +85,15 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `words.js` | Loading `words.json`, and the words turned off in the Grown-up corner |
 | `progress.js` | Saved progress: stars, stickers, heard counts, best time |
 | `speech.js` | Choosing a voice and reading words aloud |
+| `phonics.js` | The sounds, and how each word splits into them for **Sound it out** |
+| `audio.js` | Playing the recordings in `audio/`, or the device's voice for anything not recorded |
 | `effects.js` | Toasts and confetti |
 | `stickers.js` | Drawing stickers and laying them out on the home screen |
 | `home.js` | Home screen and switching screens |
-| `practice.js` | Rounds, the timer, and the word card |
+| `practice.js` | Rounds, the timer, the word card and sounding words out |
 | `panel.js` | Grown-up corner |
 | `app.js` | Start up and button wiring |
+| `recorder.js` | The sound recorder page (`recorder.html`) |
 
 ## App version
 
@@ -79,14 +103,14 @@ The version goes up on its own: each time a pull request is merged into `main`, 
 
 - **Patch** (1.0.0 → 1.0.1) happens by default.
 - Add the **`minor`** label to the pull request for 1.0.0 → 1.1.0, or **`major`** for 1.0.0 → 2.0.0. The labels appear after the action has run once.
-- The action also updates the `?v=` stamps on the style and script links in `index.html`, so tablets load the new files instead of old saved copies.
+- The action also updates the `?v=` stamps on the style and script links in `index.html` and `recorder.html`, and on the recordings, so tablets load the new files instead of old saved copies.
 - Because the bot adds a commit to `main` after each merge, pull `main` before starting a new branch.
 
 To bump by hand, run `bash .github/scripts/bump-version.sh patch` (or `minor` / `major`).
 
 ## Publishing on GitHub Pages
 
-1. Create a new repository on GitHub and upload these files (`index.html`, `style.css`, `words.json` and the `js` folder).
+1. Create a new repository on GitHub and upload these files (`index.html`, `recorder.html`, `style.css`, `recorder.css`, `words.json`, and the `js` and `audio` folders).
 2. In the repository, go to **Settings → Pages**.
 3. Under **Build and deployment**, choose **Deploy from a branch**, pick `main` and `/ (root)`, and save.
 4. After a minute, the site is at `https://<your-username>.github.io/<repository-name>/`.

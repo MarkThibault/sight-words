@@ -9,7 +9,7 @@ const els = {
   stickerHint: $('sticker-hint'), progress: $('progress'), settingsBtn: $('settings-btn'), appVersion: $('app-version'),
   homeBtn: $('home-btn'), timer: $('timer'), mini: $('progress-mini'),
   roundBar: $('round-bar'), roundFill: $('round-fill'), card: $('card'), word: $('word'), star: $('card-star'),
-  hint: $('hint'), know: $('know-btn'), next: $('next-btn'), toast: $('toast'),
+  hint: $('hint'), soundOut: $('sound-out-btn'), know: $('know-btn'), next: $('next-btn'), toast: $('toast'),
   panel: $('parent-panel'), panelSummary: $('panel-summary'), panelList: $('panel-list'),
   panelClose: $('panel-close'), reset: $('reset-btn'), panelActions: $('panel-actions'),
   resetConfirm: $('reset-confirm'), resetYes: $('reset-yes'), resetCancel: $('reset-cancel'),

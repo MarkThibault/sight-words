@@ -7,6 +7,8 @@ const STORAGE_KEY = 'sightWords.progress.v1';
 const VOICE_KEY = 'sightWords.voice.v1';
 const OFF_WORDS_KEY = 'sightWords.offWords.v1'; // kept apart from progress, so a reset doesn't turn words back on
 const SPEECH_RATE = 0.9;     // a little slower than normal speech (much slower sounds robotic)
+const SOUND_RATE = 0.75;     // sounds not recorded yet, said by the device's voice when sounding a word out
+const SOUND_GAP_MS = 300;    // the pause between sounds when sounding a word out
 const CHEERS = ['Great job!', 'Awesome!', 'You did it!', 'Super reader!', 'Way to go!', 'Fantastic!'];
 const STICKER_COLORS = ['#e03131', '#e8590c', '#e67700', '#2f9e44', '#0c8599', '#1971c2', '#7048e8', '#c2255c'];
 // Surprise stickers: one is picked at random when a word is learned, then saved with that word.

@@ -1,0 +1,75 @@
+/* The sound recorder page (recorder.html), for grown-ups. */
+
+:root {
+  --bg: #fff6e0;
+  --ink: #2b2d42;
+  --muted: #666;
+  --line: #ead9ad;
+  --purple: #7048e8;
+  --green: #2f9e44;
+  --red: #e03131;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  padding: 16px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Andika', 'Trebuchet MS', system-ui, sans-serif;
+  line-height: 1.45;
+}
+
+header, main { max-width: 900px; margin: 0 auto; }
+h1 { margin: 0 0 4px; }
+h2 { margin: 28px 0 8px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; }
+code { background: #fff; padding: 0 4px; border-radius: 4px; }
+.steps { padding-left: 1.4em; }
+.tip { background: #fff; border-left: 4px solid var(--purple); padding: 8px 12px; border-radius: 6px; }
+.muted, .count { color: var(--muted); font-size: 0.95rem; font-weight: 400; }
+.warn { background: #fff4e6; border: 2px solid #ffa94d; padding: 8px 12px; border-radius: 8px; }
+
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 12px 0; }
+.status { min-height: 1.5em; font-weight: 700; color: var(--purple); }
+
+button {
+  font: inherit;
+  padding: 6px 12px;
+  background: #fff;
+  border: 2px solid #ced4da;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+button:disabled { opacity: 0.4; cursor: default; }
+button.rec.on { background: var(--red); border-color: var(--red); color: #fff; }
+button.save { background: var(--green); border-color: var(--green); color: #fff; }
+
+.clip-list { list-style: none; margin: 0; padding: 0; }
+.clip-list li {
+  display: grid;
+  grid-template-columns: 5rem auto 1fr;
+  grid-template-areas: "name badge buttons" "name detail detail";
+  align-items: center;
+  gap: 4px 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.clip-list li.extra { opacity: 0.7; }
+.clip-name { grid-area: name; font-size: 1.6rem; font-weight: 700; overflow-wrap: anywhere; }
+.clip-detail { grid-area: detail; color: var(--muted); font-size: 0.95rem; }
+.clip-buttons { grid-area: buttons; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.badge { grid-area: badge; font-size: 0.9rem; padding: 2px 10px; border-radius: 999px; }
+.badge.done { background: #ebfbee; color: var(--green); }
+.badge.missing { background: #fff0f6; color: #c2255c; }
+
+@media (max-width: 560px) {
+  .clip-list li {
+    grid-template-columns: 4rem 1fr;
+    grid-template-areas: "name badge" "detail detail" "buttons buttons";
+  }
+  .badge { justify-self: start; }
+  .clip-buttons { justify-content: flex-start; }
+}
