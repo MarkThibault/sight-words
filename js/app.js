@@ -2,6 +2,12 @@
 
 // Start up: load saved data and wire up the buttons. Loaded last, after every other file in js/.
 
+function fitAllWords() {
+  fitWord();
+  fitListenChoices();
+  fitBuildWord();
+}
+
 async function init() {
   state.progress = loadProgress();
 
@@ -55,10 +61,10 @@ async function init() {
   let resizeTimer = null;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => (els.home.hidden ? fitWord() : renderStickers()), 150);
+    resizeTimer = setTimeout(() => (els.home.hidden ? fitAllWords() : renderStickers()), 150);
   });
   // The kid-friendly font may arrive after the first word is shown
-  document.fonts.ready.then(() => fitWord());
+  document.fonts.ready.then(fitAllWords);
 
   state.allWords = await loadWords();
   state.offWords = loadOffWords();

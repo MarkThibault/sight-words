@@ -78,7 +78,7 @@ function stickerSlots(count) {
         (hit ? covered : free).push({ x, y });
       }
     }
-    if (free.length >= count || size <= 50) {
+    if (free.length >= count || size <= STICKER_MIN_SIZE) {
       const rand = mulberry32(Number(readStorage(STICKER_SEED_KEY)) || 7);
       const order = [...shuffle(free, rand), ...shuffle(covered, rand)];
       const slots = Array.from({ length: count }, (_, i) => {

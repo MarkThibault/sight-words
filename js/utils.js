@@ -71,6 +71,19 @@ function playAnim(el, cls) {
   el.classList.add(cls);
 }
 
+// Starts from the CSS font size and shrinks the text only if it would spill out of its box, in either direction.
+// padX and padY are the space to keep clear. Text is measured a little taller, so a lit-up part still fits.
+function fitText(el, box, padX, padY) {
+  if (!box.clientWidth) return; // not on screen
+  el.style.fontSize = '';
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  const text = range.getBoundingClientRect();
+  if (!text.width) return;
+  const scale = Math.min(1, (box.clientWidth - padX) / text.width, (box.clientHeight - padY) / (text.height * 1.15));
+  if (scale < 1) el.style.fontSize = `${Math.floor(parseFloat(getComputedStyle(el).fontSize) * scale)}px`;
+}
+
 function onLongPress(el, ms, fn) {
   let timer = null;
   const cancel = () => {
