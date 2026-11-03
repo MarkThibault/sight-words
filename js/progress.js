@@ -1,8 +1,9 @@
 'use strict';
 
-// Saved progress: stars, stickers, heard counts and the best time.
+// Saved progress: stars, stickers, heard counts, the best time and each game's best score.
 // Shape: { words: { the: { heard: 3, known: true, knownAt: 1729700000000, lastSeen: "2026-10-23", sticker: "🐶" } },
-//          bestTime: { ms: 95000, count: 24 } }
+//          bestTime: { ms: 95000, count: 24 },
+//          bestScores: { listen: { points: 16, maxPoints: 20 }, build: { points: 18, maxPoints: 25 } } }
 
 function loadProgress() {
   try {
@@ -72,4 +73,16 @@ function bestTime() {
 function saveBestTime(ms) {
   state.progress.bestTime = { ms, count: state.words.length };
   saveProgress();
+}
+
+const bestScore = (game) => (state.progress.bestScores || {})[game] || null;
+
+// Keeps the highest points for a game. On a tie, the one with the lower possible total is the better score.
+// Returns whether this is a new record.
+function saveBestScore(game, points, maxPoints) {
+  const best = bestScore(game);
+  if (best && (points < best.points || (points === best.points && maxPoints >= best.maxPoints))) return false;
+  state.progress.bestScores = { ...state.progress.bestScores, [game]: { points, maxPoints } };
+  saveProgress();
+  return true;
 }

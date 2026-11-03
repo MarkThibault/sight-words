@@ -44,6 +44,7 @@ function finishRound() {
   state.lastRound = last;
   showScreen('home');
   confetti();
+  if (last.newBest) flyMedal();
 }
 
 // Leaving mid-round (the 🏠 button) just drops the round: no summary, no time recorded.

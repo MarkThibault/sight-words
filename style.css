@@ -160,7 +160,9 @@ h1 {
 }
 .settings-btn.pressing { scale: 1.2; transition: scale 0.8s; }
 /* beside the ⚙️ button, same look */
-.shuffle-btn { right: auto; left: max(16px, env(safe-area-inset-left)); z-index: 4; } /* always reachable, even under dragged stickers */
+/* always reachable, even under dragged stickers */
+.trophy-btn { right: auto; left: max(16px, env(safe-area-inset-left)); z-index: 4; }
+.shuffle-btn { right: auto; left: calc(max(16px, env(safe-area-inset-left)) + 68px); z-index: 4; }
 .die { display: inline-block; }
 .die-shadow {
   position: absolute;
@@ -533,6 +535,38 @@ h1 {
     animation-iteration-count: 1 !important;
     transition: none !important;
   }
+}
+
+/* ---------- Trophies ---------- */
+
+.trophy-list { list-style: none; display: grid; gap: 10px; margin: 12px 0 18px; padding: 0; }
+.trophy-list li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg);
+  border: 3px solid var(--yellow);
+  border-radius: 18px;
+}
+.trophy-icon { font-size: 1.8rem; }
+.trophy-value { font-size: 1.25rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
+.trophy-value.none { color: #868e96; font-weight: 400; }
+.flying-medal {
+  position: fixed;
+  z-index: 20;
+  translate: -50% -50%;
+  font-size: 6rem;
+  line-height: 1;
+  pointer-events: none;
+}
+.panel-actions.trophy-actions { justify-content: flex-end; }
+@media (max-width: 560px) {
+  /* the score moves under its label, so long labels stay on one line */
+  .trophy-list li { grid-template-columns: auto 1fr; gap: 0 12px; padding: 10px 14px; }
+  .trophy-icon { grid-row: span 2; }
+  .trophy-value { grid-column: 2; }
 }
 
 /* ---------- Grown-up panel ---------- */

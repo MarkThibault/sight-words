@@ -31,9 +31,12 @@ function stopBuild() {
 function finishBuild() {
   const { total, points } = buildRound;
   stopBuild();
-  state.lastRound = { mode: 'build', total, points, maxPoints: total * BUILD_WORD_POINTS, learned: [] };
+  const maxPoints = total * BUILD_WORD_POINTS;
+  const newBest = saveBestScore('build', points, maxPoints);
+  state.lastRound = { mode: 'build', total, points, maxPoints, newBest, learned: [] };
   showScreen('home');
   confetti();
+  if (newBest) flyMedal();
 }
 
 function showBuildWord() {

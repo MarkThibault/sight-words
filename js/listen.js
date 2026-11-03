@@ -27,9 +27,12 @@ function stopListen() {
 function finishListen() {
   const { total, points } = listenRound;
   stopListen();
-  state.lastRound = { mode: 'listen', total, points, maxPoints: total * LISTEN_WORD_POINTS, learned: [] };
+  const maxPoints = total * LISTEN_WORD_POINTS;
+  const newBest = saveBestScore('listen', points, maxPoints);
+  state.lastRound = { mode: 'listen', total, points, maxPoints, newBest, learned: [] };
   showScreen('home');
   confetti();
+  if (newBest) flyMedal();
 }
 
 function showListenWord() {
