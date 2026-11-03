@@ -55,7 +55,7 @@ To record them, run `python serve.py` in the project folder on a computer and op
 - With `serve.py` running, 💾 saves words straight into `audio/words/` and sounds into `audio/sounds/`, in any browser.
 - Without it (for example with `python -m http.server`), Chrome and Edge ask for the project folder the first time you tap 💾 and remember it after that. Other browsers download the file, and you move it into `audio/words/` or `audio/sounds/` yourself.
 - Say sounds short and clean, "b" not "buh", and hold the ones that can be held, like "mmm" and "sss", for about a second.
-- Commit the new files in `audio/` so every device gets them.
+- Commit the new files in `audio/` so every device gets them. A pull request fails its checks if a word or sound in use has no recording.
 
 ## Grown-up corner
 

@@ -1,6 +1,6 @@
 # Future enhancement: automate pull request reviews
 
-**Status:** not started.
+**Status:** in progress. Each finished step says so.
 
 The app has no build step or tests, so every pull request is checked by hand. These steps add automatic checks, cheapest first. Each one can ship on its own.
 
@@ -15,6 +15,8 @@ The app has no build step or tests, so every pull request is checked by hand. Th
 **Suggested order:** step 1, then the template and label check from step 4, then step 2. Step 3 works better once the checks handle the routine mistakes. Add the rest of step 4 once the checks are reliable.
 
 ## 1. Basic checks
+
+**Status:** done, in `.github/workflows/basic-checks.yml` and `.github/scripts/check-site.js`.
 
 Add a GitHub Action that runs on every pull request and passes or fails on:
 
