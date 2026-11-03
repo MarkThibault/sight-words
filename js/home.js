@@ -24,9 +24,9 @@ function renderHome() {
   const starsNeeded = LISTEN_UNLOCK_STARS - knownWords().length;
   els.listenBtn.disabled = starsNeeded > 0;
   els.listenNote.textContent = starsNeeded > 0 ? `🔒 ${plural(starsNeeded, 'more star')}` : 'Find the word';
-  const wordsNeeded = BUILD_UNLOCK_WORDS - buildableWords().length;
-  els.buildBtn.disabled = wordsNeeded > 0;
-  els.buildNote.textContent = wordsNeeded > 0 ? `🔒 ${plural(wordsNeeded, 'more star')}` : 'Order the sounds';
+  const buildStarsNeeded = BUILD_UNLOCK_STARS - knownWords().length;
+  els.buildBtn.disabled = buildStarsNeeded > 0 || buildableWords().length === 0;
+  els.buildNote.textContent = buildStarsNeeded > 0 ? `🔒 ${plural(buildStarsNeeded, 'more star')}` : 'Order the sounds';
 
   renderSummary();
   renderStickers();
@@ -50,9 +50,7 @@ function renderSummary() {
     main.textContent = `🎉 You ${listening ? 'found' : 'built'} all ${plural(last.total, 'word')}!`;
     const score = document.createElement('span');
     score.className = 'summary-time';
-    score.textContent = listening
-      ? `🏅 ${last.points} of ${last.maxPoints} points`
-      : `🧱 ${last.firstTry} on the first try`;
+    score.textContent = `🏅 ${last.points} of ${last.maxPoints} points`;
     els.stickerHint.replaceChildren(main, score);
     return;
   }

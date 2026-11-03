@@ -20,7 +20,7 @@ The reading game and its kinds of round come first:
 Below a dotted line are the separate games:
 
 - **👂 Listen & tap** — hear a word, then tap it among four choices. A wrong tap plays a soft sound, fades that choice and says the word again, until they find it. Each word is worth up to 4 points, minus 1 for each wrong tap, and the game's total shows at the end. It uses only starred words and opens once 4 words have stars. It's practice only, so it never changes stars or stickers.
-- **🧱 Build the word** — hear a word, then pick out its sound parts in order ("th" + "e") by tapping them or dragging them onto the word. Two or three extra tiles from other sight words don't belong (change how many with `BUILD_EXTRA_MIN` and `BUILD_EXTRA_MAX` in `js/config.js`). The parts show faintly as a guide, and each placed part plays its sound, including the last one before the whole word is said. A wrong tile wiggles and the word is said again. It uses starred words with two or more parts and opens once there are 4 of them. It's practice only too.
+- **🧱 Build the word** — hear a word, then pick out its sound parts in order ("th" + "e") by tapping them or dragging them onto the word. Extra tiles from other sight words don't belong: two or three per word, and more for short words so there are always at least 5 tiles (change these with `BUILD_MIN_TILES`, `BUILD_EXTRA_MIN` and `BUILD_EXTRA_MAX` in `js/config.js`). The parts show faintly as a guide, and each placed part plays its sound, including the last one before the whole word is said. A silent letter plays its own recording, like "silent e". A wrong tile wiggles, plays a soft sound, and then plays the sound of the part they're looking for. It uses only starred words, including one-part words like "a" and "I" (where the job is picking the right tile from the extras), and opens once 4 words have stars. Each word is worth up to 5 points, minus 1 for each wrong tile, and never less than 1. The game's total shows at the end. It's practice only too, so it never changes stars or stickers.
 
 ## Adding words
 
@@ -38,7 +38,7 @@ Sight words often don't follow the usual sounding-out rules ("said", "of", "was"
 the: [['th', 'DH'], ['e', 'UH']],
 ```
 
-Each part is the letters shown, then the sound they make, from the list of sounds in `SOUNDS` just above it (`''` for a silent letter). Then record the new word, and any sounds it uses that aren't recorded yet (see below).
+Each part is the letters shown, then the sound they make, from the list of sounds in `SOUNDS` just above it. A silent letter uses a silent sound like `SILENT_E`; for a different silent letter, add one to `SOUNDS` with `silent: true`, and record it. Then record the new word, and any sounds it uses that aren't recorded yet (see below).
 
 ## Recording the words and sounds
 

@@ -4,17 +4,17 @@
 // A few extra tiles from other sight words don't belong.
 // It's practice only, so it never changes stars or stickers ("I know it!" does that).
 
-let buildRound = null;       // the game being played: { deck, total, firstTry, target, parts, next, slots, missed, busy }
+let buildRound = null;       // the game being played: { deck, total, points, wordPoints, target, parts, next, slots, busy }
 let buildTimer = null;       // the pause before the next word
 
-// Starred words with at least two parts: one-part words like "a" have nothing to put in order.
-const buildableWords = () => knownWords().filter((word) => (wordParts(word) || []).length > 1);
+// Starred words with their parts listed in js/phonics.js. A one-part word like "a" is just picking the right tile.
+const buildableWords = () => knownWords().filter(wordParts);
 
 function startBuild() {
   const words = buildableWords();
-  if (words.length < BUILD_UNLOCK_WORDS) return;
+  if (knownWords().length < BUILD_UNLOCK_STARS || words.length === 0) return;
   const deck = shuffle(words);
-  buildRound = { deck, total: deck.length, firstTry: 0 };
+  buildRound = { deck, total: deck.length, points: 0 };
   state.lastRound = null;
   els.buildBar.setAttribute('aria-valuemax', String(deck.length));
   showScreen('build');
@@ -29,9 +29,9 @@ function stopBuild() {
 }
 
 function finishBuild() {
-  const { total, firstTry } = buildRound;
+  const { total, points } = buildRound;
   stopBuild();
-  state.lastRound = { mode: 'build', total, firstTry, learned: [] };
+  state.lastRound = { mode: 'build', total, points, maxPoints: total * BUILD_WORD_POINTS, learned: [] };
   showScreen('home');
   confetti();
 }
@@ -45,12 +45,13 @@ function showBuildWord() {
   game.target = game.deck.shift();
   game.parts = wordParts(game.target);
   game.next = 0;
-  game.missed = false;
+  game.wordPoints = BUILD_WORD_POINTS;
   game.busy = false;
   preloadClips(game.deck.length ? [game.target, game.deck[0]] : [game.target]);
 
   const position = game.total - game.deck.length;
   els.buildCount.textContent = `${position} / ${game.total}`;
+  els.buildPoints.textContent = `🏅 ${game.points}`;
   els.buildFill.style.width = `${(position / game.total) * 100}%`;
   els.buildBar.setAttribute('aria-valuenow', String(position));
 
@@ -67,16 +68,19 @@ function showBuildWord() {
   const order = game.parts.map(([letters]) => letters);
   const all = [...order, ...buildExtras(order)];
   let tiles = shuffle(all);
-  while (tiles.join() === order.join()) tiles = shuffle(all);
+  while (all.length > 1 && tiles.join() === order.join()) tiles = shuffle(all);
   els.buildTiles.replaceChildren(...tiles.map(makeBuildTile));
   sayWord(game.target);
 }
 
 // A few extra tiles that don't belong, taken from the parts of the other sight words.
 function buildExtras(used) {
-  const others = new Set(state.words.flatMap((word) => (wordParts(word) || []).map(([letters]) => letters)));
-  const count = BUILD_EXTRA_MIN + Math.floor(Math.random() * (BUILD_EXTRA_MAX - BUILD_EXTRA_MIN + 1));
-  return shuffle([...others].filter((letters) => !used.includes(letters))).slice(0, count);
+  const others = new Map(state.words.flatMap((word) => (wordParts(word) || []).map(([letters]) => [letters.toLowerCase(), letters])));
+  const random = BUILD_EXTRA_MIN + Math.floor(Math.random() * (BUILD_EXTRA_MAX - BUILD_EXTRA_MIN + 1));
+  const count = Math.max(random, BUILD_MIN_TILES - used.length); // short words get more, so there are always enough tiles
+  // Ignoring case, so "i" is never a wrong answer next to the word "I".
+  const lower = used.map((letters) => letters.toLowerCase());
+  return shuffle([...others].filter(([key]) => !lower.includes(key)).map(([, letters]) => letters)).slice(0, count);
 }
 
 function makeBuildTile(letters) {
@@ -125,32 +129,35 @@ function placeBuildTile(tile) {
   if (!game || game.busy) return;
   const [letters, id] = game.parts[game.next];
   if (tile.textContent !== letters) {
-    // Gentle retry: the tile stays in the tray, the word is said again, and they keep trying.
-    game.missed = true;
+    // Gentle retry: it costs a point, the tile stays in the tray, the sound they're looking for is played,
+    // and they keep trying.
+    game.wordPoints = Math.max(BUILD_MIN_WORD_POINTS, game.wordPoints - 1);
     playAnim(tile, 'wiggle');
-    sayWord(game.target);
+    playIncorrectSound(() => saySound(id));
     return;
   }
 
   tile.classList.add('used');
-  game.slots[game.next].classList.add(id ? 'filled' : 'silent');
+  game.slots[game.next].classList.add(isSilentSound(id) ? 'silent' : 'filled');
   game.next += 1;
   if (game.next < game.parts.length) {
-    if (id) saySound(id);
+    saySound(id);
     return;
   }
 
   game.busy = true;
-  if (!game.missed) game.firstTry += 1;
-  // The last part still gets its sound (a silent letter has none), then the whole word.
-  if (id) saySound(id, () => { buildTimer = setTimeout(finishBuildWord, SOUND_GAP_MS); });
-  else finishBuildWord();
+  // The last part still gets its sound, then the whole word.
+  saySound(id, () => { buildTimer = setTimeout(finishBuildWord, SOUND_GAP_MS); });
 }
 
 function finishBuildWord() {
+  const game = buildRound;
+  game.points += game.wordPoints;
+  els.buildPoints.textContent = `🏅 ${game.points}`;
+  playAnim(els.buildPoints, 'bounce');
   els.buildSlots.classList.add('right');
   playAnim(els.buildSlots, 'bounce');
-  showToast(randomCheer());
+  showToast(`${randomCheer()} +${plural(game.wordPoints, 'point')}`);
   sayWord(buildRound.target, () => { buildTimer = setTimeout(showBuildWord, BUILD_NEXT_MS); });
 }
 
