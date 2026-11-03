@@ -99,6 +99,7 @@ h1 {
 .missing { --mode: var(--green-dark); }
 .timed { --mode: var(--blue-dark); }
 .listen { --mode: #0c8599; }
+.build { --mode: #c2255c; }
 
 .progress {
   position: absolute;
@@ -347,12 +348,68 @@ h1 {
 .listen-choice.wrong { opacity: 0.35; cursor: default; }
 .listen-choice.right { background: #ebfbee; border-color: var(--green); box-shadow: 0 8px 0 var(--green-dark); color: var(--green-dark); }
 
+/* Build the word: the parts are faint in the word until they're placed from the tray below */
+#build { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.build-again { flex-shrink: 0; }
+.build-slots {
+  flex: 1;
+  min-height: 0;
+  width: min(100%, 900px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.12em;
+  background: #fff;
+  border: 8px solid var(--yellow);
+  border-radius: 48px;
+  box-shadow: 0 12px 0 var(--yellow-dark);
+  font-size: clamp(3.5rem, 22vmin, 11rem);
+  font-weight: 700;
+  line-height: 1.15;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.build-slot { color: #dee2e6; transition: color 0.15s; }
+.build-slot.filled { color: var(--ink); }
+.build-slot.silent { color: var(--ink); opacity: 0.3; }
+.build-slots.right { background: #ebfbee; border-color: var(--green); box-shadow: 0 12px 0 var(--green-dark); }
+.build-slots.right .build-slot.filled { color: var(--green-dark); }
+.build-tiles {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  min-height: 120px;
+  padding: 8px 0 16px;
+}
+.build-tile {
+  min-width: 96px;
+  min-height: 96px;
+  padding: 0 20px;
+  background: #fff;
+  border: 6px solid var(--yellow);
+  border-radius: 28px;
+  box-shadow: 0 8px 0 var(--yellow-dark);
+  font-size: clamp(2.4rem, 9vmin, 4rem);
+  font-weight: 700;
+  touch-action: none;
+  cursor: grab;
+}
+.build-tile.dragging { position: relative; z-index: 2; scale: 1.1; cursor: grabbing; }
+.build-tile.used { visibility: hidden; } /* keeps its space, so the other tiles don't jump */
+
 @media (max-width: 560px) {
   .home-center { padding: 20px 16px 24px; }
   .mode-btn { padding: 8px 18px; font-size: 1.2rem; white-space: nowrap; }
+  /* two columns of game buttons, so the home screen keeps room for stickers */
+  .more-modes { gap: 10px; margin-top: 18px; }
+  .more-modes .mode-btn { flex: 1 1 calc(50% - 10px); min-width: 0; min-height: 56px; padding: 6px 8px; font-size: 1.05rem; white-space: normal; }
+  .more-modes .mode-btn small { font-size: 0.8rem; }
   /* stacked: Next on top, "I know it!" below */
   .actions { flex-direction: column-reverse; gap: 16px; }
   .big-btn { min-height: 80px; }
+  .build-tiles { gap: 10px; min-height: 0; }
+  .build-tile { min-width: 72px; min-height: 72px; padding: 0 12px; border-width: 5px; border-radius: 22px; font-size: 2.2rem; }
 }
 
 /* ---------- Feedback ---------- */

@@ -26,6 +26,12 @@ async function init() {
     showScreen('home');
   });
   els.listenAgain.addEventListener('click', hearListenWord);
+  els.buildBtn.addEventListener('click', startBuild);
+  els.buildHome.addEventListener('click', () => {
+    stopBuild();
+    showScreen('home');
+  });
+  els.buildAgain.addEventListener('click', hearBuildWord);
   els.card.addEventListener('click', hearWord);
   els.soundOut.addEventListener('click', soundOut);
   els.know.addEventListener('click', knowIt);
