@@ -113,9 +113,9 @@ To bump by hand, run `bash .github/scripts/bump-version.sh patch` (or `minor` / 
 
 ## Publishing on GitHub Pages
 
-1. Create a new repository on GitHub and upload these files (`index.html`, `recorder.html`, `style.css`, `recorder.css`, `words.json`, and the `js` and `audio` folders).
+1. Create a new repository on GitHub and upload these files (`index.html`, `recorder.html`, `style.css`, `recorder.css`, `words.json`, and the `js`, `audio` and `icons` folders).
 2. In the repository, go to **Settings → Pages**.
 3. Under **Build and deployment**, choose **Deploy from a branch**, pick `main` and `/ (root)`, and save.
 4. After a minute, the site is at `https://<your-username>.github.io/<repository-name>/`.
 
-On the tablet, open that address and use **Share → Add to Home Screen** (iPad) or **⋮ → Add to Home screen** (Android) so it opens full-screen like an app.
+On the tablet, open that address and use **Share → Add to Home Screen** (iPad) or **⋮ → Add to Home screen** (Android) so it opens full-screen like an app. The icon it gets comes from the `icons` folder.
