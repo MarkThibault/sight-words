@@ -51,7 +51,7 @@ These tests can't judge how audio sounds or how a game feels, so keep trying cha
 
 ## 4. Safety rails on `main`
 
-**Status:** the template and label check are done. The bump workflow is ready for branch protection, which isn't on yet. The steps are below.
+**Status:** the template and label check are done. Branch protection is on hold, because the setup isn't worth it yet. Without it, a pull request can still be merged with a failing check, so look at the checks before merging. Pick this up if that becomes a problem. The bump workflow is already ready for it, and the steps are below.
 
 - ✅ **A pull request template:** add `.github/pull_request_template.md` with a short checklist, such as "tried on tablet", "played the sounds" and "added a `minor` label if it's a new feature".
 - ✅ **A label check:** an Action fails until the pull request has a `patch`, `minor` or `major` label, so the version bump is a deliberate choice. The `patch` label doesn't exist yet, and `.github/workflows/bump-version.yml` would need to create it.
@@ -63,7 +63,7 @@ These tests can't judge how audio sounds or how a game feels, so keep trying cha
 
 To turn it on, after the checks and this workflow have merged:
 
-1. **Make a key,** outside the project folder so it can't be committed: `ssh-keygen -t ed25519 -N "" -C "sight-words version bump" -f bump_key`
+1. **Make a key,** outside the project folder so it can't be committed: `ssh-keygen -t ed25519 -C "sight-words version bump" -f bump_key`, pressing Enter twice for no passphrase
 2. **Add the public half:** in the repository's **Settings > Deploy keys > Add deploy key**, paste `bump_key.pub` and tick **Allow write access**.
 3. **Add the private half:** in **Settings > Secrets and variables > Actions > New repository secret**, name it `BUMP_DEPLOY_KEY` and paste `bump_key`. Then delete both files.
 4. **Merge a pull request** and check that **Bump version** still passes.
