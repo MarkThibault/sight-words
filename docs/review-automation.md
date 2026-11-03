@@ -49,6 +49,8 @@ These tests can't judge how audio sounds or how a game feels, so keep trying cha
 
 ## 4. Safety rails on `main`
 
+**Status:** the template and label check are done. Branch protection isn't on yet, because it's a repository setting and needs the warning below solved first.
+
 - **A pull request template:** add `.github/pull_request_template.md` with a short checklist, such as "tried on tablet", "played the sounds" and "added a `minor` label if it's a new feature".
 - **A label check:** an Action fails until the pull request has a `patch`, `minor` or `major` label, so the version bump is a deliberate choice. The `patch` label doesn't exist yet, and `.github/workflows/bump-version.yml` would need to create it.
 - **Branch protection:** require the checks to pass before merging.
