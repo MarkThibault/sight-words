@@ -190,6 +190,27 @@ h1 {
   pointer-events: none;
 }
 .recorder-btn { right: calc(max(16px, env(safe-area-inset-right)) + 68px); color: inherit; text-decoration: none; }
+/* developer tools, on localhost only: below the ⚙️ button, with the previews to its left */
+.dev-btn { top: calc(max(16px, env(safe-area-inset-top)) + 68px); z-index: 4; }
+.dev-panel {
+  position: absolute;
+  top: calc(max(16px, env(safe-area-inset-top)) + 68px);
+  right: calc(max(16px, env(safe-area-inset-right)) + 68px);
+  z-index: 4;
+  max-width: calc(100vw - 100px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 6px 10px;
+  background: #fff;
+  border: 3px solid var(--yellow);
+  border-radius: 16px;
+  font-size: 0.9rem;
+}
+.dev-panel button { padding: 4px 10px; background: #fff; border: 2px solid #ced4da; border-radius: 999px; }
+.dev-panel button[aria-pressed="true"] { background: #fff3bf; border-color: var(--yellow-dark); font-weight: 700; }
 
 .app-version {
   position: absolute;
@@ -201,7 +222,37 @@ h1 {
   color: var(--ink);
   opacity: 0.55;
 }
-.app-version.updating { font-weight: 700; opacity: 1; }
+.app-version.updating, .app-version.downloading { font-weight: 700; opacity: 1; z-index: 4; }
+/* animated dots: the three dots are revealed one at a time */
+.app-version.downloading::after {
+  content: '...';
+  display: inline-block;
+  width: 0;
+  overflow: hidden;
+  vertical-align: bottom;
+  animation: download-dots 1.2s steps(4) infinite;
+}
+@keyframes download-dots { to { width: 1.2em; } }
+.update-btn {
+  position: absolute;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + 28px);
+  z-index: 4;
+  padding: 6px 14px;
+  background: var(--green);
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 3px 0 var(--green-dark);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.update-btn:active { translate: 0 2px; box-shadow: 0 1px 0 var(--green-dark); }
+@media (max-width: 560px) {
+  /* above the stars count, which takes up the bottom row on phones */
+  .update-btn { bottom: calc(max(16px, env(safe-area-inset-bottom)) + 66px); }
+  .app-version.downloading, .app-version.updating { bottom: calc(max(16px, env(safe-area-inset-bottom)) + 66px); }
+}
 
 /* ---------- Stickers ---------- */
 
@@ -512,6 +563,8 @@ h1 {
   .settings-btn { width: 44px; height: 44px; font-size: 1.3rem; }
   .shuffle-btn { left: calc(max(16px, env(safe-area-inset-left)) + 52px); }
   .recorder-btn { right: calc(max(16px, env(safe-area-inset-right)) + 52px); }
+  .dev-btn { top: calc(max(16px, env(safe-area-inset-top)) + 52px); }
+  .dev-panel { top: calc(max(16px, env(safe-area-inset-top)) + 52px); right: calc(max(16px, env(safe-area-inset-right)) + 52px); }
   .progress { padding: 4px 12px; font-size: 0.9rem; }
   .die-shadow { display: none; }
 }
