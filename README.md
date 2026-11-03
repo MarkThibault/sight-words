@@ -109,8 +109,11 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `build.js` | The Build the word game |
 | `trophies.js` | The trophies pop-up on the home screen |
 | `panel.js` | Grown-up corner |
+| `offline.js` | Turning on offline play and picking up new versions |
 | `app.js` | Start up and button wiring |
 | `recorder.js` | The sound recorder page (`recorder.html`) |
+
+Offline play lives in `sw.js` and the app's name and icons in `manifest.webmanifest`, both next to `index.html`.
 
 ## App version
 
@@ -125,9 +128,23 @@ The version goes up on its own: each time a pull request is merged into `main`, 
 
 To bump by hand, run `bash .github/scripts/bump-version.sh patch` (or `minor` / `major`).
 
+## Installing and playing offline
+
+Sight Words can be installed on a phone or tablet and played without internet:
+
+- **iPad / iPhone:** open the site in Safari, then **Share → Add to Home Screen**.
+- **Android:** open the site in Chrome, then **⋮ → Add to Home screen** or **Install app**.
+
+The app and recordings are saved the first time the site is opened online, so give it a moment before going offline. A new version downloads when the app is opened online, and takes over the next time it's reopened.
+
+**Saved progress stays on each device, at this web address:**
+- On iPad and iPhone, the home-screen app usually keeps its own progress, separate from Safari, so it starts fresh.
+- Removing the app usually erases its progress.
+- Moving the site to a new address starts fresh.
+
 ## Publishing on GitHub Pages
 
-1. Create a new repository on GitHub and upload these files (`index.html`, `recorder.html`, `style.css`, `recorder.css`, `words.json`, and the `js`, `audio` and `icons` folders).
+1. Create a new repository on GitHub and upload these files (`index.html`, `recorder.html`, `sw.js`, `manifest.webmanifest`, `style.css`, `recorder.css`, `words.json`, and the `js`, `audio` and `icons` folders).
 2. In the repository, go to **Settings → Pages**.
 3. Under **Build and deployment**, choose **Deploy from a branch**, pick `main` and `/ (root)`, and save.
 4. After a minute, the site is at `https://<your-username>.github.io/<repository-name>/`.
