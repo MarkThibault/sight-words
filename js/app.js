@@ -73,6 +73,7 @@ async function init() {
   els.start.disabled = false;
   els.timedBtn.disabled = false;
   showScreen('home');
+  fadeOutOfUpdate();
 }
 
 init();

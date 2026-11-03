@@ -18,6 +18,20 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 
+/* Installing an update: a plain cover fades in over the page, and back out after the reload */
+html::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--bg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+html.update-wait::after, html.update-cover::after { pointer-events: auto; }
+html.update-cover::after { opacity: 1; }
+
 html, body { margin: 0; height: 100%; }
 
 body {
@@ -187,6 +201,7 @@ h1 {
   color: var(--ink);
   opacity: 0.55;
 }
+.app-version.updating { font-weight: 700; opacity: 1; }
 
 /* ---------- Stickers ---------- */
 

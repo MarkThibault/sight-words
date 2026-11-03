@@ -135,7 +135,7 @@ Sight Words can be installed on a phone or tablet and played without internet:
 - **iPad / iPhone:** open the site in Safari, then **Share → Add to Home Screen**.
 - **Android:** open the site in Chrome, then **⋮ → Add to Home screen** or **Install app**.
 
-The app and recordings are saved the first time the site is opened online, so give it a moment before going offline. When online, the app looks for a new version when it's opened and when the home screen appears, at most every 5 minutes. A new version downloads in the background, and the app reloads itself once the home screen is idle: never during a game, a pop-up or a sticker drag, or over a round's results. If the home screen stays busy, it takes over the next time the app is reopened.
+The app and recordings are saved the first time the site is opened online, so give it a moment before going offline. When online, the app looks for a new version when it's opened and when the home screen appears, at most every 5 minutes. A new version downloads in the background, and the app shows "Updating…" where the version is, fades out and back in, and reloads itself once the home screen is idle: never during a game, a pop-up or a sticker drag, or over a round's results. If the home screen stays busy, it takes over the next time the app is reopened.
 
 **Saved progress stays on each device, at this web address:**
 - On iPad and iPhone, the home-screen app usually keeps its own progress, separate from Safari, so it starts fresh.

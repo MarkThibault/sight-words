@@ -8,6 +8,16 @@
   <meta name="apple-mobile-web-app-title" content="Sight Words">
   <meta name="theme-color" content="#fff6e0">
   <title>Sight Words</title>
+  <script>
+    // Coming back from an update (see js/offline.js): stay covered from the first frame until the app is ready to fade in.
+    try {
+      if (sessionStorage.getItem('sightWords.updating')) {
+        sessionStorage.removeItem('sightWords.updating');
+        document.documentElement.classList.add('update-cover');
+        setTimeout(() => document.documentElement.classList.remove('update-cover'), 5000); // never stuck if start up fails
+      }
+    } catch (e) { /* no flash protection, but nothing breaks */ }
+  </script>
   <link rel="icon" href="icons/favicon-32.png?v=1.9.1" type="image/png" sizes="32x32">
   <link rel="icon" href="icons/favicon-64.png?v=1.9.1" type="image/png" sizes="64x64">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1.9.1">
