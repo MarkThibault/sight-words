@@ -15,7 +15,9 @@ const LISTEN_UNLOCK_STARS = 4; // stars needed before Listen & tap opens (it use
 const LISTEN_CHOICES = 4;      // words to choose from, at most LISTEN_UNLOCK_STARS
 const LISTEN_NEXT_MS = 1300;   // the pause after a right answer, so the word can be heard again
 const BUILD_UNLOCK_WORDS = 4;  // starred words with two or more parts needed before Build the word opens
-const BUILD_NEXT_MS = 1500;    // the pause after a finished word, so it can be heard again
+const BUILD_EXTRA_MIN = 2;     // tiles that don't belong, added to make it harder: at least this many...
+const BUILD_EXTRA_MAX = 3;     // ...and at most this many
+const BUILD_NEXT_MS = 800;     // the pause after the finished word has been said
 const CHEERS = ['Great job!', 'Awesome!', 'You did it!', 'Super reader!', 'Way to go!', 'Fantastic!'];
 const STICKER_COLORS = ['#e03131', '#e8590c', '#e67700', '#2f9e44', '#0c8599', '#1971c2', '#7048e8', '#c2255c'];
 // Surprise stickers: one is picked at random when a word is learned, then saved with that word.

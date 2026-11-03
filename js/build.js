@@ -1,6 +1,7 @@
 'use strict';
 
-// Build the word: hear a starred word, then put its sound parts ("th" + "e") in order, by tapping or dragging.
+// Build the word: hear a starred word, then pick out its sound parts ("th" + "e") in order, by tapping or dragging.
+// A few extra tiles from other sight words don't belong.
 // It's practice only, so it never changes stars or stickers ("I know it!" does that).
 
 let buildRound = null;       // the game being played: { deck, total, firstTry, target, parts, next, slots, missed, busy }
@@ -64,10 +65,18 @@ function showBuildWord() {
 
   // Shuffled, but never already in the right order.
   const order = game.parts.map(([letters]) => letters);
-  let tiles = shuffle(order);
-  while (tiles.join() === order.join()) tiles = shuffle(order);
+  const all = [...order, ...buildExtras(order)];
+  let tiles = shuffle(all);
+  while (tiles.join() === order.join()) tiles = shuffle(all);
   els.buildTiles.replaceChildren(...tiles.map(makeBuildTile));
   sayWord(game.target);
+}
+
+// A few extra tiles that don't belong, taken from the parts of the other sight words.
+function buildExtras(used) {
+  const others = new Set(state.words.flatMap((word) => (wordParts(word) || []).map(([letters]) => letters)));
+  const count = BUILD_EXTRA_MIN + Math.floor(Math.random() * (BUILD_EXTRA_MAX - BUILD_EXTRA_MIN + 1));
+  return shuffle([...others].filter((letters) => !used.includes(letters))).slice(0, count);
 }
 
 function makeBuildTile(letters) {
@@ -133,11 +142,16 @@ function placeBuildTile(tile) {
 
   game.busy = true;
   if (!game.missed) game.firstTry += 1;
+  // The last part still gets its sound (a silent letter has none), then the whole word.
+  if (id) saySound(id, () => { buildTimer = setTimeout(finishBuildWord, SOUND_GAP_MS); });
+  else finishBuildWord();
+}
+
+function finishBuildWord() {
   els.buildSlots.classList.add('right');
   playAnim(els.buildSlots, 'bounce');
   showToast(randomCheer());
-  sayWord(game.target);
-  buildTimer = setTimeout(showBuildWord, BUILD_NEXT_MS);
+  sayWord(buildRound.target, () => { buildTimer = setTimeout(showBuildWord, BUILD_NEXT_MS); });
 }
 
 function hearBuildWord() {
