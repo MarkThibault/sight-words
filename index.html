@@ -22,14 +22,20 @@
     <div id="sticker-board" class="sticker-board" aria-label="My stickers"></div>
     <div id="home-center" class="home-center">
       <h1>Sight Words</h1>
-      <button id="start-btn" class="big-btn go" disabled>Let's Read! ▶</button>
-      <div class="more-modes">
-        <button id="missing-btn" class="mode-btn missing" hidden>🎯 Missing words</button>
-        <button id="timed-btn" class="mode-btn timed" disabled>⏱ Timed run<small id="best-time"></small></button>
-        <button id="listen-btn" class="mode-btn listen" disabled>👂 Listen &amp; tap<small id="listen-note"></small></button>
-        <button id="build-btn" class="mode-btn build" disabled>🧱 Build the word<small id="build-note"></small></button>
+      <!-- The reading game and its kinds of round -->
+      <div class="read-group">
+        <button id="start-btn" class="big-btn go" disabled>Let's Read! ▶</button>
+        <div class="more-modes">
+          <button id="missing-btn" class="mode-btn missing" disabled>🎯 Missing words</button>
+          <button id="timed-btn" class="mode-btn timed" disabled>⏱ Timed run<small id="best-time"></small></button>
+        </div>
+        <p id="sticker-hint" class="sticker-hint" aria-live="polite"></p>
       </div>
-      <p id="sticker-hint" class="sticker-hint" aria-live="polite"></p>
+      <!-- Separate games, below a dotted line -->
+      <div class="more-games">
+        <button id="listen-btn" class="game-btn listen" disabled>👂 Listen &amp; tap<small id="listen-note"></small></button>
+        <button id="build-btn" class="game-btn build" disabled>🧱 Build the word<small id="build-note"></small></button>
+      </div>
     </div>
     <div id="progress" class="progress"></div>
     <!-- Grown-ups: press and hold this to open the settings panel -->
