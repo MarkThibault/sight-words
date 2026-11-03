@@ -14,9 +14,10 @@ function renderHome() {
   updateCounters();
 
   const missing = missingWords().length;
-  // Only offer "missing words" when it differs from a full round
-  els.missingBtn.hidden = missing === 0 || missing === state.words.length;
-  els.missingBtn.textContent = `🎯 Missing words (${missing})`;
+  // Missing words only differs from a full round once some, but not all, words have stars
+  const canPlayMissing = missing > 0 && missing < state.words.length;
+  els.missingBtn.disabled = !canPlayMissing;
+  els.missingBtn.textContent = canPlayMissing ? `🎯 Missing words (${missing})` : '🎯 Missing words';
   const best = bestTime();
   els.bestTime.textContent = best === null ? 'No best time yet' : `Best: ${formatTime(best)}`;
 

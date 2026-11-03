@@ -11,9 +11,14 @@ A simple sight-word practice app for young readers. Plain HTML, CSS and JavaScri
 
 ## Home screen buttons
 
+The reading game and its kinds of round come first:
+
 - **Let's Read! ▶** — a round of all the words.
-- **🎯 Missing words** — a round of only the words without a star yet. (Shown once some, but not all, words have stars.)
+- **🎯 Missing words** — a round of only the words without a star yet. (Greyed out until some, but not all, words have stars.)
 - **⏱ Timed run** — a round of all the words against the clock. The best time is saved; adding or removing words starts a fresh record.
+
+Below a dotted line are the separate games:
+
 - **👂 Listen & tap** — hear a word, then tap it among four choices. A wrong tap fades that choice and says the word again, until they find it. It uses only starred words and opens once 4 words have stars. It's practice only, so it never changes stars or stickers.
 - **🧱 Build the word** — hear a word, then pick out its sound parts in order ("th" + "e") by tapping them or dragging them onto the word. Two or three extra tiles from other sight words don't belong (change how many with `BUILD_EXTRA_MIN` and `BUILD_EXTRA_MAX` in `js/config.js`). The parts show faintly as a guide, and each placed part plays its sound, including the last one before the whole word is said. A wrong tile wiggles and the word is said again. It uses starred words with two or more parts and opens once there are 4 of them. It's practice only too.
 
