@@ -144,10 +144,20 @@ h1 {
 .listen { --mode: #0c8599; --mode-dark: #086470; }
 .build { --mode: #c2255c; --mode-dark: #921b45; }
 
-.progress {
+/* The bottom row: the stars count on the left, and the update statuses wrap in whatever room is left beside it */
+.home-footer {
   position: absolute;
   left: max(16px, env(safe-area-inset-left));
+  right: max(16px, env(safe-area-inset-right));
   bottom: max(16px, env(safe-area-inset-bottom));
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+}
+.progress {
+  position: relative;
+  flex: none;
   z-index: 1;
   padding: 10px 20px;
   font-size: 1.25rem;
@@ -212,10 +222,17 @@ h1 {
 .dev-panel button { padding: 4px 10px; background: #fff; border: 2px solid #ced4da; border-radius: 999px; }
 .dev-panel button[aria-pressed="true"] { background: #fff3bf; border-color: var(--yellow-dark); font-weight: 700; }
 
+.update-status {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  text-align: right;
+}
 .app-version {
-  position: absolute;
-  right: max(16px, env(safe-area-inset-right));
-  bottom: max(16px, env(safe-area-inset-bottom));
+  position: relative;
   z-index: 1;
   margin: 0;
   font-size: 0.95rem;
@@ -223,35 +240,38 @@ h1 {
   opacity: 0.55;
 }
 .app-version.updating, .app-version.downloading { font-weight: 700; opacity: 1; z-index: 4; }
-/* animated dots: the three dots are revealed one at a time */
+/* animated dots: the three dots are revealed one at a time, keeping their room so the text doesn't re-wrap */
 .app-version.downloading::after {
   content: '...';
-  display: inline-block;
-  width: 0;
-  overflow: hidden;
-  vertical-align: bottom;
-  animation: download-dots 1.2s steps(4) infinite;
+  animation: download-dots 1.2s steps(4, jump-none) infinite;
 }
-@keyframes download-dots { to { width: 1.2em; } }
+@keyframes download-dots {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
 .update-btn {
-  position: absolute;
-  right: max(16px, env(safe-area-inset-right));
-  bottom: calc(max(16px, env(safe-area-inset-bottom)) + 28px);
+  position: relative;
   z-index: 4;
-  padding: 6px 14px;
+  pointer-events: auto;
+  /* the same size as the stars count: its padding plus its 3px border */
+  padding: 13px 23px;
   background: var(--green);
   border: 0;
   border-radius: 999px;
-  box-shadow: 0 3px 0 var(--green-dark);
+  box-shadow: inset 0 -3px 0 var(--green-dark);
   color: #fff;
-  font-size: 0.95rem;
+  font-size: 1.25rem;
   font-weight: 700;
 }
-.update-btn:active { translate: 0 2px; box-shadow: 0 1px 0 var(--green-dark); }
+.update-btn:active { translate: 0 2px; box-shadow: inset 0 -1px 0 var(--green-dark); }
+.update-btn:not([hidden]) + .app-version { display: none; } /* the button takes the version's place */
 @media (max-width: 560px) {
-  /* above the stars count, which takes up the bottom row on phones */
-  .update-btn { bottom: calc(max(16px, env(safe-area-inset-bottom)) + 66px); }
-  .app-version.downloading, .app-version.updating { bottom: calc(max(16px, env(safe-area-inset-bottom)) + 66px); }
+  .update-btn-more { display: none; }
+}
+@media (max-width: 400px) {
+  /* small phones: a smaller stars count leaves room for the statuses beside it */
+  .progress { padding: 6px 14px; font-size: 1.05rem; }
+  .update-btn { padding: 9px 17px; font-size: 1.05rem; }
 }
 
 /* ---------- Stickers ---------- */
@@ -566,6 +586,7 @@ h1 {
   .dev-btn { top: calc(max(16px, env(safe-area-inset-top)) + 52px); }
   .dev-panel { top: calc(max(16px, env(safe-area-inset-top)) + 52px); right: calc(max(16px, env(safe-area-inset-right)) + 52px); }
   .progress { padding: 4px 12px; font-size: 0.9rem; }
+  .update-btn { padding: 7px 15px; font-size: 0.9rem; }
   .die-shadow { display: none; }
 }
 
