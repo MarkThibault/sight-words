@@ -1,0 +1,24 @@
+# Fails until a pull request has one version label, so the bump in bump-version.yml is a deliberate choice.
+name: Label check
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, reopened, synchronize, labeled, unlabeled]
+
+permissions: {}
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Look for one patch, minor or major label
+        env:
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, '
+') }}
+        run: |
+          count=$(echo "$LABELS" | grep -cxE 'patch|minor|major' || true)
+          if [ "$count" -ne 1 ]; then
+            echo "::error::Add one label for the version bump: patch, minor or major. Found $count."
+            exit 1
+          fi
