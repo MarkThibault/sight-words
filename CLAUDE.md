@@ -21,7 +21,7 @@ A sight-word practice app for a 5-year-old, used mostly on a tablet. See `README
 - Start each new feature on a new branch from the latest `origin/main`. Don't add unrelated work to an existing branch or open PR.
 - Commit, push and open a PR only when asked. Add follow-up changes to the branch while its PR is still open, and check whether it has merged before starting from it.
 - `gh` isn't installed. Open PRs from a GitHub compare URL with `title` and `body` query params in the browser pane. If the pane is signed out of GitHub, ask the user to sign in.
-- The GitHub Action bumps the version on every merged PR: patch by default, or with a `minor` or `major` label. Add the `minor` label for new features unless "bug" or "fix" is mentioned as a new stand-alone change.
+- The GitHub Action bumps the version on every merged PR, by its `patch`, `minor` or `major` label. A check fails until a PR has exactly one. Add the `minor` label for new features unless "bug" or "fix" is mentioned as a new stand-alone change, and `patch` otherwise.
 - Don't edit `APP_VERSION` or the `?v=` stamps by hand, other than copying the current stamp onto a newly added file. Pull `main` before branching, because the bot commits after each merge.
 
 ## Rules the app must keep
