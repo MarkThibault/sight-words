@@ -3,14 +3,14 @@
 // Listen & tap: hear a starred word, then find it among a few choices.
 // It's practice only, so it never changes stars or stickers ("I know it!" does that).
 
-let listenRound = null;      // the game being played: { words, deck, total, firstTry, target, missed, busy }
+let listenRound = null;      // the game being played: { words, deck, total, points, wordPoints, target, busy }
 let listenTimer = null;      // the pause before the next word
 
 function startListen() {
   const words = knownWords();
   if (words.length < LISTEN_UNLOCK_STARS) return;
   const deck = shuffle(words);
-  listenRound = { words, deck, total: deck.length, firstTry: 0, target: null, missed: false, busy: false };
+  listenRound = { words, deck, total: deck.length, points: 0, wordPoints: 0, target: null, busy: false };
   state.lastRound = null;
   els.listenBar.setAttribute('aria-valuemax', String(deck.length));
   showScreen('listen');
@@ -25,9 +25,9 @@ function stopListen() {
 }
 
 function finishListen() {
-  const { total, firstTry } = listenRound;
+  const { total, points } = listenRound;
   stopListen();
-  state.lastRound = { mode: 'listen', total, firstTry, learned: [] };
+  state.lastRound = { mode: 'listen', total, points, maxPoints: total * LISTEN_WORD_POINTS, learned: [] };
   showScreen('home');
   confetti();
 }
@@ -39,12 +39,13 @@ function showListenWord() {
     return;
   }
   game.target = game.deck.shift();
-  game.missed = false;
+  game.wordPoints = LISTEN_WORD_POINTS;
   game.busy = false;
   if (game.deck.length) loadClip(wordClip(game.deck[0])); // so the next word is ready to play
 
   const position = game.total - game.deck.length;
   els.listenCount.textContent = `${position} / ${game.total}`;
+  els.listenPoints.textContent = `🏅 ${game.points}`;
   els.listenFill.style.width = `${(position / game.total) * 100}%`;
   els.listenBar.setAttribute('aria-valuenow', String(position));
 
@@ -65,20 +66,22 @@ function tapListenChoice(choice, word) {
   const game = listenRound;
   if (!game || game.busy) return;
   if (word !== game.target) {
-    // Gentle retry: this one is out, the word is said again, and they keep looking.
-    game.missed = true;
+    // Gentle retry: this one is out and costs a point, the word is said again, and they keep looking.
+    game.wordPoints = Math.max(0, game.wordPoints - 1);
     choice.disabled = true;
     choice.classList.add('wrong');
     playAnim(choice, 'wiggle');
-    sayWord(game.target);
+    playIncorrectSound(() => sayWord(game.target));
     return;
   }
 
   game.busy = true;
-  if (!game.missed) game.firstTry += 1;
+  game.points += game.wordPoints;
+  els.listenPoints.textContent = `🏅 ${game.points}`;
+  playAnim(els.listenPoints, 'bounce');
   choice.classList.add('right');
   playAnim(choice, 'bounce');
-  showToast(randomCheer());
+  showToast(`${randomCheer()} +${plural(game.wordPoints, 'point')}`);
   sayWord(game.target);
   listenTimer = setTimeout(showListenWord, LISTEN_NEXT_MS);
 }

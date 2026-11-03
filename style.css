@@ -354,6 +354,7 @@ h1 {
 /* Listen & tap */
 #listen { display: flex; flex-direction: column; align-items: center; gap: 16px; }
 .listen-again { flex-shrink: 0; }
+.listen-points { font-weight: 700; color: #0c8599; font-variant-numeric: tabular-nums; }
 .listen-choices {
   flex: 1;
   min-height: 0;
