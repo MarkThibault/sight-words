@@ -54,7 +54,12 @@ function showListenWord() {
 
   const others = shuffle(game.words.filter((word) => word !== game.target)).slice(0, LISTEN_CHOICES - 1);
   els.listenChoices.replaceChildren(...shuffle([game.target, ...others]).map(makeListenChoice));
+  fitListenChoices();
   sayWord(game.target);
+}
+
+function fitListenChoices() {
+  for (const choice of els.listenChoices.children) fitText(choice, choice, 28, 16);
 }
 
 function makeListenChoice(word) {

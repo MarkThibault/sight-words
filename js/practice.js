@@ -92,16 +92,8 @@ function showWord() {
   playAnim(els.card, 'slide-in');
 }
 
-// Start from the big CSS size and shrink only if the word is wider than the card.
 function fitWord() {
-  if (!current) return;
-  els.word.style.fontSize = '';
-  const room = els.card.clientWidth - 48;
-  const width = els.word.getBoundingClientRect().width;
-  if (width > room) {
-    const size = parseFloat(getComputedStyle(els.word).fontSize);
-    els.word.style.fontSize = `${Math.floor(size * room / width)}px`;
-  }
+  if (current) fitText(els.word, els.card, 48, 16);
 }
 
 function hearWord() {

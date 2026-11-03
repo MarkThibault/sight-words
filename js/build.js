@@ -73,7 +73,12 @@ function showBuildWord() {
   let tiles = shuffle(all);
   while (all.length > 1 && tiles.join() === order.join()) tiles = shuffle(all);
   els.buildTiles.replaceChildren(...tiles.map(makeBuildTile));
+  fitBuildWord();
   sayWord(game.target);
+}
+
+function fitBuildWord() {
+  if (buildRound) fitText(els.buildSlots, els.buildSlots, 32, 8);
 }
 
 // A few extra tiles that don't belong, taken from the parts of the other sight words.
