@@ -13,6 +13,7 @@ A sight-word practice app for a 5-year-old, used mostly on a tablet. See `README
 - Start the local server with `preview_start` and the name `sight-words` (runs `python serve.py 8000`). Outside Claude Code, run `python serve.py`.
 - `serve.py` only answers this computer. It also lets `recorder.html` save clips into `audio/`.
 - Browsers cache files until the version changes. After editing, reload with a cache bypass or Ctrl+Shift+R.
+- Offline play (`sw.js`) is off on `localhost`, so edits show right away. To test it, use `http://127.0.0.1:8000`, which has its own saved data.
 
 ## Workflow
 

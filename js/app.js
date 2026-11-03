@@ -69,3 +69,4 @@ async function init() {
 }
 
 init();
+startOffline();
