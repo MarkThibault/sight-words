@@ -128,7 +128,7 @@ function soundOut() {
   const parts = wordParts(current);
   const spans = parts.map(([letters, id]) => {
     const span = document.createElement('span');
-    span.className = id ? 'part' : 'part silent';
+    span.className = isSilentSound(id) ? 'part silent' : 'part';
     span.textContent = letters;
     return span;
   });
@@ -138,7 +138,7 @@ function soundOut() {
   soundingOut = true;
   noteHeard(); // the whole word is said at the end, so this counts as hearing it
 
-  const sounds = parts.map(([, id], i) => [spans[i], id]).filter(([, id]) => id);
+  const sounds = parts.map(([, id], i) => [spans[i], id]).filter(([, id]) => !isSilentSound(id));
   let next = 0;
   const step = () => {
     if (run !== soundRun) return;

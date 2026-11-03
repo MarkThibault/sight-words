@@ -14,7 +14,7 @@ const els = {
   listenCount: $('listen-count'), listenPoints: $('listen-points'), listenBar: $('listen-bar'), listenFill: $('listen-fill'),
   listenAgain: $('listen-again'), listenChoices: $('listen-choices'),
   build: $('build'), buildBtn: $('build-btn'), buildNote: $('build-note'), buildHome: $('build-home-btn'),
-  buildCount: $('build-count'), buildBar: $('build-bar'), buildFill: $('build-fill'),
+  buildCount: $('build-count'), buildPoints: $('build-points'), buildBar: $('build-bar'), buildFill: $('build-fill'),
   buildAgain: $('build-again'), buildSlots: $('build-slots'), buildTiles: $('build-tiles'),
   panel: $('parent-panel'), panelSummary: $('panel-summary'), panelList: $('panel-list'),
   panelClose: $('panel-close'), reset: $('reset-btn'), panelActions: $('panel-actions'),

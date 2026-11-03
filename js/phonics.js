@@ -54,15 +54,17 @@ const SOUNDS = {
   ZH: { as: 's in treasure', say: 'zhuh' },
   KS: { as: 'x in box', say: 'ks' },
   KW: { as: 'qu in queen', say: 'kwuh' },
+  // Silent letters: what to say for one in Build the word, like "silent e". Sound it out still skips them.
+  SILENT_E: { as: 'say "silent e", for the e in like, are', say: 'silent e', silent: true },
 };
 
-// Each word is a list of [letters, sound ID]. An empty sound ID is a silent letter: shown faded, not spoken.
+// Each word is a list of [letters, sound ID]. A silent letter uses a silent sound ID like SILENT_E: it's shown faded.
 // A word that isn't listed here has no "Sound it out" button. recorder.html lists the words still missing.
 const WORD_PARTS = {
   a: [['a', 'UH']],
   all: [['a', 'AW'], ['ll', 'L']],
   and: [['a', 'A'], ['n', 'N'], ['d', 'D']],
-  are: [['ar', 'AR'], ['e', '']],
+  are: [['ar', 'AR'], ['e', 'SILENT_E']],
   as: [['a', 'A'], ['s', 'Z']],
   at: [['a', 'A'], ['t', 'T']],
   be: [['b', 'B'], ['e', 'EE']],
@@ -75,7 +77,7 @@ const WORD_PARTS = {
   I: [['I', 'IE']],
   is: [['i', 'I'], ['s', 'Z']],
   it: [['i', 'I'], ['t', 'T']],
-  like: [['l', 'L'], ['i', 'IE'], ['k', 'K'], ['e', '']],
+  like: [['l', 'L'], ['i', 'IE'], ['k', 'K'], ['e', 'SILENT_E']],
   me: [['m', 'M'], ['e', 'EE']],
   my: [['m', 'M'], ['y', 'IE']],
   of: [['o', 'UH'], ['f', 'V']],
@@ -94,5 +96,7 @@ const WORD_PARTS = {
 
 const wordParts = (word) => WORD_PARTS[word] || null;
 
-// The sound IDs a word uses, in order, without silent letters.
+// The sound IDs a word uses, in order, including silent letters.
 const wordSounds = (word) => (wordParts(word) || []).map(([, id]) => id).filter(Boolean);
+
+const isSilentSound = (id) => !id || Boolean(SOUNDS[id] && SOUNDS[id].silent);
