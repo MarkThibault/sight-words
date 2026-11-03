@@ -52,6 +52,7 @@ async function init() {
   els.voiceTest.addEventListener('click', () => speak('Let’s read! the, and, you'));
   els.trophyBtn.addEventListener('click', openTrophies);
   els.trophyClose.addEventListener('click', () => els.trophyPanel.close());
+  els.trophyPanel.addEventListener('close', () => applyUpdate());
   els.panelClose.addEventListener('click', () => els.panel.close());
   els.panel.addEventListener('close', () => showScreen('home'));
   els.reset.addEventListener('click', () => showResetConfirm(true));
