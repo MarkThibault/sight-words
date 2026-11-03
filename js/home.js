@@ -7,7 +7,10 @@ function showScreen(name) {
   els.practice.hidden = name !== 'practice';
   els.listen.hidden = name !== 'listen';
   els.build.hidden = name !== 'build';
-  if (name === 'home') renderHome();
+  if (name === 'home') {
+    renderHome();
+    homeShown();
+  }
 }
 
 function renderHome() {

@@ -24,6 +24,10 @@ const BUILD_MIN_WORD_POINTS = 1; // ...but never below this
 const BUILD_NEXT_MS = 800;     // the pause after the finished word has been said
 const CHEERS = ['Great job!', 'Awesome!', 'You did it!', 'Super reader!', 'Way to go!', 'Fantastic!'];
 const STICKER_MIN_SIZE = 36;    // stickers shrink down to this to stay off the buttons, then start to overlap them
+const UPDATE_CHECK_MS = 5 * 60 * 1000; // how often the home screen looks for a new version
+const UPDATE_MESSAGE_MS = 900;  // how long "Updating…" shows before the page fades
+const UPDATE_FADE_MS = 400;     // the fade before reloading; matches html::after in style.css
+const UPDATE_RELOAD_WAIT_MS = 3000; // reloads anyway if the new version hasn't taken over by then
 const STICKER_COLORS = ['#e03131', '#e8590c', '#e67700', '#2f9e44', '#0c8599', '#1971c2', '#7048e8', '#c2255c'];
 // Surprise stickers: one is picked at random when a word is learned, then saved with that word.
 const STICKER_EMOJI = [

@@ -47,8 +47,12 @@ self.addEventListener('install', (event) => {
     await saveApp(cache);
     await saveRecordings(cache);
     await saveFont().catch(() => {});
-    await self.skipWaiting();
   })());
+});
+
+// A new version waits until the app asks it to take over (see js/offline.js).
+self.addEventListener('message', (event) => {
+  if (event.data === 'activate') self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {

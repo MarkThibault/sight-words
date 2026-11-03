@@ -109,7 +109,8 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `build.js` | The Build the word game |
 | `trophies.js` | The trophies pop-up on the home screen |
 | `panel.js` | Grown-up corner |
-| `offline.js` | Turning on offline play and picking up new versions |
+| `offline.js` | Turning on offline play and offering new versions |
+| `devtools.js` | Developer tools, only on localhost |
 | `app.js` | Start up and button wiring |
 | `recorder.js` | The sound recorder page (`recorder.html`) |
 
@@ -135,12 +136,16 @@ Sight Words can be installed on a phone or tablet and played without internet:
 - **iPad / iPhone:** open the site in Safari, then **Share → Add to Home Screen**.
 - **Android:** open the site in Chrome, then **⋮ → Add to Home screen** or **Install app**.
 
-The app and recordings are saved the first time the site is opened online, so give it a moment before going offline. A new version downloads when the app is opened online, and takes over the next time it's reopened.
+The app and recordings are saved the first time the site is opened online, so give it a moment before going offline. When online, the app looks for a new version when it's opened and when the home screen appears, at most every 5 minutes. A new version downloads in the background, with "Downloading new version" showing where the version number is on the home screen. Then an **Update to latest version** button appears. Tapping it shows "Updating…" and fades the app out and back in. The update also happens by itself the next time the app is closed and reopened, unless a game or pop-up is open, and then the button stays on offer.
 
 **Saved progress stays on each device, at this web address:**
 - On iPad and iPhone, the home-screen app usually keeps its own progress, separate from Safari, so it starts fresh.
 - Removing the app usually erases its progress.
 - Moving the site to a new address starts fresh.
+
+## Developer tools
+
+When the app runs at `http://localhost:8000`, a **🛠️** button appears below **⚙️** on the home screen. It previews the update statuses: Normal, Downloading, Update ready and Updating. The **Update to latest version** button works in the preview too. Updating plays the real message and fades, with a plain reload in place of a new version. Saved progress isn't changed.
 
 ## Publishing on GitHub Pages
 

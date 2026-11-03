@@ -8,6 +8,16 @@
   <meta name="apple-mobile-web-app-title" content="Sight Words">
   <meta name="theme-color" content="#fff6e0">
   <title>Sight Words</title>
+  <script>
+    // Coming back from an update (see js/offline.js): stay covered from the first frame until the app is ready to fade in.
+    try {
+      if (sessionStorage.getItem('sightWords.updating')) {
+        sessionStorage.removeItem('sightWords.updating');
+        document.documentElement.classList.add('update-cover');
+        setTimeout(() => document.documentElement.classList.remove('update-cover'), 5000); // never stuck if start up fails
+      }
+    } catch (e) { /* no flash protection, but nothing breaks */ }
+  </script>
   <link rel="icon" href="icons/favicon-32.png?v=1.9.1" type="image/png" sizes="32x32">
   <link rel="icon" href="icons/favicon-64.png?v=1.9.1" type="image/png" sizes="64x64">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1.9.1">
@@ -43,8 +53,18 @@
     <button id="trophy-btn" class="settings-btn trophy-btn" aria-label="My trophies" title="My trophies">🏆</button>
     <button id="shuffle-btn" class="settings-btn shuffle-btn" aria-label="Shuffle the stickers" title="Shuffle the stickers" hidden><span id="shuffle-die" class="die">🎲</span><span id="shuffle-shadow" class="die-shadow"></span></button>
     <!-- The sound recorder: only shown when running on this computer (it saves into the project folder) -->
+    <!-- Developer tools: only shown on localhost (see js/devtools.js) -->
+    <button id="dev-btn" class="settings-btn dev-btn" aria-label="Developer tools" title="Developer tools" hidden>🛠️</button>
+    <div id="dev-panel" class="dev-panel" role="group" aria-label="Preview update status" hidden>
+      <span>Update status:</span>
+      <button data-status="none" aria-pressed="true">Normal</button>
+      <button data-status="downloading" aria-pressed="false">Downloading</button>
+      <button data-status="ready" aria-pressed="false">Update ready</button>
+      <button data-status="updating" aria-pressed="false">Updating</button>
+    </div>
     <a id="recorder-btn" class="settings-btn recorder-btn" href="recorder.html" aria-label="Sound recorder" title="Sound recorder" hidden>🎙️</a>
     <button id="settings-btn" class="settings-btn" aria-label="Grown-up settings (press and hold)" title="Press and hold for grown-up settings">⚙️</button>
+    <button id="update-btn" class="update-btn" hidden>Update to latest version</button>
     <p id="app-version" class="app-version"></p>
   </main>
 
@@ -153,6 +173,7 @@
   <script src="js/trophies.js?v=1.9.1"></script>
   <script src="js/panel.js?v=1.9.1"></script>
   <script src="js/offline.js?v=1.9.1"></script>
+  <script src="js/devtools.js?v=1.9.1"></script>
   <script src="js/app.js?v=1.9.1"></script>
 </body>
 </html>
