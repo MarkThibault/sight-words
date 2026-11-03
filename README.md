@@ -128,3 +128,7 @@ To bump by hand, run `bash .github/scripts/bump-version.sh patch` (or `minor` / 
 4. After a minute, the site is at `https://<your-username>.github.io/<repository-name>/`.
 
 On the tablet, open that address and use **Share → Add to Home Screen** (iPad) or **⋮ → Add to Home screen** (Android) so it opens full-screen like an app. The icon it gets comes from the `icons` folder.
+
+## Future enhancements
+
+- [Automate pull request reviews](docs/review-automation.md)
