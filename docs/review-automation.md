@@ -1,12 +1,12 @@
 # Future enhancement: automate pull request reviews
 
-**Status:** not started.
+**Status:** in progress. Each finished step says so.
 
 The app has no build step or tests, so every pull request is checked by hand. These steps add automatic checks, cheapest first. Each one can ship on its own.
 
 | Step | What it adds | Effort | Cost |
 | --- | --- | --- | --- |
-| 1 | Basic checks on every pull request | About 30 minutes | Free |
+| 1 ✅ | Basic checks on every pull request | About 30 minutes | Free |
 | 2 | Browser tests | A few hours | Free |
 | 3 | Automatic code review | Minutes | May cost something |
 | 4 🟡 | Safety rails on `main` | Minutes | Free |
@@ -16,12 +16,14 @@ The app has no build step or tests, so every pull request is checked by hand. Th
 
 ## 1. Basic checks
 
+**Status:** done, in `.github/workflows/basic-checks.yml` and `.github/scripts/check-site.js`.
+
 Add a GitHub Action that runs on every pull request and passes or fails on:
 
-- **Script errors:** a syntax check on every file in `js/`, for example `node --check`.
-- **Missing recordings:** every word in `words.json` has a clip in `audio/words/`, and every sound used in `WORD_PARTS` has a clip in `audio/sounds/`.
-- **Missing phonics:** every word in `words.json` has an entry in `WORD_PARTS`. This should be a warning, not a failure, because a word without one still works with **Sound it out** hidden.
-- **Broken links:** every local file that `index.html` and `recorder.html` link to exists.
+- ✅ **Script errors:** a syntax check on every file in `js/`, for example `node --check`.
+- ✅ **Missing recordings:** every word in `words.json` has a clip in `audio/words/`, and every sound used in `WORD_PARTS` has a clip in `audio/sounds/`.
+- ✅ **Missing phonics:** every word in `words.json` has an entry in `WORD_PARTS`. This should be a warning, not a failure, because a word without one still works with **Sound it out** hidden.
+- ✅ **Broken links:** every local file that `index.html` and `recorder.html` link to exists.
 
 A missing clip is the main reason for this step: it fails quietly today, because the app falls back to the device's voice.
 
@@ -49,7 +51,7 @@ These tests can't judge how audio sounds or how a game feels, so keep trying cha
 
 ## 4. Safety rails on `main`
 
-**Status:** the template and label check are done. The bump workflow is ready for branch protection, which isn't on yet. The steps are below.
+**Status:** the template and label check are done. Branch protection is on hold, because the setup isn't worth it yet. Without it, a pull request can still be merged with a failing check, so look at the checks before merging. Pick this up if that becomes a problem. The bump workflow is already ready for it, and the steps are below.
 
 - ✅ **A pull request template:** add `.github/pull_request_template.md` with a short checklist, such as "tried on tablet", "played the sounds" and "added a `minor` label if it's a new feature".
 - ✅ **A label check:** an Action fails until the pull request has a `patch`, `minor` or `major` label, so the version bump is a deliberate choice. The `patch` label doesn't exist yet, and `.github/workflows/bump-version.yml` would need to create it.
@@ -61,7 +63,7 @@ These tests can't judge how audio sounds or how a game feels, so keep trying cha
 
 To turn it on, after the checks and this workflow have merged:
 
-1. **Make a key,** outside the project folder so it can't be committed: `ssh-keygen -t ed25519 -N "" -C "sight-words version bump" -f bump_key`
+1. **Make a key,** outside the project folder so it can't be committed: `ssh-keygen -t ed25519 -C "sight-words version bump" -f bump_key`, pressing Enter twice for no passphrase
 2. **Add the public half:** in the repository's **Settings > Deploy keys > Add deploy key**, paste `bump_key.pub` and tick **Allow write access**.
 3. **Add the private half:** in **Settings > Secrets and variables > Actions > New repository secret**, name it `BUMP_DEPLOY_KEY` and paste `bump_key`. Then delete both files.
 4. **Merge a pull request** and check that **Bump version** still passes.
