@@ -20,6 +20,12 @@ async function init() {
     stopRound();
     showScreen('home');
   });
+  els.listenBtn.addEventListener('click', startListen);
+  els.listenHome.addEventListener('click', () => {
+    stopListen();
+    showScreen('home');
+  });
+  els.listenAgain.addEventListener('click', hearListenWord);
   els.card.addEventListener('click', hearWord);
   els.soundOut.addEventListener('click', soundOut);
   els.know.addEventListener('click', knowIt);

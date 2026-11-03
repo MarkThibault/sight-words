@@ -5,6 +5,7 @@
 function showScreen(name) {
   els.home.hidden = name !== 'home';
   els.practice.hidden = name !== 'practice';
+  els.listen.hidden = name !== 'listen';
   if (name === 'home') renderHome();
 }
 
@@ -18,6 +19,10 @@ function renderHome() {
   const best = bestTime();
   els.bestTime.textContent = best === null ? 'No best time yet' : `Best: ${formatTime(best)}`;
 
+  const starsNeeded = LISTEN_UNLOCK_STARS - knownWords().length;
+  els.listenBtn.disabled = starsNeeded > 0;
+  els.listenNote.textContent = starsNeeded > 0 ? `🔒 ${plural(starsNeeded, 'more star')}` : 'Find the word';
+
   renderSummary();
   renderStickers();
 }
@@ -30,6 +35,17 @@ function renderSummary() {
     els.stickerHint.textContent = known === 0
       ? 'Tap “I know it!” to earn stickers'
       : `You have ${plural(known, 'sticker')}!`;
+    return;
+  }
+
+  if (last.mode === 'listen') {
+    const main = document.createElement('span');
+    main.className = 'summary-main';
+    main.textContent = `🎉 You found all ${plural(last.total, 'word')}!`;
+    const score = document.createElement('span');
+    score.className = 'summary-time';
+    score.textContent = `👂 ${last.firstTry} on the first try`;
+    els.stickerHint.replaceChildren(main, score);
     return;
   }
 
