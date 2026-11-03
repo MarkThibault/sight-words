@@ -23,9 +23,11 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
+      # The deploy key lets the bump past the branch protection on main. Without the secret, this uses the normal token.
       - uses: actions/checkout@v4
         with:
           ref: main
+          ssh-key: ${{ secrets.BUMP_DEPLOY_KEY }}
 
       - name: Pick the bump size from the PR labels
         id: size
