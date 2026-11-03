@@ -9,7 +9,7 @@ The app has no build step or tests, so every pull request is checked by hand. Th
 | 1 | Basic checks on every pull request | About 30 minutes | Free |
 | 2 | Browser tests | A few hours | Free |
 | 3 | Automatic code review | Minutes | May cost something |
-| 4 | Safety rails on `main` | Minutes | Free |
+| 4 🟡 | Safety rails on `main` | Minutes | Free |
 | 5 | A preview link for each pull request | Under an hour | Check the service's free plan |
 
 **Suggested order:** step 1, then the template and label check from step 4, then step 2. Step 3 works better once the checks handle the routine mistakes. Add the rest of step 4 once the checks are reliable.
@@ -51,8 +51,8 @@ These tests can't judge how audio sounds or how a game feels, so keep trying cha
 
 **Status:** the template and label check are done. Branch protection isn't on yet, because it's a repository setting and needs the warning below solved first.
 
-- **A pull request template:** add `.github/pull_request_template.md` with a short checklist, such as "tried on tablet", "played the sounds" and "added a `minor` label if it's a new feature".
-- **A label check:** an Action fails until the pull request has a `patch`, `minor` or `major` label, so the version bump is a deliberate choice. The `patch` label doesn't exist yet, and `.github/workflows/bump-version.yml` would need to create it.
+- ✅ **A pull request template:** add `.github/pull_request_template.md` with a short checklist, such as "tried on tablet", "played the sounds" and "added a `minor` label if it's a new feature".
+- ✅ **A label check:** an Action fails until the pull request has a `patch`, `minor` or `major` label, so the version bump is a deliberate choice. The `patch` label doesn't exist yet, and `.github/workflows/bump-version.yml` would need to create it.
 - **Branch protection:** require the checks to pass before merging.
 
 **Watch out:** the bump Action pushes its commit and tag straight to `main`. Branch protection has to allow that, or the version bump will fail after a merge.
