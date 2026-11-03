@@ -6,7 +6,7 @@ The app has no build step or tests, so every pull request is checked by hand. Th
 
 | Step | What it adds | Effort | Cost |
 | --- | --- | --- | --- |
-| 1 | Basic checks on every pull request | About 30 minutes | Free |
+| 1 ✅ | Basic checks on every pull request | About 30 minutes | Free |
 | 2 | Browser tests | A few hours | Free |
 | 3 | Automatic code review | Minutes | May cost something |
 | 4 | Safety rails on `main` | Minutes | Free |
@@ -20,10 +20,10 @@ The app has no build step or tests, so every pull request is checked by hand. Th
 
 Add a GitHub Action that runs on every pull request and passes or fails on:
 
-- **Script errors:** a syntax check on every file in `js/`, for example `node --check`.
-- **Missing recordings:** every word in `words.json` has a clip in `audio/words/`, and every sound used in `WORD_PARTS` has a clip in `audio/sounds/`.
-- **Missing phonics:** every word in `words.json` has an entry in `WORD_PARTS`. This should be a warning, not a failure, because a word without one still works with **Sound it out** hidden.
-- **Broken links:** every local file that `index.html` and `recorder.html` link to exists.
+- ✅ **Script errors:** a syntax check on every file in `js/`, for example `node --check`.
+- ✅ **Missing recordings:** every word in `words.json` has a clip in `audio/words/`, and every sound used in `WORD_PARTS` has a clip in `audio/sounds/`.
+- ✅ **Missing phonics:** every word in `words.json` has an entry in `WORD_PARTS`. This should be a warning, not a failure, because a word without one still works with **Sound it out** hidden.
+- ✅ **Broken links:** every local file that `index.html` and `recorder.html` link to exists.
 
 A missing clip is the main reason for this step: it fails quietly today, because the app falls back to the device's voice.
 
