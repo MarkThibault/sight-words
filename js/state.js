@@ -16,6 +16,7 @@ const els = {
   build: $('build'), buildBtn: $('build-btn'), buildNote: $('build-note'), buildHome: $('build-home-btn'),
   buildCount: $('build-count'), buildPoints: $('build-points'), buildBar: $('build-bar'), buildFill: $('build-fill'),
   buildAgain: $('build-again'), buildSlots: $('build-slots'), buildTiles: $('build-tiles'),
+  trophyBtn: $('trophy-btn'), trophyPanel: $('trophy-panel'), trophyList: $('trophy-list'), trophyClose: $('trophy-close'),
   panel: $('parent-panel'), panelSummary: $('panel-summary'), panelList: $('panel-list'),
   panelClose: $('panel-close'), reset: $('reset-btn'), panelActions: $('panel-actions'),
   resetConfirm: $('reset-confirm'), resetYes: $('reset-yes'), resetCancel: $('reset-cancel'),

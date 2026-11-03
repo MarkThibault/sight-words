@@ -22,6 +22,10 @@ Below a dotted line are the separate games:
 - **👂 Listen & tap** — hear a word, then tap it among four choices. A wrong tap plays a soft sound, fades that choice and says the word again, until they find it. Each word is worth up to 4 points, minus 1 for each wrong tap, and the game's total shows at the end. It uses only starred words and opens once 4 words have stars. It's practice only, so it never changes stars or stickers.
 - **🧱 Build the word** — hear a word, then pick out its sound parts in order ("th" + "e") by tapping them or dragging them onto the word. Extra tiles from other sight words don't belong: two or three per word, and more for short words so there are always at least 5 tiles (change these with `BUILD_MIN_TILES`, `BUILD_EXTRA_MIN` and `BUILD_EXTRA_MAX` in `js/config.js`). The parts show faintly as a guide, and each placed part plays its sound, including the last one before the whole word is said. A silent letter plays its own recording, like "silent e". A wrong tile wiggles, plays a soft sound, and then plays the sound of the part they're looking for. It uses only starred words, including one-part words like "a" and "I" (where the job is picking the right tile from the extras), and opens once 4 words have stars. Each word is worth up to 5 points, minus 1 for each wrong tile, and never less than 1. The game's total shows at the end. It's practice only too, so it never changes stars or stickers.
 
+## Trophies
+
+The **🏆** button in the top-left corner of the home screen shows starred words out of the total, the best time from **⏱ Timed run**, and the best score from **👂 Listen & tap** and **🧱 Build the word**. A new record shows on the home screen after the round, with a medal flying into the 🏆. Records are saved with progress, so **Reset all progress** clears them too.
+
 ## Adding words
 
 Edit `words.json`. It's a plain list:
@@ -103,6 +107,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `practice.js` | Rounds, the timer, the word card and sounding words out |
 | `listen.js` | The Listen & tap game |
 | `build.js` | The Build the word game |
+| `trophies.js` | The trophies pop-up on the home screen |
 | `panel.js` | Grown-up corner |
 | `app.js` | Start up and button wiring |
 | `recorder.js` | The sound recorder page (`recorder.html`) |
