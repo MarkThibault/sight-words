@@ -26,6 +26,7 @@
       <div class="more-modes">
         <button id="missing-btn" class="mode-btn missing" hidden>🎯 Missing words</button>
         <button id="timed-btn" class="mode-btn timed" disabled>⏱ Timed run<small id="best-time"></small></button>
+        <button id="listen-btn" class="mode-btn listen" disabled>👂 Listen &amp; tap<small id="listen-note"></small></button>
       </div>
       <p id="sticker-hint" class="sticker-hint" aria-live="polite"></p>
     </div>
@@ -58,6 +59,19 @@
       <button id="know-btn" class="big-btn know">I know it! ⭐</button>
       <button id="next-btn" class="big-btn next">Next ➜</button>
     </div>
+  </main>
+
+  <!-- Listen & tap: hear a word, then find it among the choices -->
+  <main id="listen" class="screen" hidden>
+    <div class="practice-top">
+      <button id="listen-home-btn" class="icon-btn" aria-label="Home">🏠</button>
+      <div id="listen-count" class="pill"></div>
+    </div>
+    <div id="listen-bar" class="round-bar" role="progressbar" aria-label="Words in this game" aria-valuemin="0">
+      <div id="listen-fill" class="round-fill"></div>
+    </div>
+    <button id="listen-again" class="mode-btn listen listen-again">🔊 Hear it again</button>
+    <div id="listen-choices" class="listen-choices"></div>
   </main>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -100,6 +114,7 @@
   <script src="js/stickers.js?v=1.2.2"></script>
   <script src="js/home.js?v=1.2.2"></script>
   <script src="js/practice.js?v=1.2.2"></script>
+  <script src="js/listen.js?v=1.2.2"></script>
   <script src="js/panel.js?v=1.2.2"></script>
   <script src="js/app.js?v=1.2.2"></script>
 </body>

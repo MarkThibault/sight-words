@@ -11,6 +11,9 @@ const OFF_WORDS_KEY = 'sightWords.offWords.v1'; // kept apart from progress, so 
 const SPEECH_RATE = 0.9;     // a little slower than normal speech (much slower sounds robotic)
 const SOUND_RATE = 0.75;     // sounds not recorded yet, said by the device's voice when sounding a word out
 const SOUND_GAP_MS = 300;    // the pause between sounds when sounding a word out
+const LISTEN_UNLOCK_STARS = 4; // stars needed before Listen & tap opens (it uses only starred words)
+const LISTEN_CHOICES = 4;      // words to choose from, at most LISTEN_UNLOCK_STARS
+const LISTEN_NEXT_MS = 1300;   // the pause after a right answer, so the word can be heard again
 const CHEERS = ['Great job!', 'Awesome!', 'You did it!', 'Super reader!', 'Way to go!', 'Fantastic!'];
 const STICKER_COLORS = ['#e03131', '#e8590c', '#e67700', '#2f9e44', '#0c8599', '#1971c2', '#7048e8', '#c2255c'];
 // Surprise stickers: one is picked at random when a word is learned, then saved with that word.

@@ -14,6 +14,7 @@ A simple sight-word practice app for young readers. Plain HTML, CSS and JavaScri
 - **Let's Read! ▶** — a round of all the words.
 - **🎯 Missing words** — a round of only the words without a star yet. (Shown once some, but not all, words have stars.)
 - **⏱ Timed run** — a round of all the words against the clock. The best time is saved; adding or removing words starts a fresh record.
+- **👂 Listen & tap** — hear a word, then tap it among four choices. A wrong tap fades that choice and says the word again, until they find it. It uses only starred words and opens once 4 words have stars. It's practice only, so it never changes stars or stickers.
 
 ## Adding words
 
@@ -94,6 +95,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `stickers.js` | Drawing stickers, laying them out on the home screen, and dragging them around |
 | `home.js` | Home screen and switching screens |
 | `practice.js` | Rounds, the timer, the word card and sounding words out |
+| `listen.js` | The Listen & tap game |
 | `panel.js` | Grown-up corner |
 | `app.js` | Start up and button wiring |
 | `recorder.js` | The sound recorder page (`recorder.html`) |

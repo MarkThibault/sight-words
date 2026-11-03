@@ -98,6 +98,7 @@ h1 {
 .mode-btn small { color: var(--ink); font-size: 0.95rem; font-weight: 400; }
 .missing { --mode: var(--green-dark); }
 .timed { --mode: var(--blue-dark); }
+.listen { --mode: #0c8599; }
 
 .progress {
   position: absolute;
@@ -319,6 +320,32 @@ h1 {
 
 .actions { display: flex; gap: 20px; width: min(100%, 900px); padding-bottom: 8px; }
 .actions .big-btn { flex: 1; }
+
+/* Listen & tap */
+#listen { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.listen-again { flex-shrink: 0; }
+.listen-choices {
+  flex: 1;
+  min-height: 0;
+  width: min(100%, 900px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 1fr;
+  gap: 20px;
+  padding-bottom: 12px;
+}
+.listen-choice {
+  min-height: 0;
+  background: #fff;
+  border: 6px solid var(--yellow);
+  border-radius: 36px;
+  box-shadow: 0 8px 0 var(--yellow-dark);
+  font-size: clamp(2.4rem, 11vmin, 6rem);
+  font-weight: 700;
+  transition: opacity 0.2s, background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.listen-choice.wrong { opacity: 0.35; cursor: default; }
+.listen-choice.right { background: #ebfbee; border-color: var(--green); box-shadow: 0 8px 0 var(--green-dark); color: var(--green-dark); }
 
 @media (max-width: 560px) {
   .home-center { padding: 20px 16px 24px; }
