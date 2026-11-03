@@ -48,7 +48,6 @@
         <button id="build-btn" class="game-btn build" disabled>🧱 Build the word<small id="build-note"></small></button>
       </div>
     </div>
-    <div id="progress" class="progress"></div>
     <!-- Grown-ups: press and hold this to open the settings panel -->
     <button id="trophy-btn" class="settings-btn trophy-btn" aria-label="My trophies" title="My trophies">🏆</button>
     <button id="shuffle-btn" class="settings-btn shuffle-btn" aria-label="Shuffle the stickers" title="Shuffle the stickers" hidden><span id="shuffle-die" class="die">🎲</span><span id="shuffle-shadow" class="die-shadow"></span></button>
@@ -64,8 +63,13 @@
     </div>
     <a id="recorder-btn" class="settings-btn recorder-btn" href="recorder.html" aria-label="Sound recorder" title="Sound recorder" hidden>🎙️</a>
     <button id="settings-btn" class="settings-btn" aria-label="Grown-up settings (press and hold)" title="Press and hold for grown-up settings">⚙️</button>
-    <button id="update-btn" class="update-btn" hidden>Update to latest version</button>
-    <p id="app-version" class="app-version"></p>
+    <div class="home-footer">
+      <div id="progress" class="progress"></div>
+      <div class="update-status">
+        <button id="update-btn" class="update-btn" aria-label="Update to latest version" hidden>Update<span class="update-btn-more"> to latest version</span></button>
+        <p id="app-version" class="app-version"></p>
+      </div>
+    </div>
   </main>
 
   <!-- Practice: one word at a time -->
