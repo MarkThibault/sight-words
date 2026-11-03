@@ -50,7 +50,9 @@ function renderSummary() {
     main.textContent = `🎉 You ${listening ? 'found' : 'built'} all ${plural(last.total, 'word')}!`;
     const score = document.createElement('span');
     score.className = 'summary-time';
-    score.textContent = `${listening ? '👂' : '🧱'} ${last.firstTry} on the first try`;
+    score.textContent = listening
+      ? `🏅 ${last.points} of ${last.maxPoints} points`
+      : `🧱 ${last.firstTry} on the first try`;
     els.stickerHint.replaceChildren(main, score);
     return;
   }

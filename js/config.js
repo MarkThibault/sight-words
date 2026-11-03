@@ -13,6 +13,7 @@ const SOUND_RATE = 0.75;     // sounds not recorded yet, said by the device's vo
 const SOUND_GAP_MS = 300;    // the pause between sounds when sounding a word out
 const LISTEN_UNLOCK_STARS = 4; // stars needed before Listen & tap opens (it uses only starred words)
 const LISTEN_CHOICES = 4;      // words to choose from, at most LISTEN_UNLOCK_STARS
+const LISTEN_WORD_POINTS = 4;  // points for finding a word, minus 1 for each wrong tap first
 const LISTEN_NEXT_MS = 1300;   // the pause after a right answer, so the word can be heard again
 const BUILD_UNLOCK_WORDS = 4;  // starred words with two or more parts needed before Build the word opens
 const BUILD_EXTRA_MIN = 2;     // tiles that don't belong, added to make it harder: at least this many...

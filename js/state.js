@@ -11,7 +11,7 @@ const els = {
   roundBar: $('round-bar'), roundFill: $('round-fill'), card: $('card'), word: $('word'), star: $('card-star'),
   hint: $('hint'), soundOut: $('sound-out-btn'), know: $('know-btn'), next: $('next-btn'), toast: $('toast'),
   listen: $('listen'), listenBtn: $('listen-btn'), listenNote: $('listen-note'), listenHome: $('listen-home-btn'),
-  listenCount: $('listen-count'), listenBar: $('listen-bar'), listenFill: $('listen-fill'),
+  listenCount: $('listen-count'), listenPoints: $('listen-points'), listenBar: $('listen-bar'), listenFill: $('listen-fill'),
   listenAgain: $('listen-again'), listenChoices: $('listen-choices'),
   build: $('build'), buildBtn: $('build-btn'), buildNote: $('build-note'), buildHome: $('build-home-btn'),
   buildCount: $('build-count'), buildBar: $('build-bar'), buildFill: $('build-fill'),
