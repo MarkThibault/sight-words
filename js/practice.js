@@ -59,7 +59,7 @@ function stopRound() {
 }
 
 function updateTimer() {
-  if (round) els.timer.textContent = `⏱ ${formatTime(performance.now() - round.startedAt)}`;
+  if (round) els.timer.textContent = `⏱️ ${formatTime(performance.now() - round.startedAt)}`;
 }
 
 // ---------- Word card ----------
