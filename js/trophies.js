@@ -64,6 +64,7 @@ function renderTrophyMeter() {
 
 // After a game: the best medal flies into the meter, or a new trophy into the count.
 function flyGameMedal(result) {
+  playEffect(result.newTrophy ? 'trophy' : 'medal');
   if (result.newTrophy) flyMedal('🏆', els.trophyCount);
   else flyMedal(result.emoji, els.homeMedal);
 }

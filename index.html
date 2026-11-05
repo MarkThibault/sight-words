@@ -54,12 +54,17 @@
     <!-- The sound recorder: only shown when running on this computer (it saves into the project folder) -->
     <!-- Developer tools: only shown on localhost (see js/devtools.js) -->
     <button id="dev-btn" class="settings-btn dev-btn" aria-label="Developer tools" title="Developer tools" hidden>🛠️</button>
-    <div id="dev-panel" class="dev-panel" role="group" aria-label="Preview update status" hidden>
-      <span>Update status:</span>
-      <button data-status="none" aria-pressed="true">Normal</button>
-      <button data-status="downloading" aria-pressed="false">Downloading</button>
-      <button data-status="ready" aria-pressed="false">Update ready</button>
-      <button data-status="updating" aria-pressed="false">Updating</button>
+    <div id="dev-panel" class="dev-panel" role="group" aria-label="Developer tools" hidden>
+      <div class="dev-row">
+        <span>Update status:</span>
+        <button data-status="none" aria-pressed="true">Normal</button>
+        <button data-status="downloading" aria-pressed="false">Downloading</button>
+        <button data-status="ready" aria-pressed="false">Update ready</button>
+        <button data-status="updating" aria-pressed="false">Updating</button>
+      </div>
+      <div class="dev-row">
+        <a class="dev-link" href="sounds.html">🔊 Sound effects</a>
+      </div>
     </div>
     <a id="recorder-btn" class="settings-btn recorder-btn" href="recorder.html" aria-label="Sound recorder" title="Sound recorder" hidden>🎙️</a>
     <button id="settings-btn" class="settings-btn" aria-label="Grown-up settings (press and hold)" title="Press and hold for grown-up settings">⚙️</button>
@@ -217,6 +222,7 @@
   <script src="js/speech.js?v=1.14.2"></script>
   <script src="js/phonics.js?v=1.14.2"></script>
   <script src="js/audio.js?v=1.14.2"></script>
+  <script src="js/sound-effects.js?v=1.14.2"></script>
   <script src="js/effects.js?v=1.14.2"></script>
   <script src="js/stickers.js?v=1.14.2"></script>
   <script src="js/home.js?v=1.14.2"></script>

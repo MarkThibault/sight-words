@@ -12,6 +12,7 @@ const GROWNUP_TIP_KEY = 'sightWords.grownupTipSeen.v1'; // the "press and hold â
 const SPEECH_RATE = 0.9;     // a little slower than normal speech (much slower sounds robotic)
 const SOUND_RATE = 0.75;     // sounds not recorded yet, said by the device's voice when sounding a word out
 const SOUND_GAP_MS = 300;    // the pause between sounds when sounding a word out
+const SOUND_EFFECTS_VOLUME = 1; // how loud the sound effects in js/sound-effects.js are (0.5 is half as loud)
 const ROUND_MAX_WORDS = 10;    // the most words in a round of Let's Read or Missing words (a Timed run uses them all)
 const GAME_MAX_WORDS = 8;      // the most words in a game of Listen & tap or Build the word
 // The medals in a game, and the share of its possible points that earns each one. Bronze has to stay at or below
@@ -24,7 +25,7 @@ const MEDALS_PER_TROPHY = 20;  // the most games a trophy takes, with bronze eve
 const LISTEN_UNLOCK_STARS = 4; // stars needed before Listen & tap opens (it uses only starred words)
 const LISTEN_CHOICES = 4;      // words to choose from, at most LISTEN_UNLOCK_STARS
 const LISTEN_WORD_POINTS = 4;  // points for finding a word, minus 1 for each wrong tap first
-const LISTEN_NEXT_MS = 1300;   // the pause after a right answer, so the word can be heard again
+const LISTEN_NEXT_MS = 1700;   // the pause after a right answer, so the right-answer sound and the word can be heard
 const BUILD_UNLOCK_STARS = 4;  // stars needed before Build the word opens (it uses only starred words)
 const BUILD_MIN_TILES = 5;     // every word shows at least this many tiles, counting its own parts
 const BUILD_EXTRA_MIN = 2;     // tiles that don't belong, added to make it harder: at least this many...
