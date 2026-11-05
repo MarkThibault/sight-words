@@ -1,6 +1,6 @@
 'use strict';
 
-// Trophies (the 🏆 button on the home screen): what's been accomplished so far.
+// Trophies (the meter on the home screen): what's been accomplished so far, and the medal meters that lead to them.
 
 const NOT_YET = 'Not yet';
 
@@ -9,18 +9,77 @@ function openTrophies() {
   els.trophyPanel.showModal();
 }
 
-// A new record: a medal pops up over the home screen and flies into the 🏆 button.
-function flyMedal() {
+// ---------- Medals ----------
+
+const medalsForScore = (points, maxPoints) => GAME_MEDALS.filter(({ share }) => points / maxPoints >= share).length;
+
+// The bar in a game, with each medal at the share of the points that earns it. `lit` medals are earned so far.
+function renderGameMeter(meter, fraction, lit) {
+  if (!meter.firstChild) {
+    meter.innerHTML = '<div class="meter-track"><div class="meter-fill"></div></div>';
+    meter.append(...GAME_MEDALS.map(({ emoji, share }) => {
+      const slot = document.createElement('span');
+      slot.className = 'meter-slot';
+      slot.style.left = `${share * 100}%`;
+      const medal = document.createElement('span');
+      medal.textContent = emoji;
+      slot.append(medal);
+      return slot;
+    }));
+  }
+  meter.querySelector('.meter-fill').style.width = `${fraction * 100}%`;
+  meter.querySelectorAll('.meter-slot').forEach((slot, i) => {
+    slot.classList.toggle('earned', i < lit);
+    slot.classList.remove('pop'); // or the last game's medal would pop again when this screen next shows
+  });
+}
+
+// Shows the game's points on its bar, and pops any medal just reached. A medal only counts once the game is finished,
+// so when `wordDone` is the last word, this saves them. Returns the result: { emoji, name, count, newTrophy }.
+function updateGameMeter(game, meter, wordDone = false) {
+  const lit = medalsForScore(game.points, game.maxPoints);
+  renderGameMeter(meter, game.points / game.maxPoints, lit);
+  meter.setAttribute('aria-valuenow', String(game.points));
+  const slots = meter.querySelectorAll('.meter-slot');
+  for (let i = game.lit; i < lit; i++) playAnim(slots[i], 'pop');
+  game.lit = lit;
+  if (wordDone && game.deck.length === 0 && !game.result) {
+    const count = Math.max(lit, 1); // finishing always earns bronze
+    const { emoji, name } = GAME_MEDALS[count - 1];
+    game.result = { emoji, name, count, newTrophy: earnMedals(count) };
+  }
+  return game.result;
+}
+
+const medalToast = (result) => `${result.emoji} A ${result.name} medal!`;
+
+// On the home screen: a medal, a bar filling up to the next trophy, and how many trophies so far.
+function renderTrophyMeter() {
+  const toward = medalsTowardTrophy();
+  els.homeMedal.classList.toggle('waiting', toward === 0);
+  els.homeFill.style.width = `${(toward / MEDALS_PER_TROPHY) * 100}%`;
+  els.trophyCount.textContent = `🏆 ${trophyCount()}`;
+  els.trophyMeter.setAttribute('aria-label', `My trophies: ${trophyCount()}, and ${toward} of ${MEDALS_PER_TROPHY} medals toward the next`);
+}
+
+// After a game: the best medal flies into the meter, or a new trophy into the count.
+function flyGameMedal(result) {
+  if (result.newTrophy) flyMedal('🏆', els.trophyCount);
+  else flyMedal(result.emoji, els.homeMedal);
+}
+
+// A new record or medal: it pops up over the home screen and flies into the trophy meter.
+function flyMedal(emoji = '🏅', target = els.trophyCount) {
   if (reduceMotion) {
-    playAnim(els.trophyBtn, 'wiggle');
+    playAnim(els.trophyMeter, 'wiggle');
     return;
   }
   const medal = document.createElement('span');
   medal.className = 'flying-medal';
-  medal.textContent = '🏅';
+  medal.textContent = emoji;
   document.body.append(medal);
   const from = els.stickerHint.getBoundingClientRect();
-  const to = els.trophyBtn.getBoundingClientRect();
+  const to = target.getBoundingClientRect();
   const x0 = `${from.left + from.width / 2}px`;
   const y0 = `${from.top + from.height / 2}px`;
   const x1 = `${to.left + to.width / 2}px`;
@@ -33,21 +92,17 @@ function flyMedal() {
   ], { duration: 1600, easing: 'ease-in-out' });
   anim.onfinish = () => {
     medal.remove();
-    playAnim(els.trophyBtn, 'wiggle');
+    playAnim(els.trophyMeter, 'wiggle');
   };
 }
 
 function renderTrophies() {
-  const score = (game) => {
-    const best = bestScore(game);
-    return best && `${best.points} of ${best.maxPoints} points`;
-  };
   const time = bestTime();
   const rows = [
     ['⭐', 'Starred words', `${knownWords().length} of ${state.words.length}`],
     ['⏱', 'Best time', time === null ? null : formatTime(time)],
-    ['👂', 'Listen & tap best score', score('listen')],
-    ['🧱', 'Build the word best score', score('build')],
+    ['🏅', 'Medals', medalCount() || null],
+    ['🏆', 'Trophies', trophyCount() || null],
   ];
   els.trophyList.replaceChildren(...rows.map(([icon, name, value]) => {
     const row = document.createElement('li');

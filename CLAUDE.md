@@ -27,14 +27,15 @@ A sight-word practice app for a 5-year-old, used mostly on a tablet. See `README
 ## Rules the app must keep
 
 - Only **I know it!** earns stars and stickers. Other games are practice and never change them.
-- Reset all progress also clears best times, best scores and sticker spots, but turned-off words stay off.
-- Game rewards are gentle: a wrong answer gets the soft boop and another try, never a failure.
+- Reset all progress also clears best times, medals, trophies and sticker spots, but turned-off words stay off.
+- Game rewards are gentle: a wrong answer gets the soft boop and another try, never a failure. Finishing a game always earns at least bronze, so bronze's share in `GAME_MEDALS` has to stay at or below the lowest possible score.
+- Medals and trophies only come from finishing Listen & tap or Build the word. They never change stars or stickers.
 - Words and sounds play from the recordings in `audio/`, and the device voice is only a fallback. Recorded files aren't generated, so never overwrite or delete them.
 - Every word needs an entry in `WORD_PARTS` in `js/phonics.js`, or it has no Sound it out and can't be used in Build the word. A silent letter uses a silent sound such as `SILENT_E`.
-- Stickers sit above the title and buttons. The 🏆 and 🎲 buttons stay above the stickers.
+- Stickers sit above the title and buttons. The trophy meter and the 🏆 and 🎲 buttons stay above the stickers.
 - The recorder button only shows on localhost.
 - Keep tunable numbers in `js/config.js`.
-- The look stays kid-friendly: the Andika font, chunky rounded buttons and emoji icons. Check phone and tablet sizes, because the home screen can run out of room for stickers.
+- The look stays kid-friendly: the Andika font, chunky rounded buttons and emoji icons. Check phone and tablet sizes, because the home screen can run out of room for stickers. The star count, trophy meter and update statuses share the bottom row on short screens, so check them with the Update button and "Downloading new version" showing.
 
 ## Testing in the browser
 

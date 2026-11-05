@@ -15,6 +15,7 @@ function showScreen(name) {
 
 function renderHome() {
   updateCounters();
+  renderTrophyMeter();
 
   const missing = missingWords().length;
   // Missing words only differs from a full round once some, but not all, words have stars
@@ -47,14 +48,15 @@ function renderSummary() {
   }
 
   if (last.mode === 'listen' || last.mode === 'build') {
-    const listening = last.mode === 'listen';
     const main = document.createElement('span');
     main.className = 'summary-main';
-    main.textContent = `🎉 You ${listening ? 'found' : 'built'} all ${plural(last.total, 'word')}!`;
-    const score = document.createElement('span');
-    score.className = 'summary-time';
-    score.textContent = `${last.newBest ? '🏆 New best score: ' : '🏅 '}${last.points} of ${last.maxPoints} points${last.newBest ? '!' : ''}`;
-    els.stickerHint.replaceChildren(main, score);
+    main.textContent = `🎉 You earned a ${last.result.name} medal!`;
+    const more = document.createElement('span');
+    more.className = 'summary-time';
+    more.textContent = last.result.newTrophy
+      ? `🏆 New trophy! You have ${trophyCount()}!`
+      : `🏅 +${last.result.count} toward your next trophy`;
+    els.stickerHint.replaceChildren(main, more);
     return;
   }
 
@@ -62,6 +64,7 @@ function renderSummary() {
   const main = document.createElement('span');
   main.className = 'summary-main';
   if (n > 0) main.textContent = `🎉 You learned ${plural(n, 'new word')}!`;
+  else if (last.capped) main.textContent = `🎉 You read ${plural(last.total, 'word')}!`;
   else if (last.mode === 'missing') main.textContent = '🎉 You practiced all your missing words!';
   else main.textContent = `🎉 You read all ${last.total} words!`;
   const lines = [main];
@@ -79,6 +82,6 @@ function renderSummary() {
 
 function updateCounters() {
   const stars = knownWords().length;
-  els.progress.textContent = `⭐ ${stars} of ${state.words.length} stars`;
+  els.starCount.innerHTML = `⭐ ${stars}<span class="star-more"> of ${state.words.length} stars</span><span class="star-less">/${state.words.length}</span>`;
   els.mini.textContent = `⭐ ${stars} / ${state.words.length}`;
 }

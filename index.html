@@ -64,7 +64,15 @@
     <a id="recorder-btn" class="settings-btn recorder-btn" href="recorder.html" aria-label="Sound recorder" title="Sound recorder" hidden>🎙️</a>
     <button id="settings-btn" class="settings-btn" aria-label="Grown-up settings (press and hold)" title="Press and hold for grown-up settings">⚙️</button>
     <div class="home-footer">
-      <div id="progress" class="progress"></div>
+      <!-- A medal, a bar filling up to the next trophy, and how many trophies so far. Opens My Trophies. -->
+      <div class="home-counts">
+        <div id="star-count" class="star-count"></div>
+        <button id="trophy-meter" class="trophy-meter" title="My trophies">
+          <span id="home-medal" class="home-medal">🏅</span>
+          <span class="meter-track"><span id="home-fill" class="meter-fill"></span></span>
+          <span id="trophy-count" class="trophy-count"></span>
+        </button>
+      </div>
       <div class="update-status">
         <button id="update-btn" class="update-btn" aria-label="Update to latest version" hidden>Update<span class="update-btn-more"> to latest version</span></button>
         <p id="app-version" class="app-version"></p>
@@ -98,11 +106,8 @@
   <main id="listen" class="screen" hidden>
     <div class="practice-top">
       <button id="listen-home-btn" class="icon-btn" aria-label="Home">🏠</button>
-      <div id="listen-points" class="pill game-points listen-points" aria-label="Points"></div>
+      <div id="listen-bar" class="medal-meter" role="progressbar" aria-label="Words toward your next medal" aria-valuemin="0"></div>
       <div id="listen-count" class="pill"></div>
-    </div>
-    <div id="listen-bar" class="round-bar" role="progressbar" aria-label="Words in this game" aria-valuemin="0">
-      <div id="listen-fill" class="round-fill"></div>
     </div>
     <button id="listen-again" class="mode-btn listen listen-again">🔊 Hear it again</button>
     <div id="listen-choices" class="listen-choices"></div>
@@ -112,11 +117,8 @@
   <main id="build" class="screen" hidden>
     <div class="practice-top">
       <button id="build-home-btn" class="icon-btn" aria-label="Home">🏠</button>
-      <div id="build-points" class="pill game-points build-points" aria-label="Points"></div>
+      <div id="build-bar" class="medal-meter" role="progressbar" aria-label="Words toward your next medal" aria-valuemin="0"></div>
       <div id="build-count" class="pill"></div>
-    </div>
-    <div id="build-bar" class="round-bar" role="progressbar" aria-label="Words in this game" aria-valuemin="0">
-      <div id="build-fill" class="round-fill"></div>
     </div>
     <button id="build-again" class="mode-btn build build-again">🔊 Hear it again</button>
     <div id="build-slots" class="build-slots" aria-live="polite"></div>
@@ -152,7 +154,7 @@
       <button id="panel-close" class="primary">Done</button>
     </div>
     <div id="reset-confirm" class="panel-actions reset-confirm" role="alertdialog" aria-labelledby="reset-question" hidden>
-      <p id="reset-question">Erase all progress, stickers, best times and best scores on this device?</p>
+      <p id="reset-question">Erase all progress, stickers, best times, medals and trophies on this device?</p>
       <button id="reset-cancel" class="primary">Keep everything</button>
       <button id="reset-yes" class="danger">Yes, erase</button>
     </div>

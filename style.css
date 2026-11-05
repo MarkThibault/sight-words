@@ -144,7 +144,7 @@ h1 {
 .listen { --mode: #0c8599; --mode-dark: #086470; }
 .build { --mode: #c2255c; --mode-dark: #921b45; }
 
-/* The bottom row: the stars count on the left, and the update statuses wrap in whatever room is left beside it */
+/* The bottom row: the stars count and trophy meter on the left, and the update statuses wrap in whatever room is left beside it */
 .home-footer {
   position: absolute;
   left: max(16px, env(safe-area-inset-left));
@@ -155,16 +155,79 @@ h1 {
   gap: 8px;
   pointer-events: none;
 }
-.progress {
-  position: relative;
-  flex: none;
-  z-index: 1;
-  padding: 10px 20px;
-  font-size: 1.25rem;
+/* The stars count above the trophy meter */
+.home-counts { flex: none; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.star-count {
+  padding: 4px 14px;
+  font-size: 1.1rem;
   background: #fff;
   border: 3px solid var(--yellow);
   border-radius: 999px;
 }
+.star-less { display: none; }
+/* always reachable, even under dragged stickers */
+.trophy-meter {
+  position: relative;
+  flex: none;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px 6px 12px;
+  font: inherit;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: inherit;
+  background: #fff;
+  border: 3px solid var(--yellow);
+  border-radius: 999px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.home-medal { flex: none; }
+.home-medal.waiting { filter: saturate(0.6); opacity: 0.4; }
+.trophy-meter .meter-track { position: static; flex: none; translate: none; width: 130px; height: 18px; }
+.trophy-meter .meter-fill { display: block; }
+.trophy-count { white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* A bar with a slot for each medal, between the 🏠 button and the word count in the games */
+.medal-meter {
+  --slot: clamp(26px, min(7vh, 8vw), 60px);
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  margin: 0 14px;
+  height: var(--slot);
+}
+.meter-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  translate: 0 -50%;
+  height: calc(var(--slot) * 0.4);
+  overflow: hidden;
+  background: #fff;
+  border: 2px solid var(--yellow);
+  border-radius: 999px;
+}
+.meter-fill { width: 0; height: 100%; background: var(--yellow-dark); transition: width 0.3s ease-out; }
+.meter-slot {
+  position: absolute;
+  top: 0;
+  translate: -100% 0; /* its right edge is where the bar earns it */
+  display: grid;
+  place-items: center;
+  width: var(--slot);
+  height: var(--slot);
+  font-size: calc(var(--slot) * 0.7);
+  line-height: 1;
+  background: #fff;
+  border: 2px solid var(--yellow);
+  border-radius: 50%;
+}
+.meter-slot > span { filter: saturate(0.6); opacity: 0.4; }
+.meter-slot.earned > span { filter: none; opacity: 1; }
 
 .settings-btn {
   position: absolute;
@@ -253,7 +316,7 @@ h1 {
   position: relative;
   z-index: 4;
   pointer-events: auto;
-  /* the same size as the stars count: its padding plus its 3px border */
+  /* about the same size as the trophy meter */
   padding: 13px 23px;
   background: var(--green);
   border: 0;
@@ -268,9 +331,10 @@ h1 {
 @media (max-width: 560px) {
   .update-btn-more { display: none; }
 }
-@media (max-width: 400px) {
-  /* small phones: a smaller stars count leaves room for the statuses beside it */
-  .progress { padding: 6px 14px; font-size: 1.05rem; }
+@media (max-width: 460px) {
+  /* small phones: a smaller trophy meter leaves room for the statuses beside it */
+  .trophy-meter { gap: 8px; padding: 4px 12px 4px 8px; font-size: 1.05rem; }
+  .trophy-meter .meter-track { width: 70px; height: 14px; }
   .update-btn { padding: 9px 17px; font-size: 1.05rem; }
 }
 
@@ -442,9 +506,6 @@ h1 {
 /* Listen & tap */
 #listen { display: flex; flex-direction: column; align-items: center; gap: 16px; }
 .listen-again { flex-shrink: 0; }
-.game-points { font-weight: 700; font-variant-numeric: tabular-nums; }
-.listen-points { color: #0c8599; }
-.build-points { color: #c2255c; }
 .listen-choices {
   flex: 1;
   min-height: 0;
@@ -582,10 +643,12 @@ h1 {
   .game-btn small { font-size: 0.75rem; }
   .settings-btn { width: 44px; height: 44px; font-size: 1.3rem; }
   .shuffle-btn { left: calc(max(16px, env(safe-area-inset-left)) + 52px); }
+  .star-count { padding: 1px 10px; font-size: 0.9rem; }
   .recorder-btn { right: calc(max(16px, env(safe-area-inset-right)) + 52px); }
   .dev-btn { top: calc(max(16px, env(safe-area-inset-top)) + 52px); }
   .dev-panel { top: calc(max(16px, env(safe-area-inset-top)) + 52px); right: calc(max(16px, env(safe-area-inset-right)) + 52px); }
-  .progress { padding: 4px 12px; font-size: 0.9rem; }
+  .trophy-meter { gap: 6px; padding: 2px 10px 2px 6px; font-size: 0.9rem; }
+  .trophy-meter .meter-track { width: 70px; height: 14px; }
   .update-btn { padding: 7px 15px; font-size: 0.9rem; }
   .die-shadow { display: none; }
 }
@@ -817,3 +880,25 @@ h1 {
 }
 .danger { background: #ffe3e3; color: #c92a2a !important; }
 .primary { background: var(--blue); color: #fff !important; }
+
+/* Short screens have no room to stack the counts, so they shrink and sit side by side, with the update statuses beside them */
+@media (max-height: 700px), (max-width: 960px) and (max-height: 800px) {
+  .home-counts { flex-direction: row; align-items: center; }
+  .star-count { padding: 3px 9px; font-size: 0.95rem; white-space: nowrap; }
+  .star-more { display: none; }
+  .star-less { display: inline; }
+  .trophy-meter { gap: 5px; padding: 3px 9px 3px 6px; font-size: 0.95rem; }
+  .trophy-meter .meter-track { width: 40px; height: 12px; }
+  .update-btn { padding: 6px 12px; font-size: 0.95rem; }
+  .update-btn-more { display: none; }
+  .app-version { font-size: 0.8rem; }
+}
+
+/* The narrowest of those: tighter still, so the counts and "Update" fit in one row */
+@media (max-width: 350px) and (max-height: 800px) {
+  .home-counts { gap: 4px; }
+  .star-count { padding: 3px 6px; font-size: 0.85rem; }
+  .trophy-meter { gap: 3px; padding: 3px 6px 3px 4px; font-size: 0.85rem; }
+  .trophy-meter .meter-track { width: 22px; }
+  .update-btn { padding: 6px 9px; font-size: 0.85rem; }
+}
