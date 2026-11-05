@@ -6,7 +6,7 @@ A simple sight-word practice app for young readers. Plain HTML, CSS and JavaScri
 - **🧩 Sound it out** plays the word one sound at a time, lighting up each part, then says the whole word. Each part that makes a sound is underlined. Letters that make one sound together, like "th", "ch" and "ee", stay together, and silent letters (like the "e" in "like") are shown faded and skipped. The button only shows for words whose sounds are listed (see [Adding words](#adding-words)).
 - **Next ➜** moves on, but only after the word has been heard (until then, tapping it wiggles the word).
 - **I know it! ⭐** gives that word a star and a sticker. Stars are only earned this way.
-- Stickers collect on the home screen. Each one is a surprise kid-friendly emoji (animals, treats, vehicles and more) with its word on a tag, and it stays the same once earned. To change the choices, edit `STICKER_EMOJI` in `js/config.js`. Stickers can be dragged anywhere on the home screen, even over the title and buttons, and stay where they're put. The **🎲** button in the top-left corner slides them all back into a fresh random layout around the title. **Reset all progress** also puts them back.
+- Stickers collect on the home screen. Each one is a surprise kid-friendly emoji (animals, treats, vehicles and more) with its word on a tag, and it stays the same once earned. To change the choices, edit `STICKER_EMOJI` in `js/config.js`. Stickers can be dragged anywhere on the home screen, even over the title and buttons, and stay where they're put. The **🎲** button in the top-left corner, beside the **🏆**, slides them all back into a fresh random layout around the title. **Reset all progress** also puts them back.
 - A round shows up to 10 words, once each, then returns to the home screen. Words learned that round glow there. To change the length, edit `ROUND_MAX_WORDS` in `js/config.js`.
 
 ## Home screen buttons
@@ -65,7 +65,7 @@ To record them, run `python serve.py` in the project folder on a computer and op
 
 ## Grown-up corner
 
-Press and hold the **⚙️** button in the top-right corner of the home screen for about a second. (A quick tap does nothing, so kids don't open it by accident.) From there you can see how many times each word was heard, give or take away stickers, or reset all progress (including the best time).
+Press and hold the **⚙️** button in the top-right corner of the home screen for about a second. (A quick tap does nothing, so kids don't open it by accident.) From there you can see how many times each word was heard, give or take away stickers, or reset all progress (including the best time, medals and trophies).
 
 Each word also has an on/off switch. A word that's turned off is skipped in every round and left out of the star count, and its sticker is hidden until it's turned back on. Turned-off words are saved separately from progress, so **Reset all progress** leaves them off. At least one word always stays on.
 
@@ -103,7 +103,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `config.js` | Settings and lists: sticker emoji, colors, cheers, fallback word list |
 | `state.js` | Page elements (`els`) and the state shared between files (`state`) |
 | `words.js` | Loading `words.json`, and the words turned off in the Grown-up corner |
-| `progress.js` | Saved progress: stars, stickers, heard counts, best time |
+| `progress.js` | Saved progress: stars, stickers, heard counts, best time, medals, and whose turn each word has next |
 | `speech.js` | Choosing a voice and reading words aloud |
 | `phonics.js` | The sounds, and how each word splits into them for **Sound it out** |
 | `audio.js` | Playing the recordings in `audio/`, or the device's voice for anything not recorded |
@@ -113,7 +113,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `practice.js` | Rounds, the timer, the word card and sounding words out |
 | `listen.js` | The Listen & tap game |
 | `build.js` | The Build the word game |
-| `trophies.js` | The trophies pop-up on the home screen |
+| `trophies.js` | The medal bar in the games, the trophy meter on the home screen, and the My Trophies pop-up |
 | `panel.js` | Grown-up corner |
 | `offline.js` | Turning on offline play and offering new versions |
 | `devtools.js` | Developer tools, only on localhost |
@@ -128,8 +128,7 @@ The version (for example `v1.0.0`) shows in the bottom-right corner of the home 
 
 The version goes up on its own: each time a pull request is merged into `main`, a GitHub Action (`.github/workflows/bump-version.yml`) raises it, commits the change and tags it (for example `v1.0.1`).
 
-- **Patch** (1.0.0 → 1.0.1) happens by default.
-- Add the **`minor`** label to the pull request for 1.0.0 → 1.1.0, or **`major`** for 1.0.0 → 2.0.0. The labels appear after the action has run once.
+- Every pull request needs exactly one version label, or its Label check fails: **`patch`** (1.0.0 → 1.0.1), **`minor`** (1.0.0 → 1.1.0) or **`major`** (1.0.0 → 2.0.0).
 - The action also updates the `?v=` stamps on the style and script links in `index.html` and `recorder.html`, and on the recordings, so tablets load the new files instead of old saved copies.
 - Because the bot adds a commit to `main` after each merge, pull `main` before starting a new branch.
 

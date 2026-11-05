@@ -54,7 +54,7 @@ These tests can't judge how audio sounds or how a game feels, so keep trying cha
 **Status:** the template and label check are done. Branch protection is on hold, because the setup isn't worth it yet. Without it, a pull request can still be merged with a failing check, so look at the checks before merging. Pick this up if that becomes a problem. The bump workflow is already ready for it, and the steps are below.
 
 - ✅ **A pull request template:** add `.github/pull_request_template.md` with a short checklist, such as "tried on tablet", "played the sounds" and "added a `minor` label if it's a new feature".
-- ✅ **A label check:** an Action fails until the pull request has a `patch`, `minor` or `major` label, so the version bump is a deliberate choice. The `patch` label doesn't exist yet, and `.github/workflows/bump-version.yml` would need to create it.
+- ✅ **A label check:** an Action fails until the pull request has a `patch`, `minor` or `major` label, so the version bump is a deliberate choice. `.github/workflows/bump-version.yml` creates the `patch` label.
 - **Branch protection:** require the checks to pass before merging.
 
 **Watch out:** the bump Action pushes its commit and tag straight to `main`, and that commit never has passing checks. The Action's normal token can't be exempted from branch protection, so without a fix the version bump fails after every merge, and tablets stop getting updates.
