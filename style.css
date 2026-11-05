@@ -303,9 +303,8 @@ h1 {
   z-index: 4;
   max-width: calc(100vw - 100px);
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
+  flex-direction: column; /* one row for each tool */
+  align-items: flex-end;
   gap: 6px;
   padding: 6px 10px;
   background: #fff;
@@ -315,6 +314,9 @@ h1 {
 }
 .dev-panel button { padding: 4px 10px; background: #fff; border: 2px solid #ced4da; border-radius: 999px; }
 .dev-panel button[aria-pressed="true"] { background: #fff3bf; border-color: var(--yellow-dark); font-weight: 700; }
+.dev-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; }
+.dev-row + .dev-row { align-self: stretch; padding-top: 6px; border-top: 2px dashed #ced4da; }
+.dev-link { padding: 4px 10px; background: #fff; border: 2px solid #ced4da; border-radius: 999px; color: inherit; text-decoration: none; }
 
 .update-status {
   flex: 1 1 0;

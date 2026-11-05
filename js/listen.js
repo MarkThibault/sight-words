@@ -87,7 +87,7 @@ function tapListenChoice(choice, word) {
   playAnim(choice, 'bounce');
   const result = updateGameMeter(game, els.listenBar, true);
   showToast(result ? medalToast(result) : `${randomCheer()} +${plural(game.wordPoints, 'point')}`);
-  sayWord(game.target);
+  playEffect('correct', () => sayWord(game.target));
   listenTimer = setTimeout(showListenWord, LISTEN_NEXT_MS);
 }
 

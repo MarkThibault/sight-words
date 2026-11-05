@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sound Effects · Sight Words</title>
+  <link rel="icon" href="icons/favicon-32.png?v=1.14.2" type="image/png" sizes="32x32">
+  <link rel="icon" href="icons/favicon-64.png?v=1.14.2" type="image/png" sizes="64x64">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap">
+  <!-- A developer page (from the 🛠️ button on localhost), so its few styles live here -->
+  <style>
+    :root { --bg: #fff6e0; --ink: #2b2d42; --accent: #e8590c; --yellow: #ffd43b; --yellow-dark: #fab005; }
+    body { margin: 0; padding: 24px 16px 48px; background: var(--bg); color: var(--ink); font-family: 'Andika', system-ui, sans-serif; }
+    main { max-width: 800px; margin: 0 auto; }
+    .title-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+    h1 { margin: 0; color: var(--accent); }
+    h2 { margin: 28px 0 4px; }
+    p { margin: 6px 0 12px; }
+    code { background: #fff; padding: 0 4px; border-radius: 4px; }
+    .home-link { padding: 8px 16px; background: #fff; border: 3px solid var(--yellow); border-radius: 999px; color: inherit; font-weight: 700; text-decoration: none; }
+    .sounds { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+    .sound { display: flex; flex-direction: column; gap: 2px; padding: 12px 16px; text-align: left; font: inherit; font-size: 1.1rem;
+      background: #fff; border: 4px solid var(--yellow); border-radius: 18px; box-shadow: 0 4px 0 var(--yellow-dark); cursor: pointer; }
+    .sound:active { translate: 0 3px; box-shadow: 0 1px 0 var(--yellow-dark); }
+    .sound small { color: #555; font-size: 0.9rem; }
+    #sound-ideas .sound { border-color: #ced4da; box-shadow: 0 4px 0 #adb5bd; }
+    .die { display: inline-block; font-size: 1.5rem; }
+    .roll { animation: roll 0.9s cubic-bezier(0.25, 0.8, 0.35, 1); }
+    /* the same tumble as the 🎲 button in style.css */
+    @keyframes roll {
+      0%   { rotate: 0deg; translate: 0 0; scale: 1; }
+      18%  { rotate: 200deg; translate: 6px -18px; scale: 1.25; }
+      40%  { rotate: 470deg; translate: 10px -4px; scale: 1.1; }
+      52%  { rotate: 560deg; translate: 8px 0; scale: 0.95; }
+      64%  { rotate: 640deg; translate: 4px -7px; scale: 1.05; }
+      78%  { rotate: 700deg; translate: 1px 0; scale: 0.97; }
+      88%  { rotate: 715deg; translate: 0 -2px; scale: 1; }
+      100% { rotate: 720deg; translate: 0 0; scale: 1; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="title-row">
+      <h1>🔊 Sound Effects</h1>
+      <a class="home-link" href="index.html">🏠 Back to the app</a>
+    </div>
+    <p>Tap a sound to hear it. Sound effects are made in code from tones and noise, so there's nothing to record.</p>
+
+    <h2>In the app <span id="die" class="die">🎲</span></h2>
+    <p>These play straight from <code>js/sound-effects.js</code>, so they're exactly what the app plays.
+      Their overall volume is <code>SOUND_EFFECTS_VOLUME</code> in <code>js/config.js</code>.</p>
+    <div id="used-sounds" class="sounds"></div>
+
+    <h2>Ideas tried along the way</h2>
+    <p>Kept for comparing with new ideas. To try another, add it to <code>SOUND_IDEAS</code> in <code>js/sound-lab.js</code>.</p>
+    <div id="sound-ideas" class="sounds"></div>
+  </main>
+
+  <script src="js/utils.js?v=1.14.2"></script>
+  <script src="js/config.js?v=1.14.2"></script>
+  <script src="js/speech.js?v=1.14.2"></script>
+  <script src="js/phonics.js?v=1.14.2"></script>
+  <script src="js/audio.js?v=1.14.2"></script>
+  <script src="js/sound-effects.js?v=1.14.2"></script>
+  <script src="js/sound-lab.js?v=1.14.2"></script>
+</body>
+</html>

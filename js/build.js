@@ -163,7 +163,7 @@ function finishBuildWord() {
   playAnim(els.buildSlots, 'bounce');
   const result = updateGameMeter(game, els.buildBar, true);
   showToast(result ? medalToast(result) : `${randomCheer()} +${plural(game.wordPoints, 'point')}`);
-  sayWord(buildRound.target, () => { buildTimer = setTimeout(showBuildWord, BUILD_NEXT_MS); });
+  playEffect('correct', () => sayWord(game.target, () => { buildTimer = setTimeout(showBuildWord, BUILD_NEXT_MS); }));
 }
 
 function hearBuildWord() {

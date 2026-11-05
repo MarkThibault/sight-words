@@ -19,8 +19,8 @@ The reading game and its kinds of round come first:
 
 Below a dotted line are the separate games:
 
-- **👂 Listen & tap** — hear a word, then tap it among four choices. A wrong tap plays a soft sound, fades that choice and says the word again, until they find it. A game is up to 8 words, with the ones not shown for the longest first (change this with `GAME_MAX_WORDS` in `js/config.js`). Each word is worth up to 4 points, minus 1 for each wrong tap. It uses only starred words and opens once 4 words have stars. It's practice only, so it never changes stars or stickers.
-- **🧱 Build the word** — hear a word, then pick out its sound parts in order ("th" + "e") by tapping them or dragging them onto the word. Extra tiles from other sight words don't belong: two or three per word, and more for short words so there are always at least 5 tiles (change these with `BUILD_MIN_TILES`, `BUILD_EXTRA_MIN` and `BUILD_EXTRA_MAX` in `js/config.js`). The parts show faintly as a guide, and each placed part plays its sound, including the last one before the whole word is said. A silent letter plays its own recording, like "silent e". A wrong tile wiggles, plays a soft sound, and then plays the sound of the part they're looking for. It uses only starred words, including one-part words like "a" and "I" (where the job is picking the right tile from the extras), and opens once 4 words have stars. A game is up to 8 words, picked the same way. Each word is worth up to 5 points, minus 1 for each wrong tile, and never less than 1. It's practice only too, so it never changes stars or stickers.
+- **👂 Listen & tap** — hear a word, then tap it among four choices. A wrong tap plays a soft sound, fades that choice and says the word again, until they find it. The right one plays a happy sound, then says the word. A game is up to 8 words, with the ones not shown for the longest first (change this with `GAME_MAX_WORDS` in `js/config.js`). Each word is worth up to 4 points, minus 1 for each wrong tap. It uses only starred words and opens once 4 words have stars. It's practice only, so it never changes stars or stickers.
+- **🧱 Build the word** — hear a word, then pick out its sound parts in order ("th" + "e") by tapping them or dragging them onto the word. Extra tiles from other sight words don't belong: two or three per word, and more for short words so there are always at least 5 tiles (change these with `BUILD_MIN_TILES`, `BUILD_EXTRA_MIN` and `BUILD_EXTRA_MAX` in `js/config.js`). The parts show faintly as a guide, and each placed part plays its sound, including the last one before the whole word is said. A silent letter plays its own recording, like "silent e". A finished word plays a happy sound before the whole word is said. A wrong tile wiggles, plays a soft sound, and then plays the sound of the part they're looking for. It uses only starred words, including one-part words like "a" and "I" (where the job is picking the right tile from the extras), and opens once 4 words have stars. A game is up to 8 words, picked the same way. Each word is worth up to 5 points, minus 1 for each wrong tile, and never less than 1. It's practice only too, so it never changes stars or stickers.
 
 ## Trophies
 
@@ -31,6 +31,18 @@ Each game of **👂 Listen & tap** or **🧱 Build the word** has three medals, 
 Each medal adds one to the trophy meter, so a game adds one for bronze, two for silver or three for gold. Every 20 earns a trophy, and extras carry over (change this with `MEDALS_PER_TROPHY`). That's at most 20 games for a trophy, or 7 with all gold. A game left partway through earns no medals, even if the bar had reached one. Medals are separate from stars and stickers. Each best score saved by an older version counts as one starting medal.
 
 A new best time, medal or trophy shows on the home screen after the round, flying into the meter. All of this is saved with progress, so **Reset all progress** clears it too.
+
+## Sound effects
+
+Besides the recorded words and sounds, the app plays a few short sound effects. They're made in code from tones and noise in `js/sound-effects.js`, so there's nothing to record:
+
+- **Right answer:** two soft notes going up, in **👂 Listen & tap** and when a word is finished in **🧱 Build the word**, just before the word is said. A wrong answer still gets the soft "boop".
+- **New star:** a shimmer when **I know it!** earns a star and sticker.
+- **Medal and trophy:** a short "ta-da" on the home screen after a game, or a bigger one when it earns a trophy.
+- **🎲:** a rattle that lands with each bounce of the die.
+- **Stickers:** a short brush, like smoothing tape, when a sticker is picked up to drag, and a soft pat when it's put down. A tap without moving stays quiet.
+
+To make them all louder or quieter, change `SOUND_EFFECTS_VOLUME` in `js/config.js`. To hear them all or try new ones, open the sound effects page from the developer tools (see below).
 
 ## Adding words
 
@@ -111,6 +123,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `speech.js` | Choosing a voice and reading words aloud |
 | `phonics.js` | The sounds, and how each word splits into them for **Sound it out** |
 | `audio.js` | Playing the recordings in `audio/`, or the device's voice for anything not recorded |
+| `sound-effects.js` | The sound effects, made in code: right answer, new star, medal, trophy, dice and stickers |
 | `effects.js` | Toasts and confetti |
 | `stickers.js` | Drawing stickers, laying them out on the home screen, and dragging them around |
 | `home.js` | Home screen and switching screens |
@@ -123,6 +136,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `devtools.js` | Developer tools, only on localhost |
 | `app.js` | Start up and button wiring |
 | `recorder.js` | The sound recorder page (`recorder.html`) |
+| `sound-lab.js` | The developer sound effects page (`sounds.html`), and the ideas tried along the way |
 
 Offline play lives in `sw.js` and the app's name and icons in `manifest.webmanifest`, both next to `index.html`.
 
@@ -133,7 +147,7 @@ The version (for example `v1.0.0`) shows in the bottom-right corner of the home 
 The version goes up on its own: each time a pull request is merged into `main`, a GitHub Action (`.github/workflows/bump-version.yml`) raises it, commits the change and tags it (for example `v1.0.1`).
 
 - Every pull request needs exactly one version label, or its Label check fails: **`patch`** (1.0.0 → 1.0.1), **`minor`** (1.0.0 → 1.1.0) or **`major`** (1.0.0 → 2.0.0).
-- The action also updates the `?v=` stamps on the style and script links in `index.html` and `recorder.html`, and on the recordings, so tablets load the new files instead of old saved copies.
+- The action also updates the `?v=` stamps on the style and script links in `index.html`, `recorder.html` and `sounds.html`, and on the recordings, so tablets load the new files instead of old saved copies.
 - Because the bot adds a commit to `main` after each merge, pull `main` before starting a new branch.
 
 To bump by hand, run `bash .github/scripts/bump-version.sh patch` (or `minor` / `major`).
@@ -156,9 +170,11 @@ The app and recordings are saved the first time the site is opened online, so gi
 
 When the app runs at `http://localhost:8000`, a **🛠️** button appears below **⚙️** on the home screen. It previews the update statuses: Normal, Downloading, Update ready and Updating. The **Update to latest version** button works in the preview too. Updating plays the real message and fades, with a plain reload in place of a new version. Saved progress isn't changed.
 
+The panel also links to **🔊 Sound effects** (`sounds.html`), a page that plays every sound effect straight from `js/sound-effects.js`, along with the other ideas tried before each one was picked. To try a new idea, add it to `SOUND_IDEAS` in `js/sound-lab.js` and compare it there.
+
 ## Publishing on GitHub Pages
 
-1. Create a new repository on GitHub and upload these files (`index.html`, `recorder.html`, `sw.js`, `manifest.webmanifest`, `style.css`, `recorder.css`, `words.json`, and the `js`, `audio` and `icons` folders).
+1. Create a new repository on GitHub and upload these files (`index.html`, `recorder.html`, `sounds.html`, `sw.js`, `manifest.webmanifest`, `style.css`, `recorder.css`, `words.json`, and the `js`, `audio` and `icons` folders).
 2. In the repository, go to **Settings → Pages**.
 3. Under **Build and deployment**, choose **Deploy from a branch**, pick `main` and `/ (root)`, and save.
 4. After a minute, the site is at `https://<your-username>.github.io/<repository-name>/`.

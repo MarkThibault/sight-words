@@ -123,7 +123,10 @@ function makeDraggable(el, word) {
     const move = (ev) => {
       const x = Math.min(board.width, Math.max(0, ev.clientX - board.left - grab.x));
       const y = Math.min(board.height, Math.max(0, ev.clientY - board.top - grab.y));
-      moved ||= Math.hypot(x - start.x, y - start.y) > 4;
+      if (!moved && Math.hypot(x - start.x, y - start.y) > 4) {
+        moved = true;
+        playEffect('stickerUp'); // only once it's really lifted, so a tap stays quiet
+      }
       el.style.left = `${x}px`;
       el.style.top = `${y}px`;
     };
@@ -133,6 +136,7 @@ function makeDraggable(el, word) {
       el.removeEventListener('pointercancel', drop);
       el.classList.remove('dragging');
       if (!moved) return;
+      playEffect('stickerDown');
       const x = parseFloat(el.style.left);
       const y = parseFloat(el.style.top);
       const spots = loadStickerSpots();
@@ -161,6 +165,7 @@ function shuffleStickers() {
     el.style.top = `${slots[i].y}px`;
     setTimeout(() => el.classList.remove('gliding'), 600);
   });
+  playEffect('diceRoll');
   playAnim(els.shuffleDie, 'roll');
   playAnim(els.shuffleShadow, 'roll-shadow');
 }

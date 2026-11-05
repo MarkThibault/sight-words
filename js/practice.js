@@ -180,6 +180,7 @@ function knowIt() {
     playAnim(els.star, 'pop');
     updateCounters();
     showToast(`New sticker! ${stickerFor(current)}`);
+    playEffect('starEarned');
   } else {
     showToast(randomCheer());
   }
