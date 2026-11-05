@@ -74,7 +74,7 @@ function renderSummary() {
     time.className = 'summary-time';
     time.textContent = last.newBest
       ? `🏆 New best time: ${formatTime(last.ms)}!`
-      : `⏱ ${formatTime(last.ms)} (best is ${formatTime(last.best)})`;
+      : `⏱️ ${formatTime(last.ms)} (best is ${formatTime(last.best)})`;
     lines.push(time);
   }
   els.stickerHint.replaceChildren(...lines);

@@ -15,7 +15,7 @@ The reading game and its kinds of round come first:
 
 - **Let's Read! ▶** — a round of up to 10 words. The words not shown for the longest come first, so every word gets its turn over a few rounds.
 - **🎯 Missing words** — a round of up to 10 words without a star yet, picked the same way. The button shows how many are missing in total. (Greyed out until some, but not all, words have stars.)
-- **⏱ Timed run** — a round of all the words against the clock. The best time is saved; adding or removing words starts a fresh record.
+- **⏱️ Timed run** — a round of all the words against the clock. The best time is saved; adding or removing words starts a fresh record.
 
 Below a dotted line are the separate games:
 
@@ -24,7 +24,7 @@ Below a dotted line are the separate games:
 
 ## Trophies
 
-The trophy meter at the bottom of the home screen shows a medal, a bar filling up to the next trophy, and how many trophies have been earned. Above it is the star count. On short screens the two shrink and sit side by side, and the star count shortens to something like "⭐ 10/31". Tapping the meter, or the **🏆** button in the top-left corner, opens **My Trophies**, which shows starred words out of the total, the best time from **⏱ Timed run**, and the medals and trophies so far.
+The trophy meter at the bottom of the home screen shows a medal, a bar filling up to the next trophy, and how many trophies have been earned. Above it is the star count. On short screens the two shrink and sit side by side, and the star count shortens to something like "⭐ 10/31". Tapping the meter, or the **🏆** button in the top-left corner, opens **My Trophies**, which shows starred words out of the total, the best time from **⏱️ Timed run**, and the medals and trophies so far.
 
 Each game of **👂 Listen & tap** or **🧱 Build the word** has three medals, and the bar at the top fills with the points earned. Finishing always earns bronze, gold is every word right the first time, and silver is at least 60% of the points (change these with `GAME_MEDALS` in `js/config.js`).
 

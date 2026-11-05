@@ -100,7 +100,7 @@ function renderTrophies() {
   const time = bestTime();
   const rows = [
     ['⭐', 'Starred words', `${knownWords().length} of ${state.words.length}`],
-    ['⏱', 'Best time', time === null ? null : formatTime(time)],
+    ['⏱️', 'Best time', time === null ? null : formatTime(time)],
     ['🏅', 'Medals', medalCount() || null],
     ['🏆', 'Trophies', trophyCount() || null],
   ];
