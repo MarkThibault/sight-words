@@ -6,7 +6,7 @@
 const els = {
   home: $('home'), practice: $('practice'), board: $('sticker-board'), homeCenter: $('home-center'),
   start: $('start-btn'), missingBtn: $('missing-btn'), timedBtn: $('timed-btn'), bestTime: $('best-time'),
-  stickerHint: $('sticker-hint'), trophyMeter: $('trophy-meter'), homeMedal: $('home-medal'), homeFill: $('home-fill'), trophyCount: $('trophy-count'), settingsBtn: $('settings-btn'), recorderBtn: $('recorder-btn'), shuffleBtn: $('shuffle-btn'), shuffleDie: $('shuffle-die'), shuffleShadow: $('shuffle-shadow'), appVersion: $('app-version'), updateBtn: $('update-btn'), devBtn: $('dev-btn'), devPanel: $('dev-panel'),
+  stickerHint: $('sticker-hint'), starCount: $('star-count'), trophyMeter: $('trophy-meter'), homeMedal: $('home-medal'), homeFill: $('home-fill'), trophyCount: $('trophy-count'), settingsBtn: $('settings-btn'), recorderBtn: $('recorder-btn'), shuffleBtn: $('shuffle-btn'), shuffleDie: $('shuffle-die'), shuffleShadow: $('shuffle-shadow'), appVersion: $('app-version'), updateBtn: $('update-btn'), devBtn: $('dev-btn'), devPanel: $('dev-panel'),
   homeBtn: $('home-btn'), timer: $('timer'), mini: $('progress-mini'),
   roundBar: $('round-bar'), roundFill: $('round-fill'), card: $('card'), word: $('word'), star: $('card-star'),
   hint: $('hint'), soundOut: $('sound-out-btn'), know: $('know-btn'), next: $('next-btn'), toast: $('toast'),
@@ -16,7 +16,7 @@ const els = {
   build: $('build'), buildBtn: $('build-btn'), buildNote: $('build-note'), buildHome: $('build-home-btn'),
   buildCount: $('build-count'), buildBar: $('build-bar'),
   buildAgain: $('build-again'), buildSlots: $('build-slots'), buildTiles: $('build-tiles'),
-  trophyPanel: $('trophy-panel'), trophyList: $('trophy-list'), trophyClose: $('trophy-close'),
+  trophyBtn: $('trophy-btn'), trophyPanel: $('trophy-panel'), trophyList: $('trophy-list'), trophyClose: $('trophy-close'),
   panel: $('parent-panel'), panelSummary: $('panel-summary'), panelList: $('panel-list'),
   panelClose: $('panel-close'), reset: $('reset-btn'), panelActions: $('panel-actions'),
   resetConfirm: $('reset-confirm'), resetYes: $('reset-yes'), resetCancel: $('reset-cancel'),

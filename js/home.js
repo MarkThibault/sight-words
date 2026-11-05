@@ -82,5 +82,6 @@ function renderSummary() {
 
 function updateCounters() {
   const stars = knownWords().length;
+  els.starCount.innerHTML = `⭐ ${stars}<span class="star-more"> of ${state.words.length} stars</span><span class="star-less">/${state.words.length}</span>`;
   els.mini.textContent = `⭐ ${stars} / ${state.words.length}`;
 }
