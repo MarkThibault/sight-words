@@ -6,6 +6,7 @@ A sight-word practice app for a 5-year-old, used mostly on a tablet. See `README
 
 - Plain HTML, CSS and JavaScript, hosted on GitHub Pages. No build step, no dependencies and no modules.
 - Scripts in `js/` load in order from `index.html` and share globals, so a new file must be added there in the right place. Opening `index.html` from disk should still work.
+- A new HTML page must be added to the `?v=` stamping in `.github/scripts/bump-version.sh` and to the link check in `.github/scripts/check-site.js`, or it misses version bumps and broken-link checks.
 - Every PR runs the basic checks in `.github/scripts/check-site.js`: script errors, missing recordings and broken links. Run them first with `node .github/scripts/check-site.js`. There are no browser tests yet. The plan is in `docs/review-automation.md`.
 
 ## Running it
@@ -14,7 +15,7 @@ A sight-word practice app for a 5-year-old, used mostly on a tablet. See `README
 - `serve.py` only answers this computer. It also lets `recorder.html` save clips into `audio/`.
 - Browsers cache files until the version changes. After editing, reload with a cache bypass or Ctrl+Shift+R.
 - Offline play (`sw.js`) is off on `localhost`, so edits show right away. To test it, use `http://127.0.0.1:8000`, which has its own saved data.
-- The 🛠️ button, only on `localhost`, previews the update statuses (`js/devtools.js`). Add other developer-only previews there.
+- The 🛠️ button, only on `localhost`, previews the update statuses (`js/devtools.js`) and links to the sound effects page (`sounds.html`). Add other developer-only previews there.
 
 ## Workflow
 
@@ -24,7 +25,7 @@ A sight-word practice app for a 5-year-old, used mostly on a tablet. See `README
 - Don't add extras while working, even small ones. Mention anything spotted in passing, such as a bug or cleanup, and leave it for its own PR.
 - If a design is still changing after two rounds of feedback, pause and suggest merging what's settled, or settling the design with a mockup before more code.
 - Commit, push and open a PR only when asked. Add follow-up changes to the branch while its PR is still open, and check whether it has merged before starting from it.
-- `gh` isn't installed. Open PRs from a GitHub compare URL with `title` and `body` query params in the browser pane. If the pane is signed out of GitHub, ask the user to sign in.
+- `gh` isn't installed. Open PRs from a GitHub compare URL with `title` and `body` query params in the browser pane. If the pane is signed out of GitHub, ask the user to sign in. With no browser pane, build the same URL and give it to the user as a link to click, then check it merged with `git merge-base --is-ancestor <branch> origin/main`.
 - The GitHub Action bumps the version on every merged PR, by its `patch`, `minor` or `major` label. A check fails until a PR has exactly one. Add the `minor` label for new features unless "bug" or "fix" is mentioned as a new stand-alone change, and `patch` otherwise.
 - Don't edit `APP_VERSION` or the `?v=` stamps by hand, other than copying the current stamp onto a newly added file. Pull `main` before branching, because the bot commits after each merge.
 
@@ -35,6 +36,7 @@ A sight-word practice app for a 5-year-old, used mostly on a tablet. See `README
 - Game rewards are gentle: a wrong answer gets the soft boop and another try, never a failure. Finishing a game always earns at least bronze, so bronze's share in `GAME_MEDALS` has to stay at or below the lowest possible score.
 - Medals and trophies only come from finishing Listen & tap or Build the word. They never change stars or stickers.
 - Words and sounds play from the recordings in `audio/`, and the device voice is only a fallback. Recorded files aren't generated, so never overwrite or delete them.
+- Sound effects are the exception: they're made in code in `js/sound-effects.js`, with no recordings. Pick new ones by ear on `sounds.html`, keep the ideas not chosen in `SOUND_IDEAS` in `js/sound-lab.js`, and keep them about as loud as the wrong-answer boop.
 - Every word needs an entry in `WORD_PARTS` in `js/phonics.js`, or it has no Sound it out and can't be used in Build the word. A silent letter uses a silent sound such as `SILENT_E`.
 - Stickers sit above the title and buttons. The trophy meter and the 🏆 and 🎲 buttons stay above the stickers.
 - The recorder button only shows on localhost.

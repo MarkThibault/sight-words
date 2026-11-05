@@ -23,7 +23,7 @@ Add a GitHub Action that runs on every pull request and passes or fails on:
 - ✅ **Script errors:** a syntax check on every file in `js/`, for example `node --check`.
 - ✅ **Missing recordings:** every word in `words.json` has a clip in `audio/words/`, and every sound used in `WORD_PARTS` has a clip in `audio/sounds/`.
 - ✅ **Missing phonics:** every word in `words.json` has an entry in `WORD_PARTS`. This should be a warning, not a failure, because a word without one still works with **Sound it out** hidden.
-- ✅ **Broken links:** every local file that `index.html` and `recorder.html` link to exists.
+- ✅ **Broken links:** every local file that `index.html`, `recorder.html` and `sounds.html` link to exists.
 
 A missing clip is the main reason for this step: it fails quietly today, because the app falls back to the device's voice.
 
@@ -39,6 +39,12 @@ Use Playwright to open the real app at phone and tablet sizes on every pull requ
 - Fail on any script error.
 
 These tests can't judge how audio sounds or how a game feels, so keep trying changes on a tablet.
+
+**Already tried by hand (2026-11-05):** `playwright-core` drives the computer's Edge (`channel: 'msedge'`), so no browser download is needed locally. Tests that worked:
+
+- **Updates:** serve a copy of the app on `127.0.0.1` so offline play is on, change `SW_VERSION` in the copy, then check that the Update button appears and the app reloads into the new version. Switching apps can be faked by overriding `document.visibilityState` and sending a `visibilitychange` event. Desktop Edge can't pause a page the way Android does, so that part still needs a phone.
+- **Sound order:** wrap `playClip`, `playEffect` and `playIncorrectSound` from the page to log what plays and when, then play a game with real clicks.
+- **Loudness:** render a sound effect into an `OfflineAudioContext` and compare its peak with the wrong-answer boop's.
 
 **Done when:** the tests run on every pull request and pass on `main`.
 
