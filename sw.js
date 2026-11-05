@@ -3,7 +3,7 @@
 // Offline play: saves the app, the font and the recordings on the device when it installs.
 // SW_VERSION is raised with APP_VERSION by .github/scripts/bump-version.sh. That change is what tells devices to update.
 
-const SW_VERSION = '1.15.0';
+const SW_VERSION = '1.15.1';
 const APP_CACHE = `sight-words-${SW_VERSION}`;
 const FONT_CACHE = 'sight-words-fonts'; // kept across versions, since the font doesn't change
 const FONT_CSS = 'https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap';
