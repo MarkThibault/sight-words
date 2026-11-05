@@ -65,7 +65,11 @@ To record them, run `python serve.py` in the project folder on a computer and op
 
 ## Grown-up corner
 
-Press and hold the **⚙️** button in the top-right corner of the home screen for about a second. (A quick tap does nothing, so kids don't open it by accident.) From there you can see how many times each word was heard, give or take away stickers, or reset all progress (including the best time, medals and trophies).
+Press and hold the **⚙️** button in the top-right corner of the home screen for about a second. (A quick tap does nothing, so kids don't open it by accident.) The first time the app opens, a tip below **⚙️** says so: "Grown-ups: press and hold ⚙️ for settings." It shows only once, and goes away with **Got it** or when the corner is opened.
+
+From there you can see how many times each word was heard, give or take away stickers, or reset all progress (including the best time, medals and trophies). **Reset all progress** asks first, with the question covering the whole corner so it can't be missed.
+
+**📖 What's in this app** opens a guide for grown-ups in place of the word list: the games, how stars, stickers, medals and trophies are earned, what the on/off switches do, and how to install the app for offline play. Its numbers, like the words in a round or the medals in a trophy, come from `js/config.js`, so they stay right when those change. **← Back** returns to the word list.
 
 Each word also has an on/off switch. A word that's turned off is skipped in every round and left out of the star count, and its sticker is hidden until it's turned back on. Turned-off words are saved separately from progress, so **Reset all progress** leaves them off. At least one word always stays on.
 

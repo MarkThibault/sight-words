@@ -263,6 +263,37 @@ h1 {
   pointer-events: none;
 }
 .recorder-btn { right: calc(max(16px, env(safe-area-inset-right)) + 68px); color: inherit; text-decoration: none; }
+/* the one-time tip for grown-ups: a speech bubble just below ⚙️, pointing up at it, above the stickers */
+.grownup-tip {
+  position: absolute;
+  top: calc(max(16px, env(safe-area-inset-top)) + 72px);
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: calc(100vw - 24px);
+  padding: 10px 10px 10px 18px;
+  background: #fff;
+  border: 4px solid var(--yellow);
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  font-size: 1.1rem;
+}
+.grownup-tip::before {
+  content: '';
+  position: absolute;
+  top: -13px;
+  right: 17px; /* under the middle of ⚙️ */
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-top: 4px solid var(--yellow);
+  border-left: 4px solid var(--yellow);
+  rotate: 45deg;
+}
+.grownup-tip p { margin: 0; }
+.grownup-tip button { flex: none; padding: 8px 16px; border: 0; border-radius: 12px; font-size: 1rem; }
 /* developer tools, on localhost only: below the ⚙️ button, with the previews to its left */
 .dev-btn { top: calc(max(16px, env(safe-area-inset-top)) + 68px); z-index: 4; }
 .dev-panel {
@@ -642,6 +673,8 @@ h1 {
   .game-btn { flex: none; min-width: 150px; min-height: 52px; padding: 4px 12px; border-radius: 16px; box-shadow: 0 4px 0 var(--mode-dark); font-size: 1rem; }
   .game-btn small { font-size: 0.75rem; }
   .settings-btn { width: 44px; height: 44px; font-size: 1.3rem; }
+  .grownup-tip { top: calc(max(16px, env(safe-area-inset-top)) + 58px); padding: 6px 6px 6px 14px; font-size: 1rem; }
+  .grownup-tip::before { right: 11px; }
   .shuffle-btn { left: calc(max(16px, env(safe-area-inset-left)) + 52px); }
   .star-count { padding: 1px 10px; font-size: 0.9rem; }
   .recorder-btn { right: calc(max(16px, env(safe-area-inset-right)) + 52px); }
@@ -787,6 +820,10 @@ h1 {
 /* Only the word list scrolls; the heading, voice settings and buttons stay put. */
 .panel[open] { display: flex; flex-direction: column; }
 .panel > * { flex: none; }
+/* the corner's two views, the word list and the guide, each fill the space below the heading */
+.panel > .panel-view { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+.panel-view > * { flex: none; }
+.panel-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; }
 .panel::backdrop { background: rgba(43, 45, 66, 0.5); }
 .panel h2 { margin: 0 0 8px; font-size: 2rem; }
 .panel p { margin: 4px 0; }
@@ -865,8 +902,38 @@ h1 {
 
 .panel-actions { display: flex; justify-content: space-between; gap: 12px; }
 .panel-actions button { padding: 12px 22px; border: 0; border-radius: 14px; font-size: 1.1rem; }
-.reset-confirm { flex-wrap: wrap; align-items: center; }
-.reset-confirm p { flex-basis: 100%; margin: 0 0 4px; font-weight: 700; }
+.guide-body { flex: 1 1 auto; min-height: 6rem; margin: 8px 0 16px; padding-right: 4px; overflow: auto; }
+.guide-body h3 { margin: 0 0 4px; font-size: 1.4rem; }
+.guide-body h4 { margin: 18px 0 4px; color: var(--accent); font-size: 1.15rem; }
+.guide-body p { margin: 6px 0; }
+.guide-body ul { margin: 6px 0; padding-left: 1.3em; }
+.guide-body li { margin: 4px 0; }
+/* "are you sure?" covers the whole corner, so it can't be missed */
+.reset-confirm {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+  overflow: auto;
+  background: #fff5f5;
+  text-align: center;
+}
+.reset-icon { font-size: 4rem; line-height: 1; }
+.panel .reset-question { margin: 0; color: #c92a2a; font-size: 1.8rem; font-weight: 700; }
+.reset-confirm p { max-width: 26em; }
+.reset-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 12px; }
+.reset-buttons button { padding: 14px 24px; border: 0; border-radius: 14px; font-size: 1.15rem; }
+/* sideways phones: no room for the big icon */
+@media (max-height: 500px) {
+  .reset-confirm { gap: 6px; padding: 16px 24px; }
+  .reset-icon { display: none; }
+  .reset-buttons { margin-top: 6px; }
+}
 /* Phones: tighter spacing so more of the word list fits on screen */
 @media (max-width: 560px) {
   .panel { width: calc(100vw - 24px); padding: 18px; font-size: 1rem; }
@@ -877,6 +944,11 @@ h1 {
   .panel-list li { padding: 4px 10px; gap: 8px; }
   .panel-word { font-size: 1.3rem; }
   .panel-actions button { padding: 12px 16px; font-size: 1rem; }
+  .guide-body h3 { font-size: 1.2rem; }
+  .guide-body h4 { margin-top: 14px; font-size: 1.05rem; }
+  .reset-confirm { padding: 20px; }
+  .reset-icon { font-size: 3rem; }
+  .panel .reset-question { font-size: 1.5rem; }
 }
 .danger { background: #ffe3e3; color: #c92a2a !important; }
 .primary { background: var(--blue); color: #fff !important; }
