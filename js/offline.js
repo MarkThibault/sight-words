@@ -25,7 +25,10 @@ function startOffline() {
 
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState !== 'visible') return;
-      if (swRegistration.waiting) updateOnReopen();
+      // Back from another app partway through updating (phones pause a page in the background): finish it,
+      // and if it doesn't reload by itself, reload anyway. A version still waiting then takes over as the page opens.
+      if (installingUpdate) setTimeout(() => location.reload(), UPDATE_RELOAD_WAIT_MS);
+      else if (swRegistration.waiting) updateOnReopen();
       else checkForUpdate();
     });
   }).catch((e) => console.warn('Offline play is not available.', e));
@@ -52,7 +55,10 @@ function watchDownload(worker) {
   });
 }
 
+// Once updating has started, "Updating…" stays until the reload, and the button doesn't come back.
+// (Taps are blocked while updating, so a button shown then could never be pressed.)
 function showUpdateStatus(status) {
+  if (installingUpdate) return;
   els.appVersion.classList.toggle('downloading', status === 'downloading');
   els.appVersion.textContent = status === 'downloading' ? 'Downloading new version' : `v${APP_VERSION}`;
   els.updateBtn.hidden = status !== 'ready';
