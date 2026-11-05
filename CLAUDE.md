@@ -19,6 +19,10 @@ A sight-word practice app for a 5-year-old, used mostly on a tablet. See `README
 ## Workflow
 
 - Start each new feature on a new branch from the latest `origin/main`. Don't add unrelated work to an existing branch or open PR.
+- Keep each PR to one change a parent could describe in a sentence. Before starting, say what's in it and what's left out.
+- When a new request isn't part of that change, say so before building it. Suggest finishing and merging the current PR first, then starting the new work on its own branch. The user can still choose to keep it together.
+- Don't add extras while working, even small ones. Mention anything spotted in passing, such as a bug or cleanup, and leave it for its own PR.
+- If a design is still changing after two rounds of feedback, pause and suggest merging what's settled, or settling the design with a mockup before more code.
 - Commit, push and open a PR only when asked. Add follow-up changes to the branch while its PR is still open, and check whether it has merged before starting from it.
 - `gh` isn't installed. Open PRs from a GitHub compare URL with `title` and `body` query params in the browser pane. If the pane is signed out of GitHub, ask the user to sign in.
 - The GitHub Action bumps the version on every merged PR, by its `patch`, `minor` or `major` label. A check fails until a PR has exactly one. Add the `minor` label for new features unless "bug" or "fix" is mentioned as a new stand-alone change, and `patch` otherwise.
