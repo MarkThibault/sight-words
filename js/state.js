@@ -18,8 +18,10 @@ const els = {
   buildAgain: $('build-again'), buildSlots: $('build-slots'), buildTiles: $('build-tiles'),
   trophyBtn: $('trophy-btn'), trophyPanel: $('trophy-panel'), trophyList: $('trophy-list'), trophyClose: $('trophy-close'),
   panel: $('parent-panel'), panelSummary: $('panel-summary'), panelList: $('panel-list'),
-  panelClose: $('panel-close'), reset: $('reset-btn'), panelActions: $('panel-actions'),
+  panelClose: $('panel-close'), reset: $('reset-btn'), panelMain: $('panel-main'),
   resetConfirm: $('reset-confirm'), resetYes: $('reset-yes'), resetCancel: $('reset-cancel'),
+  guideBtn: $('guide-btn'), panelGuide: $('panel-guide'), guideBody: $('guide-body'), guideBack: $('guide-back'),
+  grownupTip: $('grownup-tip'), grownupTipOk: $('grownup-tip-ok'),
   voiceSection: $('voice-section'), voiceSelect: $('voice-select'), voiceTest: $('voice-test'),
 };
 

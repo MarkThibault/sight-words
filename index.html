@@ -63,6 +63,11 @@
     </div>
     <a id="recorder-btn" class="settings-btn recorder-btn" href="recorder.html" aria-label="Sound recorder" title="Sound recorder" hidden>🎙️</a>
     <button id="settings-btn" class="settings-btn" aria-label="Grown-up settings (press and hold)" title="Press and hold for grown-up settings">⚙️</button>
+    <!-- Shown once, the first time the app opens, so grown-ups know where their corner is -->
+    <div id="grownup-tip" class="grownup-tip" role="note" hidden>
+      <p><b>Grown-ups:</b> press and hold ⚙️ for settings.</p>
+      <button id="grownup-tip-ok" class="primary">Got it</button>
+    </div>
     <div class="home-footer">
       <!-- A medal, a bar filling up to the next trophy, and how many trophies so far. Opens My Trophies. -->
       <div class="home-counts">
@@ -138,25 +143,67 @@
 
   <dialog id="parent-panel" class="panel">
     <h2>Grown-up Corner</h2>
-    <p id="panel-summary"></p>
-    <div id="voice-section" class="voice-section">
-      <div class="voice-row">
-        <label for="voice-select">Voice</label>
-        <select id="voice-select"></select>
-        <button id="voice-test" class="chip">🔊 Test</button>
+    <div id="panel-main" class="panel-view">
+      <div class="panel-top">
+        <p id="panel-summary"></p>
+        <button id="guide-btn" class="chip">📖 What's in this app</button>
       </div>
-      <p class="panel-tip">For a more natural voice on iPad: Settings → Accessibility → Spoken Content → Voices → English, and download an “Enhanced” voice. Then reopen this app.</p>
+      <div id="voice-section" class="voice-section">
+        <div class="voice-row">
+          <label for="voice-select">Voice</label>
+          <select id="voice-select"></select>
+          <button id="voice-test" class="chip">🔊 Test</button>
+        </div>
+        <p class="panel-tip">For a more natural voice on iPad: Settings → Accessibility → Spoken Content → Voices → English, and download an “Enhanced” voice. Then reopen this app.</p>
+      </div>
+      <p class="panel-tip">Tap a sticker button to give or take away a sticker. Turn a word off to skip it in practice; it stays off even after a reset.</p>
+      <ul id="panel-list" class="panel-list"></ul>
+      <div class="panel-actions">
+        <button id="reset-btn" class="danger">Reset all progress</button>
+        <button id="panel-close" class="primary">Done</button>
+      </div>
     </div>
-    <p class="panel-tip">Tap a sticker button to give or take away a sticker. Turn a word off to skip it in practice; it stays off even after a reset.</p>
-    <ul id="panel-list" class="panel-list"></ul>
-    <div id="panel-actions" class="panel-actions">
-      <button id="reset-btn" class="danger">Reset all progress</button>
-      <button id="panel-close" class="primary">Done</button>
+    <!-- What's in this app: a guide for grown-ups. The numbers in it come from js/config.js. -->
+    <div id="panel-guide" class="panel-view" hidden>
+      <div id="guide-body" class="guide-body">
+        <h3>📖 What's in this app</h3>
+        <h4>The games</h4>
+        <ul>
+          <li><b>Let's Read! ▶</b> shows up to <span data-number="roundMax"></span> words, one at a time. Tap the word to hear it, or <b>🧩 Sound it out</b> to hear it one sound at a time. When your child can read it, tap <b>I know it! ⭐</b>. Otherwise tap <b>Next ➜</b>.</li>
+          <li><b>🎯 Missing words</b> is the same, with only the words that don't have a star yet.</li>
+          <li><b>⏱ Timed run</b> goes through every word against the clock and saves the best time.</li>
+          <li><b>👂 Listen &amp; tap</b>: hear a word, then find it among <span data-number="listenChoices"></span>. It opens once <span data-number="listenStars"></span> words have stars.</li>
+          <li><b>🧱 Build the word</b>: hear a word, then put its sounds in order. It opens once <span data-number="buildStars"></span> words have stars.</li>
+        </ul>
+        <p>In the games, a wrong answer gets a soft sound and another try, never a failure.</p>
+        <h4>Stars and stickers</h4>
+        <p>Only <b>I know it!</b> earns a star, and every star comes with a surprise sticker on the home screen. Stickers can be dragged anywhere, and <b>🎲</b> tidies them up. The other games are practice and never change stars or stickers. You can also give or take away a sticker here in the Grown-up Corner.</p>
+        <h4>Medals and trophies</h4>
+        <p>Finishing a game of <b>Listen &amp; tap</b> or <b>Build the word</b> earns a medal: bronze just for finishing, silver for <span data-number="silver"></span>% of the points, and gold for every word right the first time. A game left partway earns nothing.</p>
+        <p>Each medal fills the trophy meter at the bottom of the home screen: 1 for bronze, 2 for silver and 3 for gold. Every <span data-number="medalsPerTrophy"></span> earns a trophy. Tap <b>🏆</b> to see them all.</p>
+        <h4>Turning words on and off</h4>
+        <p>Each word has a switch. A word that's off is skipped in every round and game, left out of the star count, and its sticker is hidden until it's back on. Words stay off even after <b>Reset all progress</b>, and at least one word always stays on.</p>
+        <h4>Installing for offline play</h4>
+        <ul>
+          <li><b>iPad / iPhone:</b> open the site in Safari, then <b>Share → Add to Home Screen</b>.</li>
+          <li><b>Android:</b> open the site in Chrome, then <b>⋮ → Install app</b> (or <b>Add to Home screen</b>).</li>
+        </ul>
+        <p>Open it once while online so everything is saved. When a new version is ready, an <b>Update</b> button shows at the bottom of the home screen.</p>
+        <p>Progress is saved on each device. On iPad and iPhone, the home-screen app keeps its own progress apart from Safari, so it starts fresh.</p>
+      </div>
+      <div class="panel-actions">
+        <button id="guide-back" class="primary">← Back</button>
+      </div>
     </div>
-    <div id="reset-confirm" class="panel-actions reset-confirm" role="alertdialog" aria-labelledby="reset-question" hidden>
-      <p id="reset-question">Erase all progress, stickers, best times, medals and trophies on this device?</p>
-      <button id="reset-cancel" class="primary">Keep everything</button>
-      <button id="reset-yes" class="danger">Yes, erase</button>
+    <!-- Covers the whole corner, so it's clear a new question is being asked -->
+    <div id="reset-confirm" class="reset-confirm" role="alertdialog" aria-labelledby="reset-question" aria-describedby="reset-detail" hidden>
+      <span class="reset-icon" aria-hidden="true">⚠️</span>
+      <p id="reset-question" class="reset-question">Erase all progress?</p>
+      <p id="reset-detail">This erases all stars, stickers, best times, medals and trophies on this device. Turned-off words stay off.</p>
+      <div class="reset-buttons">
+        <button id="reset-cancel" class="primary">Keep everything</button>
+        <button id="reset-yes" class="danger">Yes, erase</button>
+      </div>
     </div>
   </dialog>
 

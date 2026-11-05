@@ -3,6 +3,8 @@
 // Grown-up corner (press and hold the ⚙️ button): per-word progress, voice choice and reset.
 
 function openPanel() {
+  hideGrownupTip();
+  showGuide(false);
   showResetConfirm(false);
   renderPanel();
   if (canSpeak) renderVoiceOptions();
@@ -66,12 +68,51 @@ function chooseVoice(uri) {
   speak('Let’s read!');
 }
 
-// Asks "are you sure?" inside the panel, in place of the Reset/Done buttons.
+// Asks "are you sure?" over the whole panel, so it's clear the question has changed.
 // (confirm() is blocked in some browsers, such as embedded previews.)
 function showResetConfirm(show) {
-  els.panelActions.hidden = show;
+  els.panelMain.inert = show;
   els.resetConfirm.hidden = !show;
-  (show ? els.resetCancel : els.reset).focus();
+  (show ? els.resetCancel : els.reset).focus({ preventScroll: true });
+  els.panel.scrollTop = 0; // the cover sits over the top of the panel, so keep it in view
+}
+
+// "What's in this app": swaps the word list for a guide to the games, rewards, switches and installing.
+function showGuide(show) {
+  els.panelMain.hidden = show;
+  els.panelGuide.hidden = !show;
+  if (show) {
+    fillGuideNumbers();
+    els.guideBody.scrollTop = 0;
+  }
+  (show ? els.guideBack : els.guideBtn).focus();
+}
+
+// The guide's numbers come from config.js, so it stays right when they change.
+function fillGuideNumbers() {
+  const numbers = {
+    roundMax: ROUND_MAX_WORDS,
+    listenChoices: LISTEN_CHOICES,
+    listenStars: LISTEN_UNLOCK_STARS,
+    buildStars: BUILD_UNLOCK_STARS,
+    silver: Math.round(GAME_MEDALS.find((m) => m.name === 'silver').share * 100),
+    medalsPerTrophy: MEDALS_PER_TROPHY,
+  };
+  els.panelGuide.querySelectorAll('[data-number]').forEach((el) => {
+    el.textContent = numbers[el.dataset.number];
+  });
+}
+
+// The first time the app opens, a tip shows grown-ups where their corner is. It's only ever shown once,
+// and stays on the home screen until it's dismissed or the corner is opened.
+function showGrownupTipOnce() {
+  if (readStorage(GROWNUP_TIP_KEY)) return;
+  writeStorage(GROWNUP_TIP_KEY, '1');
+  els.grownupTip.hidden = false;
+}
+
+function hideGrownupTip() {
+  els.grownupTip.hidden = true;
 }
 
 function confirmReset() {

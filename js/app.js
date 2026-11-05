@@ -59,6 +59,9 @@ async function init() {
   els.reset.addEventListener('click', () => showResetConfirm(true));
   els.resetCancel.addEventListener('click', () => showResetConfirm(false));
   els.resetYes.addEventListener('click', confirmReset);
+  els.guideBtn.addEventListener('click', () => showGuide(true));
+  els.guideBack.addEventListener('click', () => showGuide(false));
+  els.grownupTipOk.addEventListener('click', hideGrownupTip);
 
   let resizeTimer = null;
   window.addEventListener('resize', () => {
@@ -74,6 +77,7 @@ async function init() {
   els.start.disabled = false;
   els.timedBtn.disabled = false;
   showScreen('home');
+  showGrownupTipOnce();
   fadeOutOfUpdate();
 }
 
