@@ -50,7 +50,7 @@ async function init() {
   els.voiceSection.hidden = !canSpeak;
   els.voiceSelect.addEventListener('change', () => chooseVoice(els.voiceSelect.value));
   els.voiceTest.addEventListener('click', () => speak('Let’s read! the, and, you'));
-  els.trophyBtn.addEventListener('click', openTrophies);
+  els.trophyMeter.addEventListener('click', openTrophies);
   els.trophyClose.addEventListener('click', () => els.trophyPanel.close());
   els.updateBtn.addEventListener('click', installUpdate);
   els.panelClose.addEventListener('click', () => els.panel.close());

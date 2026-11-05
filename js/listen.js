@@ -3,16 +3,17 @@
 // Listen & tap: hear a starred word, then find it among a few choices.
 // It's practice only, so it never changes stars or stickers ("I know it!" does that).
 
-let listenRound = null;      // the game being played: { words, deck, total, points, wordPoints, target, busy }
+let listenRound = null;      // the game being played: { words, deck, total, maxPoints, lit, result, points, wordPoints, target, busy }
 let listenTimer = null;      // the pause before the next word
 
 function startListen() {
   const words = knownWords();
   if (words.length < LISTEN_UNLOCK_STARS) return;
-  const deck = shuffle(words);
-  listenRound = { words, deck, total: deck.length, points: 0, wordPoints: 0, target: null, busy: false };
+  const deck = pickWords(words, GAME_MAX_WORDS, 'listenAt');
+  const maxPoints = deck.length * LISTEN_WORD_POINTS;
+  listenRound = { words, deck, total: deck.length, maxPoints, lit: 0, result: null, points: 0, wordPoints: 0, target: null, busy: false };
   state.lastRound = null;
-  els.listenBar.setAttribute('aria-valuemax', String(deck.length));
+  els.listenBar.setAttribute('aria-valuemax', String(maxPoints));
   showScreen('listen');
   showListenWord();
 }
@@ -25,14 +26,12 @@ function stopListen() {
 }
 
 function finishListen() {
-  const { total, points } = listenRound;
+  const { total, points, result } = listenRound;
   stopListen();
-  const maxPoints = total * LISTEN_WORD_POINTS;
-  const newBest = saveBestScore('listen', points, maxPoints);
-  state.lastRound = { mode: 'listen', total, points, maxPoints, newBest, learned: [] };
+  state.lastRound = { mode: 'listen', total, points, result, learned: [] };
   showScreen('home');
   confetti();
-  if (newBest) flyMedal();
+  flyGameMedal(result);
 }
 
 function showListenWord() {
@@ -42,15 +41,14 @@ function showListenWord() {
     return;
   }
   game.target = game.deck.shift();
+  markShown(game.target, 'listenAt');
   game.wordPoints = LISTEN_WORD_POINTS;
   game.busy = false;
   if (game.deck.length) loadClip(wordClip(game.deck[0])); // so the next word is ready to play
 
   const position = game.total - game.deck.length;
   els.listenCount.textContent = `${position} / ${game.total}`;
-  els.listenPoints.textContent = `🏅 ${game.points}`;
-  els.listenFill.style.width = `${(position / game.total) * 100}%`;
-  els.listenBar.setAttribute('aria-valuenow', String(position));
+  updateGameMeter(game, els.listenBar);
 
   const others = shuffle(game.words.filter((word) => word !== game.target)).slice(0, LISTEN_CHOICES - 1);
   els.listenChoices.replaceChildren(...shuffle([game.target, ...others]).map(makeListenChoice));
@@ -85,11 +83,10 @@ function tapListenChoice(choice, word) {
 
   game.busy = true;
   game.points += game.wordPoints;
-  els.listenPoints.textContent = `🏅 ${game.points}`;
-  playAnim(els.listenPoints, 'bounce');
   choice.classList.add('right');
   playAnim(choice, 'bounce');
-  showToast(`${randomCheer()} +${plural(game.wordPoints, 'point')}`);
+  const result = updateGameMeter(game, els.listenBar, true);
+  showToast(result ? medalToast(result) : `${randomCheer()} +${plural(game.wordPoints, 'point')}`);
   sayWord(game.target);
   listenTimer = setTimeout(showListenWord, LISTEN_NEXT_MS);
 }

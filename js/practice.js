@@ -2,7 +2,7 @@
 
 // Practice screen: rounds, the word card, and the "I know it!" / "Next" buttons.
 
-let round = null;            // the round being played: { mode: 'all' | 'missing', timed, total, learned, startedAt }
+let round = null;            // the round being played: { mode: 'all' | 'missing', timed, total, capped, learned, startedAt }
 let deck = [];               // words still to come this round
 let current = null;          // the word on the card
 let heardCurrent = false;    // has the current word been heard since it was shown?
@@ -13,12 +13,12 @@ let soundRun = 0;            // counts sound-outs, so a stopped one knows to sto
 
 // ---------- Rounds ----------
 
-// A round goes through each word once (or each word without a star yet), then returns home.
+// A round shows up to ROUND_MAX_WORDS, once each, then returns home. A Timed run shows every word, so its times compare.
 function startRound(mode, timed = false) {
   const list = mode === 'missing' ? missingWords() : state.words;
   if (list.length === 0) return;
-  deck = shuffle(list);
-  round = { mode, timed, total: deck.length, learned: [], startedAt: performance.now() };
+  deck = timed ? shuffle(list) : pickWords(list, ROUND_MAX_WORDS, 'seenAt');
+  round = { mode, timed, total: deck.length, capped: deck.length < list.length, learned: [], startedAt: performance.now() };
   state.lastRound = null;
   els.timer.hidden = !timed;
   els.roundBar.setAttribute('aria-valuemax', String(round.total));
@@ -34,7 +34,7 @@ function startRound(mode, timed = false) {
 function finishRound() {
   const done = round;
   stopRound();
-  const last = { mode: done.mode, total: done.total, learned: done.learned };
+  const last = { mode: done.mode, total: done.total, capped: done.capped, learned: done.learned };
   if (done.timed) {
     const ms = Math.round(performance.now() - done.startedAt);
     const best = bestTime();

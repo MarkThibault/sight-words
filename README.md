@@ -7,24 +7,30 @@ A simple sight-word practice app for young readers. Plain HTML, CSS and JavaScri
 - **Next ➜** moves on, but only after the word has been heard (until then, tapping it wiggles the word).
 - **I know it! ⭐** gives that word a star and a sticker. Stars are only earned this way.
 - Stickers collect on the home screen. Each one is a surprise kid-friendly emoji (animals, treats, vehicles and more) with its word on a tag, and it stays the same once earned. To change the choices, edit `STICKER_EMOJI` in `js/config.js`. Stickers can be dragged anywhere on the home screen, even over the title and buttons, and stay where they're put. The **🎲** button in the top-left corner slides them all back into a fresh random layout around the title. **Reset all progress** also puts them back.
-- Each round goes through every word once, then returns to the home screen. Words learned that round glow there.
+- A round shows up to 10 words, once each, then returns to the home screen. Words learned that round glow there. To change the length, edit `ROUND_MAX_WORDS` in `js/config.js`.
 
 ## Home screen buttons
 
 The reading game and its kinds of round come first:
 
-- **Let's Read! ▶** — a round of all the words.
-- **🎯 Missing words** — a round of only the words without a star yet. (Greyed out until some, but not all, words have stars.)
+- **Let's Read! ▶** — a round of up to 10 words. The words not shown for the longest come first, so every word gets its turn over a few rounds.
+- **🎯 Missing words** — a round of up to 10 words without a star yet, picked the same way. The button shows how many are missing in total. (Greyed out until some, but not all, words have stars.)
 - **⏱ Timed run** — a round of all the words against the clock. The best time is saved; adding or removing words starts a fresh record.
 
 Below a dotted line are the separate games:
 
-- **👂 Listen & tap** — hear a word, then tap it among four choices. A wrong tap plays a soft sound, fades that choice and says the word again, until they find it. Each word is worth up to 4 points, minus 1 for each wrong tap, and the game's total shows at the end. It uses only starred words and opens once 4 words have stars. It's practice only, so it never changes stars or stickers.
-- **🧱 Build the word** — hear a word, then pick out its sound parts in order ("th" + "e") by tapping them or dragging them onto the word. Extra tiles from other sight words don't belong: two or three per word, and more for short words so there are always at least 5 tiles (change these with `BUILD_MIN_TILES`, `BUILD_EXTRA_MIN` and `BUILD_EXTRA_MAX` in `js/config.js`). The parts show faintly as a guide, and each placed part plays its sound, including the last one before the whole word is said. A silent letter plays its own recording, like "silent e". A wrong tile wiggles, plays a soft sound, and then plays the sound of the part they're looking for. It uses only starred words, including one-part words like "a" and "I" (where the job is picking the right tile from the extras), and opens once 4 words have stars. Each word is worth up to 5 points, minus 1 for each wrong tile, and never less than 1. The game's total shows at the end. It's practice only too, so it never changes stars or stickers.
+- **👂 Listen & tap** — hear a word, then tap it among four choices. A wrong tap plays a soft sound, fades that choice and says the word again, until they find it. A game is up to 8 words, with the ones not shown for the longest first (change this with `GAME_MAX_WORDS` in `js/config.js`). Each word is worth up to 4 points, minus 1 for each wrong tap. It uses only starred words and opens once 4 words have stars. It's practice only, so it never changes stars or stickers.
+- **🧱 Build the word** — hear a word, then pick out its sound parts in order ("th" + "e") by tapping them or dragging them onto the word. Extra tiles from other sight words don't belong: two or three per word, and more for short words so there are always at least 5 tiles (change these with `BUILD_MIN_TILES`, `BUILD_EXTRA_MIN` and `BUILD_EXTRA_MAX` in `js/config.js`). The parts show faintly as a guide, and each placed part plays its sound, including the last one before the whole word is said. A silent letter plays its own recording, like "silent e". A wrong tile wiggles, plays a soft sound, and then plays the sound of the part they're looking for. It uses only starred words, including one-part words like "a" and "I" (where the job is picking the right tile from the extras), and opens once 4 words have stars. A game is up to 8 words, picked the same way. Each word is worth up to 5 points, minus 1 for each wrong tile, and never less than 1. It's practice only too, so it never changes stars or stickers.
 
 ## Trophies
 
-The **🏆** button in the top-left corner of the home screen shows starred words out of the total, the best time from **⏱ Timed run**, and the best score from **👂 Listen & tap** and **🧱 Build the word**. A new record shows on the home screen after the round, with a medal flying into the 🏆. Records are saved with progress, so **Reset all progress** clears them too.
+The trophy meter at the bottom of the home screen shows a medal, a bar filling up to the next trophy, and how many trophies have been earned. Tapping it opens **My Trophies**, which shows starred words out of the total, the best time from **⏱ Timed run**, and the medals and trophies so far.
+
+Each game of **👂 Listen & tap** or **🧱 Build the word** has three medals, and the bar at the top fills with the points earned. Finishing always earns bronze, gold is every word right the first time, and silver is at least 60% of the points (change these with `GAME_MEDALS` in `js/config.js`).
+
+Each medal adds one to the trophy meter, so a game adds one for bronze, two for silver or three for gold. Every 20 earns a trophy, and extras carry over (change this with `MEDALS_PER_TROPHY`). That's at most 20 games for a trophy, or 7 with all gold. A game left partway through earns no medals, even if the bar had reached one. Medals are separate from stars and stickers. Each best score saved by an older version counts as one starting medal.
+
+A new best time, medal or trophy shows on the home screen after the round, flying into the meter. All of this is saved with progress, so **Reset all progress** clears it too.
 
 ## Adding words
 

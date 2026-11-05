@@ -11,6 +11,15 @@ const OFF_WORDS_KEY = 'sightWords.offWords.v1'; // kept apart from progress, so 
 const SPEECH_RATE = 0.9;     // a little slower than normal speech (much slower sounds robotic)
 const SOUND_RATE = 0.75;     // sounds not recorded yet, said by the device's voice when sounding a word out
 const SOUND_GAP_MS = 300;    // the pause between sounds when sounding a word out
+const ROUND_MAX_WORDS = 10;    // the most words in a round of Let's Read or Missing words (a Timed run uses them all)
+const GAME_MAX_WORDS = 8;      // the most words in a game of Listen & tap or Build the word
+// The medals in a game, and the share of its possible points that earns each one. Bronze has to stay at or below
+// the lowest possible score (1 point a word in both games), so finishing always earns it. Gold is every word right the first time.
+const GAME_MEDALS = [
+  { emoji: '🥉', name: 'bronze', share: 0.2 },
+  { emoji: '🥈', name: 'silver', share: 0.6 },
+  { emoji: '🥇', name: 'gold', share: 1 }];
+const MEDALS_PER_TROPHY = 20;  // the most games a trophy takes, with bronze every time. All gold takes 7.
 const LISTEN_UNLOCK_STARS = 4; // stars needed before Listen & tap opens (it uses only starred words)
 const LISTEN_CHOICES = 4;      // words to choose from, at most LISTEN_UNLOCK_STARS
 const LISTEN_WORD_POINTS = 4;  // points for finding a word, minus 1 for each wrong tap first

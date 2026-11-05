@@ -4,7 +4,7 @@
 // A few extra tiles from other sight words don't belong.
 // It's practice only, so it never changes stars or stickers ("I know it!" does that).
 
-let buildRound = null;       // the game being played: { deck, total, points, wordPoints, target, parts, next, slots, busy }
+let buildRound = null;       // the game being played: { deck, total, maxPoints, lit, result, points, wordPoints, target, parts, next, slots, busy }
 let buildTimer = null;       // the pause before the next word
 
 // Starred words with their parts listed in js/phonics.js. A one-part word like "a" is just picking the right tile.
@@ -13,10 +13,11 @@ const buildableWords = () => knownWords().filter(wordParts);
 function startBuild() {
   const words = buildableWords();
   if (knownWords().length < BUILD_UNLOCK_STARS || words.length === 0) return;
-  const deck = shuffle(words);
-  buildRound = { deck, total: deck.length, points: 0 };
+  const deck = pickWords(words, GAME_MAX_WORDS, 'buildAt');
+  const maxPoints = deck.length * BUILD_WORD_POINTS;
+  buildRound = { deck, total: deck.length, maxPoints, lit: 0, result: null, points: 0 };
   state.lastRound = null;
-  els.buildBar.setAttribute('aria-valuemax', String(deck.length));
+  els.buildBar.setAttribute('aria-valuemax', String(maxPoints));
   showScreen('build');
   showBuildWord();
 }
@@ -29,14 +30,12 @@ function stopBuild() {
 }
 
 function finishBuild() {
-  const { total, points } = buildRound;
+  const { total, points, result } = buildRound;
   stopBuild();
-  const maxPoints = total * BUILD_WORD_POINTS;
-  const newBest = saveBestScore('build', points, maxPoints);
-  state.lastRound = { mode: 'build', total, points, maxPoints, newBest, learned: [] };
+  state.lastRound = { mode: 'build', total, points, result, learned: [] };
   showScreen('home');
   confetti();
-  if (newBest) flyMedal();
+  flyGameMedal(result);
 }
 
 function showBuildWord() {
@@ -46,6 +45,7 @@ function showBuildWord() {
     return;
   }
   game.target = game.deck.shift();
+  markShown(game.target, 'buildAt');
   game.parts = wordParts(game.target);
   game.next = 0;
   game.wordPoints = BUILD_WORD_POINTS;
@@ -54,9 +54,7 @@ function showBuildWord() {
 
   const position = game.total - game.deck.length;
   els.buildCount.textContent = `${position} / ${game.total}`;
-  els.buildPoints.textContent = `🏅 ${game.points}`;
-  els.buildFill.style.width = `${(position / game.total) * 100}%`;
-  els.buildBar.setAttribute('aria-valuenow', String(position));
+  updateGameMeter(game, els.buildBar);
 
   game.slots = game.parts.map(([letters]) => {
     const slot = document.createElement('span');
@@ -161,11 +159,10 @@ function placeBuildTile(tile) {
 function finishBuildWord() {
   const game = buildRound;
   game.points += game.wordPoints;
-  els.buildPoints.textContent = `🏅 ${game.points}`;
-  playAnim(els.buildPoints, 'bounce');
   els.buildSlots.classList.add('right');
   playAnim(els.buildSlots, 'bounce');
-  showToast(`${randomCheer()} +${plural(game.wordPoints, 'point')}`);
+  const result = updateGameMeter(game, els.buildBar, true);
+  showToast(result ? medalToast(result) : `${randomCheer()} +${plural(game.wordPoints, 'point')}`);
   sayWord(buildRound.target, () => { buildTimer = setTimeout(showBuildWord, BUILD_NEXT_MS); });
 }
 

@@ -1,9 +1,9 @@
 'use strict';
 
-// Saved progress: stars, stickers, heard counts, the best time and each game's best score.
-// Shape: { words: { the: { heard: 3, known: true, knownAt: 1729700000000, lastSeen: "2026-10-23", sticker: "🐶" } },
+// Saved progress: stars, stickers, heard counts, the best time and the medals earned in games.
+// Shape: { words: { the: { heard: 3, known: true, knownAt: 1729700000000, lastSeen: "2026-10-23", seenAt: 1729700000000, listenAt: 1729700000000, buildAt: 1729700000000, sticker: "🐶" } },
 //          bestTime: { ms: 95000, count: 24 },
-//          bestScores: { listen: { points: 16, maxPoints: 20 }, build: { points: 18, maxPoints: 25 } } }
+//          medals: 13 }
 
 function loadProgress() {
   try {
@@ -34,7 +34,9 @@ const knownWords = () => state.words.filter((w) => stats(w).known).sort((a, b) =
 const missingWords = () => state.words.filter((w) => !stats(w).known);
 
 function markSeen(word) {
-  stats(word).lastSeen = today();
+  const s = stats(word);
+  s.lastSeen = today();
+  s.seenAt = Date.now();
   saveProgress();
 }
 
@@ -75,14 +77,32 @@ function saveBestTime(ms) {
   saveProgress();
 }
 
-const bestScore = (game) => (state.progress.bestScores || {})[game] || null;
+// Medals add up, and never go down. Each best score saved by an older version counts as a head start of one medal.
+function medalCount() {
+  const { medals, bestScores = {} } = state.progress;
+  return medals ?? Object.keys(bestScores).length;
+}
 
-// Keeps the highest points for a game. On a tie, the one with the lower possible total is the better score.
-// Returns whether this is a new record.
-function saveBestScore(game, points, maxPoints) {
-  const best = bestScore(game);
-  if (best && (points < best.points || (points === best.points && maxPoints >= best.maxPoints))) return false;
-  state.progress.bestScores = { ...state.progress.bestScores, [game]: { points, maxPoints } };
+const medalsTowardTrophy = () => medalCount() % MEDALS_PER_TROPHY;
+const trophyCount = () => Math.floor(medalCount() / MEDALS_PER_TROPHY);
+
+// Saves medals from a finished game. Returns whether they completed a trophy.
+function earnMedals(count) {
+  const trophies = trophyCount();
+  state.progress.medals = medalCount() + count;
+  delete state.progress.bestScores;
   saveProgress();
-  return true;
+  return trophyCount() > trophies;
+}
+
+// Up to `limit` words in a random order, taking the ones not shown for the longest first, so every word gets
+// its turn over a few rounds. `shownAt` is the stats field that says when a word was last shown.
+function pickWords(list, limit, shownAt) {
+  const longestWaiting = shuffle(list).sort((a, b) => (stats(a)[shownAt] || 0) - (stats(b)[shownAt] || 0));
+  return shuffle(longestWaiting.slice(0, limit));
+}
+
+function markShown(word, shownAt) {
+  stats(word)[shownAt] = Date.now();
+  saveProgress();
 }
