@@ -84,7 +84,7 @@ const WORD_PARTS = {
   on: [['o', 'O'], ['n', 'N']],
   said: [['s', 'S'], ['ai', 'E'], ['d', 'D']],
   see: [['s', 'S'], ['ee', 'EE']],
-  the: [['th', 'TH'], ['e', 'UH']],
+  the: [['th', 'DH'], ['e', 'UH']],
   to: [['t', 'T'], ['o', 'OO']],
   up: [['u', 'U'], ['p', 'P']],
   was: [['w', 'W'], ['a', 'UH'], ['s', 'Z']],
