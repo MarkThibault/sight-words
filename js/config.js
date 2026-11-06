@@ -68,6 +68,7 @@ const STICKER_EMOJI = [
   '🦕', '🦖', '🦒', '🦓', '🦔', '🍎', '🍌', '🍉', '🍓', '🍒', '🍍', '🥕', '🌽', '🍕', '🍪', '🌈',
   '🌞', '⛄', '🚗', '🚒', '🚌', '🚂', '🚁', '⚽', '🏀', '🎁', '🎨', '🧸', '🥁', '👑'];
 const SCENE_CARD_DELAY_MS = 1500; // after a round, how long the new stickers get to land before "set complete" shows
+const LOCKED_HINT_MS = 400;    // after a locked scene's 🔒 wiggles, the pause before Let's Read! wiggles to show how to unlock it
 const CONFETTI_COLORS = ['#ff6b6b', '#ffa94d', '#ffd43b', '#69db7c', '#4dabf7', '#9775fa', '#f783ac'];
 // Only used if words.json can't be loaded (for example, when index.html is opened straight from disk).
 const FALLBACK_WORDS = ['was', 'you', 'me', 'like', 'my', 'yes', 'for', 'see', 'as', 'the', 'can', 'he',
