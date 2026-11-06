@@ -21,7 +21,7 @@ const GAME_MEDALS = [
   { emoji: '🥉', name: 'bronze', share: 0.2 },
   { emoji: '🥈', name: 'silver', share: 0.6 },
   { emoji: '🥇', name: 'gold', share: 1 }];
-const MEDALS_PER_TROPHY = 20;  // the most games a trophy takes, with bronze every time. All gold takes 7.
+const MEDALS_PER_TROPHY = 10;  // the most games a trophy takes, with bronze every time. All gold takes 4.
 const LISTEN_UNLOCK_STARS = 4; // stars needed before Listen & tap opens (it uses only starred words)
 const LISTEN_CHOICES = 4;      // words to choose from, at most LISTEN_UNLOCK_STARS
 const LISTEN_WORD_POINTS = 4;  // points for finding a word, minus 1 for each wrong tap first
@@ -68,6 +68,7 @@ const STICKER_EMOJI = [
   '🦕', '🦖', '🦒', '🦓', '🦔', '🍎', '🍌', '🍉', '🍓', '🍒', '🍍', '🥕', '🌽', '🍕', '🍪', '🌈',
   '🌞', '⛄', '🚗', '🚒', '🚌', '🚂', '🚁', '⚽', '🏀', '🎁', '🎨', '🧸', '🥁', '👑'];
 const SCENE_CARD_DELAY_MS = 1500; // after a round, how long the new stickers get to land before "set complete" shows
+const PRIZE_CARD_DELAY_MS = 1800; // after a game that earns a trophy, how long the 🏆 gets to fly in before "Pick your prize!" shows
 const LOCKED_HINT_MS = 400;    // after a locked scene's 🔒 wiggles, the pause before Let's Read! wiggles to show how to unlock it
 const CONFETTI_COLORS = ['#ff6b6b', '#ffa94d', '#ffd43b', '#69db7c', '#4dabf7', '#9775fa', '#f783ac'];
 // Only used if words.json can't be loaded (for example, when index.html is opened straight from disk).

@@ -4,9 +4,11 @@
 // Shape: { words: { the: { heard: 3, known: true, knownAt: 1729700000000, lastSeen: "2026-10-23", seenAt: 1729700000000, listenAt: 1729700000000, buildAt: 1729700000000, sticker: "🦀", set: "beach" } },
 //          bestTime: { ms: 95000, count: 24 },
 //          medals: 13,
-//          scenes: ["beach"], scene: "beach", sceneToTry: "space" }
+//          scenes: ["beach"], scene: "beach", sceneToTry: "space",
+//          prizes: [{ emoji: "🐶", at: 1729700000000 }] }
 // A sticker without `set` was earned before sticker sets, and doesn't count toward one.
 // `scene` is the scene showing (none means the dots), and `sceneToTry` makes 🖼️ glow after "Not now".
+// `prizes` are the prize stickers picked with trophies, one per trophy, in the order they were picked.
 
 function loadProgress() {
   try {
@@ -73,7 +75,7 @@ function stickerFor(word) {
       s.set = set.id;
       if (earned.length + 1 === SET_SIZE) unlockScene(set.id);
     } else {
-      const used = new Set(state.allWords.map((w) => stats(w).sticker));
+      const used = new Set([...state.allWords.map((w) => stats(w).sticker), ...prizeStickers().map((p) => p.emoji)]);
       const unused = STICKER_EMOJI.filter((e) => !used.has(e));
       s.sticker = randomItem(unused.length ? unused : STICKER_EMOJI);
     }
@@ -127,6 +129,27 @@ function medalCount() {
 
 const medalsTowardTrophy = () => medalCount() % MEDALS_PER_TROPHY;
 const trophyCount = () => Math.floor(medalCount() / MEDALS_PER_TROPHY);
+
+// ---------- Prize stickers ----------
+// Each trophy lets the child pick a prize sticker for the board. It has a 🏆 tag instead of a word, and isn't part
+// of a set, so stars, word stickers and scenes stay as they are. Trophies from medals earned earlier count too.
+
+const prizeStickers = () => state.progress.prizes || [];
+const prizesToPick = () => Math.max(0, trophyCount() - prizeStickers().length);
+
+// Every sticker outside the sets that isn't on the board yet. Once they're all used, any of them again.
+function prizeChoices() {
+  const used = new Set([...state.allWords.map((w) => stats(w).known && stats(w).sticker), ...prizeStickers().map((p) => p.emoji)]);
+  const left = STICKER_EMOJI.filter((e) => !used.has(e));
+  return left.length ? left : STICKER_EMOJI;
+}
+
+// Returns the new sticker's key on the board.
+function addPrize(emoji) {
+  state.progress.prizes = [...prizeStickers(), { emoji, at: Date.now() }];
+  saveProgress();
+  return `prize-${prizeStickers().length - 1}`;
+}
 
 // Saves medals from a finished game. Returns whether they completed a trophy.
 function earnMedals(count) {

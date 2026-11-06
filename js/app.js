@@ -59,6 +59,14 @@ async function init() {
   els.trophyBtn.addEventListener('click', openTrophies);
   els.trophyMeter.addEventListener('click', openTrophies);
   els.trophyClose.addEventListener('click', () => els.trophyPanel.close());
+  els.prizeBtn.addEventListener('click', () => {
+    els.trophyPanel.close();
+    openPrizeCard();
+  });
+  els.prizeLater.addEventListener('click', () => els.prizeCard.close());
+  els.prizeYes.addEventListener('click', () => pickPrize(prizeChoice));
+  els.prizeBack.addEventListener('click', () => showPrizeConfirm(null));
+  els.prizeCard.addEventListener('close', renderHome); // the new stickers pop onto the board, and the pill glows if one is saved
   els.updateBtn.addEventListener('click', installUpdate);
   els.panelClose.addEventListener('click', () => els.panel.close());
   els.panel.addEventListener('close', () => showScreen('home'));

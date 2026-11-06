@@ -2,16 +2,26 @@
 
 // Stickers: drawing them, scattering them on the home screen, dragging them around, and flying a new one home.
 
-function makeSticker(word) {
-  const h = hash(word);
+// A word's sticker, as the board draws it.
+const wordSticker = (word) => ({ key: word, emoji: stickerFor(word), label: word, at: stats(word).knownAt });
+
+// Everything on the board, oldest first: word stickers (from stars) and prize stickers (from trophies, with a 🏆 tag).
+// Oldest first, so stickers stay put as new ones are added.
+function boardStickers() {
+  const prizes = prizeStickers().map((p, i) => ({ key: `prize-${i}`, emoji: p.emoji, label: '🏆', at: p.at }));
+  return [...knownWords().map(wordSticker), ...prizes].sort((a, b) => a.at - b.at);
+}
+
+function makeSticker({ key, emoji, label: text }) {
+  const h = hash(key);
   const el = document.createElement('div');
   el.className = 'sticker';
   const art = document.createElement('span');
   art.className = 'sticker-art';
-  art.textContent = stickerFor(word);
+  art.textContent = emoji;
   const label = document.createElement('span');
   label.className = 'sticker-word';
-  label.textContent = word;
+  label.textContent = text;
   el.append(art, label);
   el.style.setProperty('--c', STICKER_COLORS[h % STICKER_COLORS.length]);
   el.style.setProperty('--r', `${(h % 31) - 15}deg`);
@@ -19,29 +29,29 @@ function makeSticker(word) {
 }
 
 function renderStickers() {
-  const known = knownWords();
+  const stickers = boardStickers();
   const learnedLastRound = state.lastRound ? state.lastRound.learned : [];
 
   els.board.replaceChildren();
-  els.shuffleBtn.hidden = known.length === 0;
-  if (known.length === 0) return;
+  els.shuffleBtn.hidden = stickers.length === 0;
+  if (stickers.length === 0) return;
 
-  const slots = stickerSlots(known.length);
+  const slots = stickerSlots(stickers.length);
   els.board.style.setProperty('--s', `${slots.size}px`);
   const spots = loadStickerSpots();
   const W = els.board.clientWidth;
   const H = els.board.clientHeight;
   // Stickers that were dragged go on top, the most recently moved last.
-  const order = known.map((word, i) => ({ word, i, spot: spots[word] }))
+  const order = stickers.map((sticker, i) => ({ sticker, i, spot: spots[sticker.key] }))
     .sort((a, b) => (a.spot ? a.spot[2] : 0) - (b.spot ? b.spot[2] : 0));
-  order.forEach(({ word, i, spot }) => {
-    const el = makeSticker(word);
-    el.dataset.word = word;
+  order.forEach(({ sticker, i, spot }) => {
+    const el = makeSticker(sticker);
+    el.dataset.key = sticker.key;
     el.style.left = `${spot ? spot[0] * W : slots[i].x}px`;
     el.style.top = `${spot ? spot[1] * H : slots[i].y}px`;
-    makeDraggable(el, word);
-    el.classList.toggle('fresh', learnedLastRound.includes(word));
-    const newIndex = state.newStickers.indexOf(word);
+    makeDraggable(el, sticker.key);
+    el.classList.toggle('fresh', learnedLastRound.includes(sticker.key));
+    const newIndex = state.newStickers.indexOf(sticker.key);
     if (newIndex >= 0) {
       el.classList.add('pop');
       el.style.animationDelay = `${0.25 + newIndex * 0.15}s`;
@@ -97,7 +107,8 @@ const blockerRects = () => [els.homeCenter, els.starCount, els.trophyMeter, els.
   .filter((el) => !el.hidden).map((el) => el.getBoundingClientRect());
 
 // ---------- Dragging ----------
-// Saved as { word: [x, y, when] }, with x and y as fractions of the screen so they fit any screen size.
+// Saved as { key: [x, y, when] }, with x and y as fractions of the screen so they fit any screen size.
+// The key is the word, or "prize-0", "prize-1"… for prize stickers.
 
 function loadStickerSpots() {
   try {
@@ -107,7 +118,7 @@ function loadStickerSpots() {
   return {};
 }
 
-function makeDraggable(el, word) {
+function makeDraggable(el, key) {
   el.addEventListener('pointerdown', (e) => {
     if (e.button > 0) return;
     e.preventDefault();
@@ -140,7 +151,7 @@ function makeDraggable(el, word) {
       const x = parseFloat(el.style.left);
       const y = parseFloat(el.style.top);
       const spots = loadStickerSpots();
-      spots[word] = [+(x / board.width).toFixed(4), +(y / board.height).toFixed(4), Date.now()];
+      spots[key] = [+(x / board.width).toFixed(4), +(y / board.height).toFixed(4), Date.now()];
       writeStorage(STICKER_SPOTS_KEY, JSON.stringify(spots));
     };
     el.addEventListener('pointermove', move);
@@ -153,11 +164,11 @@ function makeDraggable(el, word) {
 function shuffleStickers() {
   writeStorage(STICKER_SPOTS_KEY, null);
   writeStorage(STICKER_SEED_KEY, String(1 + Math.floor(Math.random() * 1e9)));
-  const known = knownWords();
-  const slots = stickerSlots(known.length);
+  const stickers = boardStickers();
+  const slots = stickerSlots(stickers.length);
   els.board.style.setProperty('--s', `${slots.size}px`);
-  known.forEach((word, i) => {
-    const el = [...els.board.children].find((s) => s.dataset.word === word);
+  stickers.forEach(({ key }, i) => {
+    const el = [...els.board.children].find((s) => s.dataset.key === key);
     if (!el) return;
     el.classList.remove('pop');
     el.classList.add('gliding');
@@ -172,7 +183,7 @@ function shuffleStickers() {
 
 // A new sticker pops out of the word card and flies into the 🏠 button.
 function flySticker(word) {
-  const el = makeSticker(word);
+  const el = makeSticker(wordSticker(word));
   el.classList.add('flying');
   el.style.setProperty('--s', '160px');
   const from = els.card.getBoundingClientRect();

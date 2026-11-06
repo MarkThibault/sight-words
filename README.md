@@ -28,9 +28,15 @@ The trophy pill at the bottom of the home screen fills with yellow toward the ne
 
 Each game of **👂 Listen & tap** or **🧱 Build the word** has three medals, and the bar at the top fills with the points earned. Finishing always earns bronze, gold is every word right the first time, and silver is at least 60% of the points (change these with `GAME_MEDALS` in `js/config.js`).
 
-Each medal adds one to the trophy pill, so a game adds one for bronze, two for silver or three for gold. Every 20 earns a trophy, and extras carry over (change this with `MEDALS_PER_TROPHY`). That's at most 20 games for a trophy, or 7 with all gold. A game left partway through earns no medals, even if the bar had reached one. Medals are separate from stars and stickers. Each best score saved by an older version counts as one starting medal.
+Each medal adds one to the trophy pill, so a game adds one for bronze, two for silver or three for gold. Every 10 earns a trophy, and extras carry over (change this with `MEDALS_PER_TROPHY`). That's at most 10 games for a trophy, or 4 with all gold. A game left partway through earns no medals, even if the bar had reached one. Medals never change stars or word stickers. Each best score saved by an older version counts as one starting medal.
 
 A new best time, medal or trophy shows on the home screen after the round, flying into the trophy pill. All of this is saved with progress, so **Reset all progress** clears it too.
+
+### Prize stickers
+
+Each trophy earns a prize sticker that the child picks. After a game that earns a trophy, a "🎁 Pick your prize!" card shows every sticker that isn't on the board yet: the animals, food and toys outside the sticker sets (`STICKER_EMOJI` in `js/config.js`). Tapping one shows it big with "Put this sticker on your board?", so a slip doesn't use up the prize: **Yes!** puts it on the board with a 🏆 tag instead of a word, and **Choose again** goes back to the grid. A prize sticker can be dragged and shuffled like the others. Prize stickers don't belong to a word or a set, so they never change stars, word stickers or scenes.
+
+**Later** saves the pick. Until it's picked, the trophy pill glows, a red bubble on the **🏆** button shows how many prizes are waiting, and **My Trophies** opens with a big **🎁 Prizes to pick!** button at the top, with the same bubble. Trophies from medals earned before prize stickers came in get a pick each too. Prize stickers are saved with progress, so **Reset all progress** clears them.
 
 ## Sticker sets and scenes
 
@@ -92,7 +98,7 @@ To record them, run `python serve.py` in the project folder on a computer and op
 
 Press and hold the **⚙️** button in the top-right corner of the home screen for about a second. (A quick tap does nothing, so kids don't open it by accident.) The first time the app opens, a tip below **⚙️** says so: "Grown-ups: press and hold ⚙️ for settings." It shows only once, and goes away with **Got it** or when the corner is opened.
 
-From there you can see how many times each word was heard, give or take away stickers, or reset all progress (including the best time, medals, trophies and scenes). **Reset all progress** asks first, with the question covering the whole corner so it can't be missed.
+From there you can see how many times each word was heard, give or take away stickers, or reset all progress (including the best time, medals, trophies, prize stickers and scenes). **Reset all progress** asks first, with the question covering the whole corner so it can't be missed.
 
 **📖 What's in this app** opens a guide for grown-ups in place of the word list: the games, how stars, stickers, medals and trophies are earned, what the on/off switches do, and how to install the app for offline play. Its numbers, like the words in a round or the medals in a trophy, come from `js/config.js`, so they stay right when those change. **← Back** returns to the word list.
 

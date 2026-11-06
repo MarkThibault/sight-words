@@ -42,10 +42,10 @@ function renderSummary() {
   const last = state.lastRound;
   els.stickerHint.classList.toggle('summary', Boolean(last));
   if (!last) {
-    const known = knownWords().length;
-    els.stickerHint.textContent = known === 0
+    const stickers = boardStickers().length; // prize stickers count too
+    els.stickerHint.textContent = stickers === 0
       ? 'Tap “I know it!” to earn stickers'
-      : `You have ${plural(known, 'sticker')}!`;
+      : `You have ${plural(stickers, 'sticker')}!`;
     return;
   }
 
