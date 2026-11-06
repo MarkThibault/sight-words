@@ -53,7 +53,12 @@ function showPrizeConfirm(emoji) {
 }
 
 function pickPrize(emoji) {
-  state.newStickers.push(addPrize(emoji)); // pops onto the board
+  const key = addPrize(emoji);
+  if (state.playing) state.stickersToPop.push(key); // in sticker play it pops straight onto the board
+  else {
+    markStickerToSee(key); // otherwise it flies into the 🐵/🙈 switch and waits there
+    state.stickersToFly.push(key);
+  }
   playEffect('stickerDown');
   if (prizesToPick()) renderPrizeCard();
   else els.prizeCard.close();

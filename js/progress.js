@@ -4,11 +4,12 @@
 // Shape: { words: { the: { heard: 3, known: true, knownAt: 1729700000000, lastSeen: "2026-10-23", seenAt: 1729700000000, listenAt: 1729700000000, buildAt: 1729700000000, sticker: "🦀", set: "beach" } },
 //          bestTime: { ms: 95000, count: 24 },
 //          medals: 13,
-//          scenes: ["beach"], scene: "beach", scenesToTry: ["space"],
+//          scenes: ["beach"], scene: "beach", scenesToTry: ["space"], stickersToSee: ["the", "prize-0"],
 //          prizes: [{ emoji: "🐶", at: 1729700000000 }],
 //          lastGame: { game: "listen", inARow: 2 } }
 // A sticker without `set` was earned before sticker sets, and doesn't count toward one.
 // `scene` is the scene showing (none means the dots), and `scenesToTry` are the new scenes not looked at yet, counted on 🖼️.
+// `stickersToSee` are stickers earned outside sticker play, waiting inside the 🐵/🙈 switch until it's next opened.
 // `prizes` are the prize stickers picked with trophies, one per trophy, in the order they were picked.
 // `lastGame` is the game finished most recently and how many times in a row; a finished reading round clears it.
 
@@ -109,7 +110,7 @@ const collectingSet = () => STICKER_SETS.find((set) => setStickersEarned(set).le
 // A scene stays unlocked once earned, even if a sticker is taken away later. Only Reset all progress locks it again.
 const unlockedScenes = () => state.progress.scenes || [];
 
-// New scenes not looked at yet. Opening the 🖼️ tray, or "Let's go!" on the "set complete!" card, counts as looking.
+// New scenes not looked at yet. Opening the 🖼️ tray, or picking the scene, counts as looking.
 const scenesToTry = () => state.progress.scenesToTry || [];
 
 function markSceneToTry(id) {
@@ -124,8 +125,8 @@ function markSceneTried(id) {
 function unlockScene(id) {
   if (unlockedScenes().includes(id)) return;
   state.progress.scenes = [...unlockedScenes(), id];
-  markSceneToTry(id); // counted on 🖼️ until it's seen, even if the app closes before "set complete!" shows
-  state.newScenes.push(id); // "set complete!" shows on the home screen
+  markSceneToTry(id); // counted on 🖼️ until it's seen
+  state.scenesToFly.push(id); // its icon flies into the 🐵/🙈 switch on the home screen
   saveProgress();
 }
 
@@ -154,6 +155,13 @@ const trophyCount = () => Math.floor(medalCount() / MEDALS_PER_TROPHY);
 // of a set, so stars, word stickers and scenes stay as they are. Trophies from medals earned earlier count too.
 
 const prizeStickers = () => state.progress.prizes || [];
+
+const stickersToSee = () => state.progress.stickersToSee || [];
+
+function markStickerToSee(key) {
+  if (!stickersToSee().includes(key)) state.progress.stickersToSee = [...stickersToSee(), key];
+  saveProgress();
+}
 const prizesToPick = () => Math.max(0, trophyCount() - prizeStickers().length);
 
 // Every sticker outside the sets that isn't on the board yet. Once they're all used, any of them again.

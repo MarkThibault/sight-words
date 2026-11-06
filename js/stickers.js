@@ -31,6 +31,8 @@ function makeSticker({ key, emoji, label: text }) {
 function renderStickers() {
   const stickers = boardStickers();
   const learnedLastRound = state.lastRound ? state.lastRound.learned : [];
+  // New stickers wait inside the 🐵/🙈 switch until sticker play opens. They keep their spots, so nothing moves when they appear.
+  const waiting = state.playing ? [] : waitingStickers();
 
   els.board.replaceChildren();
   els.shuffleBtn.hidden = stickers.length === 0;
@@ -45,20 +47,114 @@ function renderStickers() {
   const order = stickers.map((sticker, i) => ({ sticker, i, spot: spots[sticker.key] }))
     .sort((a, b) => (a.spot ? a.spot[2] : 0) - (b.spot ? b.spot[2] : 0));
   order.forEach(({ sticker, i, spot }) => {
+    if (waiting.includes(sticker.key)) return;
     const el = makeSticker(sticker);
     el.dataset.key = sticker.key;
     el.style.left = `${spot ? spot[0] * W : slots[i].x}px`;
     el.style.top = `${spot ? spot[1] * H : slots[i].y}px`;
     makeDraggable(el, sticker.key);
     el.classList.toggle('fresh', learnedLastRound.includes(sticker.key));
-    const newIndex = state.newStickers.indexOf(sticker.key);
-    if (newIndex >= 0) {
+    const popIndex = state.stickersToPop.indexOf(sticker.key);
+    if (popIndex >= 0) {
       el.classList.add('pop');
-      el.style.animationDelay = `${0.25 + newIndex * 0.15}s`;
+      el.style.animationDelay = `${0.25 + popIndex * 0.15}s`;
     }
     els.board.append(el);
   });
-  state.newStickers = [];
+  state.stickersToPop = [];
+}
+
+// ---------- Waiting inside the 🐵/🙈 switch ----------
+// Stickers earned outside sticker play fly into the switch and wait there, saved, until it's next opened. Scenes just
+// unlocked fly in too, and are counted on 🖼️ until the scene tray is opened.
+
+// The waiting stickers still on the board (a grown-up may have taken one away since).
+function waitingStickers() {
+  const keys = new Set(boardStickers().map((s) => s.key));
+  return stickersToSee().filter((key) => keys.has(key));
+}
+
+// Sticker play just opened: the waiting stickers pop onto the board, and anything still to fly in is already there.
+function openStickersToSee() {
+  clearTimeout(flyInTimer);
+  state.stickersToFly = [];
+  state.scenesToFly = [];
+  const waiting = waitingStickers();
+  delete state.progress.stickersToSee;
+  saveProgress();
+  if (!waiting.length) return;
+  state.stickersToPop = waiting;
+  renderStickers();
+}
+
+let flyInTimer = null;
+let inTheAir = 0;
+
+// Stickers and scenes on their way in, which the switch's red bubble doesn't count until they land.
+const stillToLand = () => state.stickersToFly.length + state.scenesToFly.length + inTheAir;
+
+// Runs each time the home screen is drawn: what was earned since flies in once the screen has settled.
+function flyInSoon() {
+  clearTimeout(flyInTimer);
+  if (state.stickersToFly.length || state.scenesToFly.length) flyInTimer = setTimeout(flyNextIn, FLY_IN_DELAY_MS);
+}
+
+// One at a time, stickers first. Waits for the next visit to the home screen if something else is open.
+function flyNextIn() {
+  if (els.home.hidden || state.playing || document.querySelector('dialog[open]')) return;
+  if (state.stickersToFly.length) {
+    const key = state.stickersToFly.shift();
+    const sticker = boardStickers().find((s) => s.key === key);
+    if (sticker) {
+      const el = makeSticker(sticker);
+      el.classList.add('flying');
+      el.style.setProperty('--s', '130px');
+      flyIntoSwitch(el, 'stickerDown');
+    }
+  } else if (state.scenesToFly.length) {
+    const set = findSet(state.scenesToFly.shift());
+    if (set) {
+      const el = document.createElement('span');
+      el.className = 'flying-medal';
+      el.textContent = set.icon;
+      playEffect('sceneUnlocked');
+      flyIntoSwitch(el);
+    }
+  }
+  renderPlayBadge();
+  if (state.stickersToFly.length || state.scenesToFly.length) flyInTimer = setTimeout(flyNextIn, FLY_IN_GAP_MS);
+}
+
+// It pops up in the middle of the home screen, flies into the switch, and the switch wiggles as the count goes up.
+function flyIntoSwitch(el, landSound) {
+  const land = () => {
+    el.remove();
+    inTheAir -= 1;
+    playAnim(els.playToggle, 'wiggle');
+    if (landSound) playEffect(landSound);
+    renderPlayBadge();
+  };
+  inTheAir += 1;
+  if (reduceMotion) {
+    land();
+    return;
+  }
+  const from = els.stickerHint.getBoundingClientRect();
+  const to = els.playToggle.getBoundingClientRect();
+  const x0 = `${from.left + from.width / 2}px`;
+  const y0 = `${from.top + from.height / 2}px`;
+  const x1 = `${to.left + to.width / 2}px`;
+  const y1 = `${to.top + to.height / 2}px`;
+  el.style.left = x1;
+  el.style.top = y1;
+  document.body.append(el);
+  const anim = el.animate([
+    { left: x0, top: y0, scale: 0, rotate: '-180deg' },
+    { left: x0, top: y0, scale: 1.15, rotate: '0deg', offset: 0.3 },
+    { left: x0, top: y0, scale: 1, rotate: '0deg', offset: 0.5 },
+    { left: x1, top: y1, scale: 0.25, rotate: '0deg' },
+  ], { duration: 1200, easing: 'ease-in-out' });
+  anim.onfinish = land;
 }
 
 // Lay the screen out as a grid of sticker-sized cells, skipping cells behind the title and buttons.

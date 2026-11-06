@@ -51,9 +51,6 @@ async function init() {
   els.playToggle.addEventListener('click', () => setPlaying(!state.playing));
   // a tap outside the tray closes it
   els.sceneTray.addEventListener('click', (e) => { if (e.target === els.sceneTray) els.sceneTray.close(); });
-  els.sceneGo.addEventListener('click', () => els.sceneCard.close('go'));
-  els.sceneLater.addEventListener('click', () => els.sceneCard.close('later'));
-  els.sceneCard.addEventListener('close', closeSceneCard);
   els.voiceSection.hidden = !canSpeak;
   els.voiceSelect.addEventListener('change', () => chooseVoice(els.voiceSelect.value));
   els.voiceTest.addEventListener('click', () => speak('Let’s read! the, and, you'));

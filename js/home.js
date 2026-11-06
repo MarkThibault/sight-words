@@ -10,7 +10,6 @@ function showScreen(name) {
   if (name === 'home') {
     renderHome();
     homeShown();
-    showSceneCardsSoon();
   }
 }
 
@@ -43,6 +42,7 @@ function renderHome() {
 
   renderSummary();
   renderStickers();
+  flyInSoon();
 }
 
 function setGameWaiting(btn, waiting) {
@@ -108,20 +108,22 @@ function renderSummary() {
 }
 
 // Sticker play: the 🐵/🙈 switch hides the title, its buttons, the bottom row and ⚙️, and shows 🏆, 🎲 and 🖼️
-// beside it. Only then can the stickers be moved. Pop-ups like "set complete!" wait until it's switched back.
+// beside it. Only then can the stickers be moved. New stickers waiting inside the switch pop onto the board as it opens.
+// Stickers and scenes flying into the switch wait until it's switched back.
 function setPlaying(on) {
   state.playing = on;
   els.home.classList.toggle('playing', on);
   els.playToggle.setAttribute('aria-checked', String(on));
   els.playKnob.textContent = on ? '🙈' : '🐵';
+  if (on) openStickersToSee();
+  else flyInSoon();
   renderPlayBadge();
-  if (!on) showSceneCardsSoon();
 }
 
-// A red bubble on the switch adds up what's waiting inside: prize stickers to pick and new scenes not looked at yet.
-// In sticker play it moves onto 🏆 and 🖼️, which count their own.
+// A red bubble on the switch adds up what's waiting inside: new stickers, prize stickers to pick and new scenes not
+// looked at yet. It counts up as each new one lands. In sticker play it moves onto 🏆 and 🖼️, which count their own.
 function renderPlayBadge() {
-  const waiting = prizesToPick() + scenesToTry().length;
+  const waiting = Math.max(0, waitingStickers().length + prizesToPick() + scenesToTry().length - stillToLand());
   els.playBadge.hidden = waiting === 0 || state.playing;
   els.playBadge.textContent = waiting;
   els.playToggle.setAttribute('aria-label', waiting ? `Play with the stickers, ${waiting} new` : 'Play with the stickers');

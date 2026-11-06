@@ -1,7 +1,8 @@
 'use strict';
 
 // Scenes: the backgrounds behind the sticker board. Finishing a sticker set (see progress.js) unlocks its scene,
-// shown with a "set complete!" card. The 🖼️ button picks between the scenes unlocked so far, and the dots are free.
+// and its icon flies into the 🐵/🙈 switch (see stickers.js). The 🖼️ button picks between the scenes unlocked so far,
+// and the dots are free.
 // Also the star pill at the bottom of the home screen, which shows the set being collected.
 
 // The scene showing, or null for the dots.
@@ -10,9 +11,9 @@ function currentScene() {
   return id && unlockedScenes().includes(id) && findSet(id) ? id : null;
 }
 
-// A scene's faded emoji. `topOnly` keeps the ones in the top half, for the small preview on the card.
-function sceneDecor(set, topOnly = false) {
-  return set.decor.filter(([, , , top]) => !topOnly || top < 50).map(([emoji, size, left, top]) => {
+// A scene's faded emoji.
+function sceneDecor(set) {
+  return set.decor.map(([emoji, size, left, top]) => {
     const el = document.createElement('span');
     el.textContent = emoji;
     el.style.setProperty('--size', size);
@@ -151,48 +152,4 @@ function chooseScene(id) {
   markSceneTried(id);
   saveProgress();
   renderScene();
-}
-
-// ---------- "Set complete!" ----------
-
-let sceneCardTimer = null;
-
-// Runs each time the home screen appears: any scene just unlocked gets its card once the new stickers have landed.
-function showSceneCardsSoon() {
-  clearTimeout(sceneCardTimer);
-  if (state.newScenes.length) sceneCardTimer = setTimeout(showNextSceneCard, SCENE_CARD_DELAY_MS);
-}
-
-// Waits for the next visit to the home screen if something else is open.
-function showNextSceneCard() {
-  const busy = els.home.hidden || state.playing || document.querySelector('dialog[open]');
-  if (busy || !state.newScenes.length) return;
-  const set = findSet(state.newScenes.shift());
-  if (!set) return;
-  els.sceneCard.dataset.scene = set.id;
-  els.sceneCardTitle.textContent = `🎉 ${set.name.replace(/^The /, '')} set complete!`;
-  setSceneBackground(els.sceneCardPreview, set.id);
-  els.sceneCardDecor.replaceChildren(...sceneDecor(set, true));
-  els.sceneCardName.textContent = `New scene: ${set.name}`;
-  els.sceneCardSet.replaceChildren(...setStickers(set).map((emoji) => {
-    const el = document.createElement('span');
-    el.textContent = emoji;
-    return el;
-  }));
-  els.sceneGo.textContent = `Let's go! ${set.icon}`;
-  els.sceneCard.returnValue = '';
-  els.sceneCard.showModal();
-  playEffect('sceneUnlocked');
-}
-
-// "Let's go!" switches to the new scene. "Not now" (or closing the card) keeps the current one, and it's counted on 🖼️.
-function closeSceneCard() {
-  const id = els.sceneCard.dataset.scene;
-  if (els.sceneCard.returnValue === 'go') chooseScene(id);
-  else {
-    markSceneToTry(id);
-    saveProgress();
-    renderScene();
-  }
-  if (state.newScenes.length) sceneCardTimer = setTimeout(showNextSceneCard, 400);
 }
