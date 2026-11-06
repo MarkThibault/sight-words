@@ -876,12 +876,27 @@ h1 {
 .scene-thumb.locked { background: #f1f3f5; cursor: default; }
 .scene-thumb.locked .thumb-icon { filter: grayscale(0.85); opacity: 0.5; }
 .thumb-lock { position: absolute; top: 3px; left: 6px; font-size: 16px; }
+/* a scene just unlocked, the first time the tray opens after: a red tag like the bubble that led to 🖼️ */
+.thumb-new {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 2px 8px;
+  background: #e03131;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
 
 @media (max-width: 560px) {
   .scene-list { grid-template-columns: repeat(3, minmax(0, 100px)); }
   .scene-thumb { height: 80px; }
   .thumb-icon { font-size: 1.6rem; }
   .thumb-set { font-size: 12px; padding: 1px 4px; }
+  .thumb-new { top: 2px; right: 2px; padding: 0 5px; border-width: 1px; font-size: 0.65rem; }
 }
 /* sideways phones have room across but not down, so the tray goes four wide */
 @media (max-height: 520px) and (orientation: landscape) {

@@ -82,14 +82,15 @@ let sceneHintTimer = null;
 
 function openSceneTray() {
   els.sceneHint.classList.remove('show');
+  const fresh = scenesToTry(); // tagged "New!" this time the tray opens
   delete state.progress.scenesToTry; // the new scenes have been seen
   saveProgress();
   renderScene();
-  renderSceneTray();
+  renderSceneTray(fresh);
   els.sceneTray.showModal();
 }
 
-function renderSceneTray() {
+function renderSceneTray(fresh = []) {
   const current = currentScene();
   const dots = sceneThumb(null, '⭐', 'Dots', false, current === null);
   const free = document.createElement('span');
@@ -103,6 +104,13 @@ function renderSceneTray() {
     row.className = 'thumb-set';
     row.append(...setShapes(set, 'thumb-sticker'));
     thumb.append(row);
+    if (fresh.includes(set.id)) {
+      const tag = document.createElement('span');
+      tag.className = 'thumb-new';
+      tag.textContent = 'New!';
+      thumb.append(tag);
+      thumb.setAttribute('aria-label', `${set.name}, new`);
+    }
     return thumb;
   }));
 }
