@@ -89,6 +89,16 @@ function renderSummary() {
   els.stickerHint.replaceChildren(...lines);
 }
 
+// Sticker play: the 🐵/🙈 switch hides the title, its buttons and the bottom row, leaving the stickers, the scene
+// and the top buttons. Pop-ups like "set complete!" wait until it's switched back.
+function setPlaying(on) {
+  state.playing = on;
+  els.home.classList.toggle('playing', on);
+  els.playToggle.setAttribute('aria-checked', String(on));
+  els.playKnob.textContent = on ? '🙈' : '🐵';
+  if (!on) showSceneCardsSoon();
+}
+
 function updateCounters() {
   const stars = knownWords().length;
   renderStarPill();

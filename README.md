@@ -50,6 +50,12 @@ Stickers come in themed sets of 5, and every set has a scene: a soft background 
 - A scene stays unlocked once earned. Taking a sticker away in the Grown-up corner leaves a gap in its set, which the next star fills first. A turned-off word's sticker is hidden but still counts toward its set. Giving a sticker in the Grown-up corner counts like a star.
 - **Reset all progress** locks every scene again and goes back to the dots.
 
+## Sticker play
+
+The **🐵 / 🙈** switch under **⚙️** lets a child clear the home screen to play with the stickers and the scene. Sliding it to 🙈 fades out the title with its game buttons, and the bottom row (the star and trophy pills, the version number and **Update**). The top buttons stay: 🏆, 🎲, 🖼️ and ⚙️. Stickers stay where they are and can be dragged anywhere, including where the title was. Sliding it back to 🐵 brings everything back.
+
+While it's on, "set complete!" cards and automatic updates wait until it's switched off. It's never saved, so the app always opens with everything showing.
+
 ## Sound effects
 
 Besides the recorded words and sounds, the app plays a few short sound effects. They're made in code from tones and noise in `js/sound-effects.js`, so there's nothing to record:
@@ -188,7 +194,7 @@ The app and recordings are saved the first time the site is opened online, so gi
 
 ## Developer tools
 
-When the app runs at `http://localhost:8000`, a **🛠️** button appears below **⚙️** on the home screen. It previews the update statuses: Normal, Downloading, Update ready and Updating. The **Update to latest version** button works in the preview too. Updating plays the real message and fades, with a plain reload in place of a new version. Saved progress isn't changed.
+When the app runs at `http://localhost:8000`, a **🛠️** button appears on the right of the home screen, below **⚙️** and the 🐵 / 🙈 switch. It previews the update statuses: Normal, Downloading, Update ready and Updating. The **Update to latest version** button works in the preview too. Updating plays the real message and fades, with a plain reload in place of a new version. Saved progress isn't changed.
 
 The panel also links to **🔊 Sound effects** (`sounds.html`), a page that plays every sound effect straight from `js/sound-effects.js`, along with the other ideas tried before each one was picked. To try a new idea, add it to `SOUND_IDEAS` in `js/sound-lab.js` and compare it there.
 

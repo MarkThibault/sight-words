@@ -154,7 +154,7 @@ function showSceneCardsSoon() {
 
 // Waits for the next visit to the home screen if something else is open.
 function showNextSceneCard() {
-  const busy = els.home.hidden || document.querySelector('dialog[open]');
+  const busy = els.home.hidden || state.playing || document.querySelector('dialog[open]');
   if (busy || !state.newScenes.length) return;
   const set = findSet(state.newScenes.shift());
   if (!set) return;

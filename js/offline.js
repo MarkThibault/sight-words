@@ -66,7 +66,7 @@ function showUpdateStatus(status) {
 
 // Reopening takes the update straight away, unless that would interrupt something. Then the button stays on offer.
 function updateOnReopen() {
-  const busy = els.home.hidden || document.querySelector('dialog[open]') || els.board.querySelector('.dragging');
+  const busy = els.home.hidden || state.playing || document.querySelector('dialog[open]') || els.board.querySelector('.dragging');
   showUpdateStatus('ready');
   if (!busy) installUpdate();
 }
