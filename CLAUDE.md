@@ -4,10 +4,11 @@ A sight-word practice app for a 5-year-old, used mostly on a tablet. See `README
 
 ## Stack
 
-- Plain HTML, CSS and JavaScript, hosted on GitHub Pages. No build step, no dependencies and no modules.
+- Plain HTML, CSS and JavaScript, hosted on GitHub Pages. No build step, no dependencies and no modules in the app. Tools for developing and checking it, like the browser tests, may have dependencies (`package.json`), but the app must never load them.
 - Scripts in `js/` load in order from `index.html` and share globals, so a new file must be added there in the right place. Opening `index.html` from disk should still work.
 - A new HTML page must be added to the `?v=` stamping in `.github/scripts/bump-version.sh` and to the link check in `.github/scripts/check-site.js`, or it misses version bumps and broken-link checks.
-- Every PR runs the basic checks in `.github/scripts/check-site.js`: script errors, missing recordings and broken links. Run them first with `node .github/scripts/check-site.js`. There are no browser tests yet. The plan is in `docs/review-automation.md`.
+- Every PR runs the basic checks in `.github/scripts/check-site.js` (script errors, missing recordings and broken links) and the browser tests in `tests/`. Run both before committing: `node .github/scripts/check-site.js` and `npm test` (after `npm install` once). See "Tests" in `README.md`.
+- When a change alters how the app behaves, update the browser test that covers it, or add one. A test that fails after a change that wasn't meant to change behavior is a bug in the change, not the test.
 
 ## Running it
 

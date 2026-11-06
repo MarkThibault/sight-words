@@ -1,2 +1,7 @@
 # Local preview settings, not part of the site
 .claude/
+
+# Browser tests (npm test): installed packages and the results of the last run
+node_modules/
+test-results/
+playwright-report/

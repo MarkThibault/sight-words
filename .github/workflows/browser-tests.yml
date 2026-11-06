@@ -1,0 +1,28 @@
+# On every pull request, plays the app in a real browser at phone and tablet sizes.
+# The tests are in tests/ (see "Tests" in README.md). GitHub's test machines already have Chrome and Python.
+name: Browser tests
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install the test tools
+        run: npm ci
+
+      - name: Play the app
+        run: npm test

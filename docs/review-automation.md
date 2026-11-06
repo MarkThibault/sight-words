@@ -7,7 +7,7 @@ The app has no build step or tests, so every pull request is checked by hand. Th
 | Step | What it adds | Effort | Cost |
 | --- | --- | --- | --- |
 | 1 ✅ | Basic checks on every pull request | About 30 minutes | Free |
-| 2 | Browser tests | A few hours | Free |
+| 2 ✅ | Browser tests | A few hours | Free |
 | 3 | Automatic code review | Minutes | May cost something |
 | 4 🟡 | Safety rails on `main` | Minutes | Free |
 | 5 | A preview link for each pull request | Under an hour | Check the service's free plan |
@@ -31,16 +31,18 @@ A missing clip is the main reason for this step: it fails quietly today, because
 
 ## 2. Browser tests
 
+**Status:** done, in `.github/workflows/browser-tests.yml` and `tests/` (see "Tests" in `README.md`).
+
 Use Playwright to open the real app at phone and tablet sizes on every pull request, and:
 
-- Play a round of Let's Read, Listen & tap and Build the word, and check the score.
-- Check that Listen & tap and Build the word unlock at the right number of stars.
-- Check that stickers don't land on the title or buttons, using a set number of stickers.
-- Fail on any script error.
+- ✅ Play a round of Let's Read, Listen & tap and Build the word, and check the stars, stickers and medals.
+- ✅ Check the reward rules: sticker sets fill in order, a taken-away sticker's gap fills first, games never change stars, a game waits its turn, and reset keeps turned-off words off. (The games used to unlock at a number of stars; now they're open from the start.)
+- ✅ Check that stickers don't land on the title or buttons, using a set number of stickers.
+- ✅ Fail on any script error.
 
 These tests can't judge how audio sounds or how a game feels, so keep trying changes on a tablet.
 
-**Already tried by hand (2026-11-05):** `playwright-core` drives the computer's Edge (`channel: 'msedge'`), so no browser download is needed locally. Tests that worked:
+Not automated yet, but **tried by hand (2026-11-05):** `playwright-core` drives the computer's Edge (`channel: 'msedge'`), so no browser download is needed locally. Tests that worked:
 
 - **Updates:** serve a copy of the app on `127.0.0.1` so offline play is on, change `SW_VERSION` in the copy, then check that the Update button appears and the app reloads into the new version. Switching apps can be faked by overriding `document.visibilityState` and sending a `visibilitychange` event. Desktop Edge can't pause a page the way Android does, so that part still needs a phone.
 - **Sound order:** wrap `playClip`, `playEffect` and `playIncorrectSound` from the page to log what plays and when, then play a game with real clicks.

@@ -1,0 +1,11 @@
+{
+  "name": "sight-words",
+  "private": true,
+  "description": "Only for the browser tests in tests/. The app itself has no dependencies or build step.",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.0"
+  }
+}
