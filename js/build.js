@@ -1,18 +1,19 @@
 'use strict';
 
-// Build the word: hear a starred word, then pick out its sound parts ("th" + "e") in order, by tapping or dragging.
+// Build the word: hear a word, then pick out its sound parts ("th" + "e") in order, by tapping or dragging.
 // A few extra tiles from other sight words don't belong.
 // It's practice only, so it never changes stars or stickers ("I know it!" does that).
 
 let buildRound = null;       // the game being played: { deck, total, maxPoints, lit, result, points, wordPoints, target, parts, next, slots, busy }
 let buildTimer = null;       // the pause before the next word
 
-// Starred words with their parts listed in js/phonics.js. A one-part word like "a" is just picking the right tile.
-const buildableWords = () => knownWords().filter(wordParts);
+// Every word that's turned on, starred or not, with its parts listed in js/phonics.js.
+// A one-part word like "a" is just picking the right tile.
+const buildableWords = () => state.words.filter(wordParts);
 
 function startBuild() {
   const words = buildableWords();
-  if (knownWords().length < BUILD_UNLOCK_STARS || words.length === 0) return;
+  if (words.length === 0) return;
   const deck = pickWords(words, GAME_MAX_WORDS, 'buildAt');
   const maxPoints = deck.length * BUILD_WORD_POINTS;
   buildRound = { deck, total: deck.length, maxPoints, lit: 0, result: null, points: 0 };

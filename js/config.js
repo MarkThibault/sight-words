@@ -22,11 +22,9 @@ const GAME_MEDALS = [
   { emoji: '🥈', name: 'silver', share: 0.6 },
   { emoji: '🥇', name: 'gold', share: 1 }];
 const MEDALS_PER_TROPHY = 10;  // the most games a trophy takes, with bronze every time. All gold takes 4.
-const LISTEN_UNLOCK_STARS = 4; // stars needed before Listen & tap opens (it uses only starred words)
-const LISTEN_CHOICES = 4;      // words to choose from, at most LISTEN_UNLOCK_STARS
+const LISTEN_CHOICES = 4;      // words to choose from (fewer if fewer words are turned on)
 const LISTEN_WORD_POINTS = 4;  // points for finding a word, minus 1 for each wrong tap first
 const LISTEN_NEXT_MS = 1700;   // the pause after a right answer, so the right-answer sound and the word can be heard
-const BUILD_UNLOCK_STARS = 4;  // stars needed before Build the word opens (it uses only starred words)
 const BUILD_MIN_TILES = 5;     // every word shows at least this many tiles, counting its own parts
 const BUILD_EXTRA_MIN = 2;     // tiles that don't belong, added to make it harder: at least this many...
 const BUILD_EXTRA_MAX = 3;     // ...and at most this many
