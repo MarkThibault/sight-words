@@ -71,6 +71,8 @@ function setsLeftLine() {
 
 // ---------- The 🖼️ tray ----------
 
+let lockedHintTimer = null;
+
 function openSceneTray() {
   delete state.progress.sceneToTry; // the new scene has been seen
   saveProgress();
@@ -118,8 +120,11 @@ function sceneThumb(id, icon, name, locked, isCurrent) {
   thumb.addEventListener('click', () => {
     if (locked) {
       // The icon and 🔒 wiggle, not the whole picture: its corners would poke out of the tray and show scroll bars.
+      // Then Let's Read! wiggles behind the tray, as a hint that reading is how to unlock it.
       playAnim(art, 'wiggle');
       playAnim(lock, 'wiggle');
+      clearTimeout(lockedHintTimer);
+      lockedHintTimer = setTimeout(() => playAnim(els.start, 'wiggle'), LOCKED_HINT_MS);
       return;
     }
     chooseScene(id);
