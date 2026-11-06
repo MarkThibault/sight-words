@@ -105,8 +105,8 @@ function sceneThumb(id, icon, name, locked, isCurrent) {
   thumb.classList.toggle('current', isCurrent);
   thumb.setAttribute('aria-label', locked ? `${name}, locked` : name);
   thumb.setAttribute('aria-pressed', String(isCurrent));
+  const lock = document.createElement('span');
   if (locked) {
-    const lock = document.createElement('span');
     lock.className = 'thumb-lock';
     lock.textContent = '🔒';
     thumb.append(lock);
@@ -117,7 +117,9 @@ function sceneThumb(id, icon, name, locked, isCurrent) {
   thumb.append(art);
   thumb.addEventListener('click', () => {
     if (locked) {
-      playAnim(thumb, 'wiggle');
+      // The icon and 🔒 wiggle, not the whole picture: its corners would poke out of the tray and show scroll bars.
+      playAnim(art, 'wiggle');
+      playAnim(lock, 'wiggle');
       return;
     }
     chooseScene(id);
