@@ -14,6 +14,8 @@ function showScreen(name) {
   }
 }
 
+const WAIT_NOTE = '🔄 Play something else first';
+
 function renderHome() {
   renderScene();
   updateCounters();
@@ -27,11 +29,14 @@ function renderHome() {
   const best = bestTime();
   els.bestTime.textContent = best === null ? 'No best time yet' : `Best: ${formatTime(best)}`;
 
-  // The games are open from the start, with every word that's turned on
-  els.listenBtn.disabled = !canListen();
-  els.listenNote.textContent = canListen() ? 'Find the word' : 'Needs 2 words';
-  els.buildBtn.disabled = buildableWords().length === 0;
-  els.buildNote.textContent = 'Order the sounds';
+  // The games are open from the start, with every word that's turned on. After GAME_REPEAT_LIMIT of one game in a row,
+  // its button waits until something else is played.
+  const listenWaits = gameWaiting('listen');
+  els.listenBtn.disabled = !canListen() || listenWaits;
+  els.listenNote.textContent = listenWaits ? WAIT_NOTE : (canListen() ? 'Find the word' : 'Needs 2 words');
+  const buildWaits = gameWaiting('build');
+  els.buildBtn.disabled = buildableWords().length === 0 || buildWaits;
+  els.buildNote.textContent = buildWaits ? WAIT_NOTE : 'Order the sounds';
 
   renderSummary();
   renderStickers();

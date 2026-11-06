@@ -28,7 +28,9 @@ The trophy pill at the bottom of the home screen fills with yellow toward the ne
 
 Each game of **👂 Listen & tap** or **🧱 Build the word** has three medals, and the bar at the top fills with the points earned. Finishing always earns bronze, gold is every word right the first time, and silver is at least 60% of the points (change these with `GAME_MEDALS` in `js/config.js`).
 
-Each medal adds one to the trophy pill, so a game adds one for bronze, two for silver or three for gold. Every 10 earns a trophy, and extras carry over (change this with `MEDALS_PER_TROPHY`). That's at most 10 games for a trophy, or 4 with all gold. A game left partway through earns no medals, even if the bar had reached one. Medals never change stars or word stickers. Each best score saved by an older version counts as one starting medal.
+Each medal adds one to the trophy pill, so a game adds one for bronze, two for silver or three for gold. Every 10 earns a trophy, and extras carry over (change this with `MEDALS_PER_TROPHY`). That's at most 10 games for a trophy, or 4 with all gold. A game left partway through earns no medals, even if the bar had reached one.
+
+To keep medals coming from a mix of play rather than one game on repeat, a game can be finished twice in a row (`GAME_REPEAT_LIMIT` in `js/config.js`). Then its button greys out with "🔄 Play something else first" until the other game or a reading round (**Let's Read**, **Missing words** or **Timed run**) is finished. A game left partway doesn't count. This is saved with progress, so it holds after the app is closed, and **Reset all progress** clears it. Medals never change stars or word stickers. Each best score saved by an older version counts as one starting medal.
 
 A new best time, medal or trophy shows on the home screen after the round, flying into the trophy pill. All of this is saved with progress, so **Reset all progress** clears it too.
 

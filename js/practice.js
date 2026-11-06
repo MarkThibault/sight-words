@@ -34,6 +34,7 @@ function startRound(mode, timed = false) {
 function finishRound() {
   const done = round;
   stopRound();
+  noteRoundFinished(); // reading opens any game that was waiting
   const last = { mode: done.mode, total: done.total, capped: done.capped, learned: done.learned };
   if (done.timed) {
     const ms = Math.round(performance.now() - done.startedAt);
