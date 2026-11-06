@@ -48,6 +48,7 @@ async function init() {
   onLongPress(els.settingsBtn, 800, openPanel);
   els.shuffleBtn.addEventListener('click', shuffleStickers);
   els.scenesBtn.addEventListener('click', openSceneTray);
+  els.playToggle.addEventListener('click', () => setPlaying(!state.playing));
   // a tap outside the tray closes it
   els.sceneTray.addEventListener('click', (e) => { if (e.target === els.sceneTray) els.sceneTray.close(); });
   els.sceneGo.addEventListener('click', () => els.sceneCard.close('go'));

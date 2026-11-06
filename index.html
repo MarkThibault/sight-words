@@ -72,6 +72,10 @@
     </div>
     <a id="recorder-btn" class="settings-btn recorder-btn" href="recorder.html" aria-label="Sound recorder" title="Sound recorder" hidden>🎙️</a>
     <button id="settings-btn" class="settings-btn" aria-label="Grown-up settings (press and hold)" title="Press and hold for grown-up settings">⚙️</button>
+    <!-- Sticker play: slide to 🙈 to hide the title, buttons and bottom row and play with the stickers. Never saved. -->
+    <button id="play-toggle" class="play-toggle" role="switch" aria-checked="false" aria-label="Hide the buttons and play with the stickers" title="Play with the stickers">
+      <span class="play-end" aria-hidden="true">🐵</span><span class="play-end" aria-hidden="true">🙈</span><span id="play-knob" class="play-knob" aria-hidden="true">🐵</span>
+    </button>
     <!-- Shown once, the first time the app opens, so grown-ups know where their corner is -->
     <div id="grownup-tip" class="grownup-tip" role="note" hidden>
       <p><b>Grown-ups:</b> press and hold ⚙️ for settings.</p>
@@ -230,7 +234,7 @@
         </ul>
         <p>In the games, a wrong answer gets a soft sound and another try, never a failure.</p>
         <h4>Stars and stickers</h4>
-        <p>Only <b>I know it!</b> earns a star, and every star comes with a sticker on the home screen. Stickers can be dragged anywhere, and <b>🎲</b> tidies them up. The other games are practice and never change stars or stickers. You can also give or take away a sticker here in the Grown-up Corner.</p>
+        <p>Only <b>I know it!</b> earns a star, and every star comes with a sticker on the home screen. Stickers can be dragged anywhere, and <b>🎲</b> tidies them up. The <b>🐵 / 🙈</b> switch under ⚙️ hides the title and buttons so your child can play with the stickers, and slides back to bring them back. The other games are practice and never change stars or stickers. You can also give or take away a sticker here in the Grown-up Corner.</p>
         <p>Stickers come in themed sets of <span data-number="setSize"></span>. The star pill at the bottom of the home screen shows the set being collected, and finishing it unlocks a new scene behind the stickers, like the beach or outer space. Once the first scene is earned, <b>🖼️</b> switches between them.</p>
         <h4>Medals and trophies</h4>
         <p>Finishing a game of <b>Listen &amp; tap</b> or <b>Build the word</b> earns a medal: bronze just for finishing, silver for <span data-number="silver"></span>% of the points, and gold for every word right the first time. A game left partway earns nothing.</p>

@@ -39,7 +39,8 @@ A sight-word practice app for a 5-year-old, used mostly on a tablet. See `README
 - Words and sounds play from the recordings in `audio/`, and the device voice is only a fallback. Recorded files aren't generated, so never overwrite or delete them.
 - Sound effects are the exception: they're made in code in `js/sound-effects.js`, with no recordings. Pick new ones by ear on `sounds.html`, keep the ideas not chosen in `SOUND_IDEAS` in `js/sound-lab.js`, and keep them about as loud as the wrong-answer boop.
 - Every word needs an entry in `WORD_PARTS` in `js/phonics.js`, or it has no Sound it out and can't be used in Build the word. A silent letter uses a silent sound such as `SILENT_E`.
-- Stickers sit above the title and buttons. The trophy pill and the 🏆, 🎲 and 🖼️ buttons stay above the stickers. Scenes sit behind the stickers and stay soft and light, so the cream panel and sticker tags stay easy to read.
+- Stickers sit above the title and buttons. The trophy pill, the 🏆, 🎲 and 🖼️ buttons and the 🐵/🙈 switch stay above the stickers.
+- Sticker play (the 🐵/🙈 switch) hides only the title panel and the bottom row; the top buttons stay. It's never saved, and pop-ups and automatic updates wait while it's on. Scenes sit behind the stickers and stay soft and light, so the cream panel and sticker tags stay easy to read.
 - The recorder button only shows on localhost.
 - Keep tunable numbers in `js/config.js`.
 - The look stays kid-friendly: the Andika font, chunky rounded buttons and emoji icons. Check phone and tablet sizes, because the home screen can run out of room for stickers. The star pill, trophy pill and update statuses share the bottom row on short screens, so check them with the Update button and "Downloading new version" showing. The two pills keep the same width.
