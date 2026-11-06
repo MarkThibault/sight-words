@@ -14,6 +14,7 @@ const buildableWords = () => state.words.filter(wordParts);
 function startBuild() {
   const words = buildableWords();
   if (words.length === 0) return;
+  if (gameWaiting('build')) { hintOtherActivities('build'); return; }
   const deck = pickWords(words, GAME_MAX_WORDS, 'buildAt');
   const maxPoints = deck.length * BUILD_WORD_POINTS;
   buildRound = { deck, total: deck.length, maxPoints, lit: 0, result: null, points: 0 };
@@ -33,6 +34,7 @@ function stopBuild() {
 function finishBuild() {
   const { total, points, result } = buildRound;
   stopBuild();
+  noteGameFinished('build');
   state.lastRound = { mode: 'build', total, points, result, learned: [] };
   showScreen('home');
   confetti();

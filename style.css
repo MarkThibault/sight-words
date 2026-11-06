@@ -118,8 +118,8 @@ h1 {
   font-weight: 700;
   transition: translate 0.08s, box-shadow 0.08s;
 }
-.game-btn:active:not(:disabled) { translate: 0 4px; box-shadow: 0 2px 0 var(--mode-dark); }
-.game-btn:disabled { opacity: 0.6; cursor: default; }
+.game-btn:active:not(:disabled, .waiting) { translate: 0 4px; box-shadow: 0 2px 0 var(--mode-dark); }
+.game-btn:disabled, .game-btn.waiting { opacity: 0.6; cursor: default; }
 .game-btn small { font-size: 0.95rem; font-weight: 400; }
 .mode-btn {
   display: grid;

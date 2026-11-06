@@ -15,6 +15,7 @@ const SOUND_GAP_MS = 300;    // the pause between sounds when sounding a word ou
 const SOUND_EFFECTS_VOLUME = 1; // how loud the sound effects in js/sound-effects.js are (0.5 is half as loud)
 const ROUND_MAX_WORDS = 10;    // the most words in a round of Let's Read or Missing words (a Timed run uses them all)
 const GAME_MAX_WORDS = 8;      // the most words in a game of Listen & tap or Build the word
+const GAME_REPEAT_LIMIT = 2;   // games of one kind in a row before that game's button waits for the other game or a reading round
 // The medals in a game, and the share of its possible points that earns each one. Bronze has to stay at or below
 // the lowest possible score (1 point a word in both games), so finishing always earns it. Gold is every word right the first time.
 const GAME_MEDALS = [

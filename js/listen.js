@@ -12,6 +12,7 @@ const canListen = () => state.words.length >= 2;
 function startListen() {
   const words = state.words;
   if (!canListen()) return;
+  if (gameWaiting('listen')) { hintOtherActivities('listen'); return; }
   const deck = pickWords(words, GAME_MAX_WORDS, 'listenAt');
   const maxPoints = deck.length * LISTEN_WORD_POINTS;
   listenRound = { words, deck, total: deck.length, maxPoints, lit: 0, result: null, points: 0, wordPoints: 0, target: null, busy: false };
@@ -31,6 +32,7 @@ function stopListen() {
 function finishListen() {
   const { total, points, result } = listenRound;
   stopListen();
+  noteGameFinished('listen');
   state.lastRound = { mode: 'listen', total, points, result, learned: [] };
   showScreen('home');
   confetti();

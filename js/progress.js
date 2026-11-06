@@ -5,10 +5,12 @@
 //          bestTime: { ms: 95000, count: 24 },
 //          medals: 13,
 //          scenes: ["beach"], scene: "beach", sceneToTry: "space",
-//          prizes: [{ emoji: "🐶", at: 1729700000000 }] }
+//          prizes: [{ emoji: "🐶", at: 1729700000000 }],
+//          lastGame: { game: "listen", inARow: 2 } }
 // A sticker without `set` was earned before sticker sets, and doesn't count toward one.
 // `scene` is the scene showing (none means the dots), and `sceneToTry` makes 🖼️ glow after "Not now".
 // `prizes` are the prize stickers picked with trophies, one per trophy, in the order they were picked.
+// `lastGame` is the game finished most recently and how many times in a row; a finished reading round clears it.
 
 function loadProgress() {
   try {
@@ -149,6 +151,26 @@ function addPrize(emoji) {
   state.progress.prizes = [...prizeStickers(), { emoji, at: Date.now() }];
   saveProgress();
   return `prize-${prizeStickers().length - 1}`;
+}
+
+// ---------- Taking turns ----------
+// A game can be finished GAME_REPEAT_LIMIT times in a row. Then its button waits until the other game or a reading
+// round is finished, so medals (and the prize stickers they lead to) come from a mix of play, not one game on repeat.
+
+function gameWaiting(game) {
+  const last = state.progress.lastGame;
+  return Boolean(last && last.game === game && last.inARow >= GAME_REPEAT_LIMIT);
+}
+
+function noteGameFinished(game) {
+  const last = state.progress.lastGame;
+  state.progress.lastGame = { game, inARow: last && last.game === game ? last.inARow + 1 : 1 };
+  saveProgress();
+}
+
+function noteRoundFinished() {
+  delete state.progress.lastGame;
+  saveProgress();
 }
 
 // Saves medals from a finished game. Returns whether they completed a trophy.
