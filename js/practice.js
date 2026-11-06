@@ -174,7 +174,8 @@ function knowIt() {
 
   if (!stats(current).known) {
     setKnown(current, true);
-    state.newStickers.push(current);
+    state.stickersToFly.push(current); // flies into the 🐵/🙈 switch on the home screen
+    markStickerToSee(current); // and waits there until sticker play opens
     round.learned.push(current);
     flySticker(current);
     els.star.hidden = false;

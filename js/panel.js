@@ -117,7 +117,8 @@ function hideGrownupTip() {
 function confirmReset() {
   resetProgress();
   state.lastRound = null;
-  state.newScenes = [];
+  state.stickersToFly = [];
+  state.scenesToFly = [];
   renderPanel();
   showResetConfirm(false);
 }

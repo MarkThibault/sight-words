@@ -25,9 +25,7 @@ const els = {
   resetConfirm: $('reset-confirm'), resetYes: $('reset-yes'), resetCancel: $('reset-cancel'),
   guideBtn: $('guide-btn'), panelGuide: $('panel-guide'), guideBody: $('guide-body'), guideBack: $('guide-back'),
   grownupTip: $('grownup-tip'), grownupTipOk: $('grownup-tip-ok'),
-  sceneTray: $('scene-tray'), sceneList: $('scene-list'), sceneHint: $('scene-hint'), sceneCard: $('scene-card'), sceneCardTitle: $('scene-card-title'),
-  sceneCardPreview: $('scene-card-preview'), sceneCardDecor: $('scene-card-decor'), sceneCardName: $('scene-card-name'),
-  sceneCardSet: $('scene-card-set'), sceneGo: $('scene-go'), sceneLater: $('scene-later'),
+  sceneTray: $('scene-tray'), sceneList: $('scene-list'), sceneHint: $('scene-hint'),
   voiceSection: $('voice-section'), voiceSelect: $('voice-select'), voiceTest: $('voice-test'),
 };
 
@@ -36,8 +34,9 @@ const state = {
   offWords: new Set(),     // words a grown-up turned off in the Grown-up corner
   words: [],               // the words being practiced: allWords without the turned-off ones
   progress: { words: {} }, // saved progress (see progress.js), loaded at start up
-  newStickers: [],         // stickers earned since the home screen was last shown
-  newScenes: [],           // scenes unlocked since "set complete!" last showed
+  stickersToFly: [],       // stickers earned since the home screen was last shown, to fly into the 🐵/🙈 switch
+  scenesToFly: [],         // scenes unlocked since then, whose icons fly in after them
+  stickersToPop: [],       // stickers that pop onto the board the next time it's drawn
   lastRound: null,         // the round just finished, summarized on the home screen
   playing: false,          // sticker play: the title, bottom row and ⚙️ are hidden (never saved, so the app opens normally)
 };

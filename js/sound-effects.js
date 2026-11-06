@@ -137,7 +137,7 @@ const SOUND_EFFECTS = {
   },
   sceneUnlocked: {
     label: '🖼️ New scene',
-    where: 'The "set complete!" card, when a finished sticker set unlocks its scene',
+    where: 'The scene of a finished sticker set, flying into the 🐵/🙈 switch',
     play(t) {
       // the new-star shimmer made bigger, the way the trophy sound is a bigger medal sound:
       // its four rising notes, the run again one step higher, then a held chord with the sparkle twinkling over it
