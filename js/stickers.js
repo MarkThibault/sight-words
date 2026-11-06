@@ -65,8 +65,9 @@ function renderStickers() {
 }
 
 // ---------- Waiting inside the 🐵/🙈 switch ----------
-// Stickers earned outside sticker play fly into the switch and wait there, saved, until it's next opened. Scenes just
-// unlocked fly in too, and are counted on 🖼️ until the scene tray is opened.
+// Stickers earned outside sticker play fly into the switch and wait there, saved, until it's next opened. A scene just
+// unlocked gets its "set complete!" celebration, which shrinks into the switch, and is counted on 🖼️ until the scene
+// tray is opened.
 
 // The waiting stickers still on the board (a grown-up may have taken one away since).
 function waitingStickers() {
@@ -101,7 +102,7 @@ function flyInSoon() {
 
 // One at a time, stickers first. Waits for the next visit to the home screen if something else is open.
 function flyNextIn() {
-  if (els.home.hidden || state.playing || document.querySelector('dialog[open]')) return;
+  if (els.home.hidden || state.playing || state.celebrating || document.querySelector('dialog[open]')) return;
   if (state.stickersToFly.length) {
     const key = state.stickersToFly.shift();
     const sticker = boardStickers().find((s) => s.key === key);
@@ -112,13 +113,22 @@ function flyNextIn() {
       flyIntoSwitch(el, 'stickerDown');
     }
   } else if (state.scenesToFly.length) {
+    // "Set complete!" waits for the stickers to land, and anything after it waits for it to finish
+    if (inTheAir) {
+      flyInTimer = setTimeout(flyNextIn, FLY_IN_GAP_MS);
+      return;
+    }
     const set = findSet(state.scenesToFly.shift());
     if (set) {
-      const el = document.createElement('span');
-      el.className = 'flying-medal';
-      el.textContent = set.icon;
-      playEffect('sceneUnlocked');
-      flyIntoSwitch(el);
+      inTheAir += 1;
+      renderPlayBadge();
+      celebrateScene(set, () => {
+        inTheAir -= 1;
+        playAnim(els.playToggle, 'wiggle');
+        renderPlayBadge();
+        if (state.stickersToFly.length || state.scenesToFly.length) flyInTimer = setTimeout(flyNextIn, FLY_IN_GAP_MS);
+      });
+      return;
     }
   }
   renderPlayBadge();

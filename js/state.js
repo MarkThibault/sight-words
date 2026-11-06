@@ -26,6 +26,9 @@ const els = {
   guideBtn: $('guide-btn'), panelGuide: $('panel-guide'), guideBody: $('guide-body'), guideBack: $('guide-back'),
   grownupTip: $('grownup-tip'), grownupTipOk: $('grownup-tip-ok'),
   sceneTray: $('scene-tray'), sceneList: $('scene-list'), sceneHint: $('scene-hint'),
+  sceneCelebration: $('scene-celebration'), sceneCelebrationCard: $('scene-celebration-card'), sceneCelebrationTitle: $('scene-celebration-title'),
+  sceneCelebrationPreview: $('scene-celebration-preview'), sceneCelebrationDecor: $('scene-celebration-decor'),
+  sceneCelebrationName: $('scene-celebration-name'), sceneCelebrationSet: $('scene-celebration-set'), sceneCelebrationBar: $('scene-celebration-bar'),
   voiceSection: $('voice-section'), voiceSelect: $('voice-select'), voiceTest: $('voice-test'),
 };
 
@@ -37,6 +40,7 @@ const state = {
   stickersToFly: [],       // stickers earned since the home screen was last shown, to fly into the 🐵/🙈 switch
   scenesToFly: [],         // scenes unlocked since then, whose icons fly in after them
   stickersToPop: [],       // stickers that pop onto the board the next time it's drawn
+  celebrating: false,      // a finished set's "set complete!" celebration is showing
   lastRound: null,         // the round just finished, summarized on the home screen
   playing: false,          // sticker play: the title, bottom row and ⚙️ are hidden (never saved, so the app opens normally)
 };
