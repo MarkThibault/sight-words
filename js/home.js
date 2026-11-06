@@ -107,14 +107,24 @@ function renderSummary() {
   els.stickerHint.replaceChildren(...lines);
 }
 
-// Sticker play: the 🐵/🙈 switch hides the title, its buttons and the bottom row, leaving the stickers, the scene
-// and the top buttons. Pop-ups like "set complete!" wait until it's switched back.
+// Sticker play: the 🐵/🙈 switch hides the title, its buttons, the bottom row and ⚙️, and shows 🏆, 🎲 and 🖼️
+// beside it. Only then can the stickers be moved. Pop-ups like "set complete!" wait until it's switched back.
 function setPlaying(on) {
   state.playing = on;
   els.home.classList.toggle('playing', on);
   els.playToggle.setAttribute('aria-checked', String(on));
   els.playKnob.textContent = on ? '🙈' : '🐵';
+  renderPlayBadge();
   if (!on) showSceneCardsSoon();
+}
+
+// A red bubble on the switch adds up what's waiting inside: prize stickers to pick and new scenes not looked at yet.
+// In sticker play it moves onto 🏆 and 🖼️, which count their own.
+function renderPlayBadge() {
+  const waiting = prizesToPick() + scenesToTry().length;
+  els.playBadge.hidden = waiting === 0 || state.playing;
+  els.playBadge.textContent = waiting;
+  els.playToggle.setAttribute('aria-label', waiting ? `Play with the stickers, ${waiting} new` : 'Play with the stickers');
 }
 
 function updateCounters() {

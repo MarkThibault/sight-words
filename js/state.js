@@ -6,7 +6,7 @@
 const els = {
   home: $('home'), practice: $('practice'), board: $('sticker-board'), homeCenter: $('home-center'),
   start: $('start-btn'), missingBtn: $('missing-btn'), timedBtn: $('timed-btn'), bestTime: $('best-time'),
-  stickerHint: $('sticker-hint'), starCount: $('star-count'), trophyMeter: $('trophy-meter'), homeMedal: $('home-medal'), trophyCount: $('trophy-count'), starSet: $('star-set'), starScene: $('star-scene'), settingsBtn: $('settings-btn'), playToggle: $('play-toggle'), playKnob: $('play-knob'), recorderBtn: $('recorder-btn'), shuffleBtn: $('shuffle-btn'), shuffleDie: $('shuffle-die'), shuffleShadow: $('shuffle-shadow'), scenesBtn: $('scenes-btn'), sceneDecor: $('scene-decor'), appVersion: $('app-version'), updateBtn: $('update-btn'), devBtn: $('dev-btn'), devPanel: $('dev-panel'),
+  stickerHint: $('sticker-hint'), starCount: $('star-count'), trophyMeter: $('trophy-meter'), homeMedal: $('home-medal'), trophyCount: $('trophy-count'), starSet: $('star-set'), starScene: $('star-scene'), settingsBtn: $('settings-btn'), playToggle: $('play-toggle'), playKnob: $('play-knob'), playBadge: $('play-badge'), recorderBtn: $('recorder-btn'), shuffleBtn: $('shuffle-btn'), shuffleDie: $('shuffle-die'), shuffleShadow: $('shuffle-shadow'), scenesBtn: $('scenes-btn'), scenesBadge: $('scenes-badge'), sceneDecor: $('scene-decor'), appVersion: $('app-version'), updateBtn: $('update-btn'), devBtn: $('dev-btn'), devPanel: $('dev-panel'),
   homeBtn: $('home-btn'), timer: $('timer'), mini: $('progress-mini'),
   roundBar: $('round-bar'), roundFill: $('round-fill'), card: $('card'), word: $('word'), star: $('card-star'),
   hint: $('hint'), soundOut: $('sound-out-btn'), know: $('know-btn'), next: $('next-btn'), toast: $('toast'),
@@ -25,7 +25,7 @@ const els = {
   resetConfirm: $('reset-confirm'), resetYes: $('reset-yes'), resetCancel: $('reset-cancel'),
   guideBtn: $('guide-btn'), panelGuide: $('panel-guide'), guideBody: $('guide-body'), guideBack: $('guide-back'),
   grownupTip: $('grownup-tip'), grownupTipOk: $('grownup-tip-ok'),
-  sceneTray: $('scene-tray'), sceneList: $('scene-list'), sceneCard: $('scene-card'), sceneCardTitle: $('scene-card-title'),
+  sceneTray: $('scene-tray'), sceneList: $('scene-list'), sceneHint: $('scene-hint'), sceneCard: $('scene-card'), sceneCardTitle: $('scene-card-title'),
   sceneCardPreview: $('scene-card-preview'), sceneCardDecor: $('scene-card-decor'), sceneCardName: $('scene-card-name'),
   sceneCardSet: $('scene-card-set'), sceneGo: $('scene-go'), sceneLater: $('scene-later'),
   voiceSection: $('voice-section'), voiceSelect: $('voice-select'), voiceTest: $('voice-test'),
@@ -39,5 +39,5 @@ const state = {
   newStickers: [],         // stickers earned since the home screen was last shown
   newScenes: [],           // scenes unlocked since "set complete!" last showed
   lastRound: null,         // the round just finished, summarized on the home screen
-  playing: false,          // sticker play: the title and bottom row are hidden (never saved, so the app opens normally)
+  playing: false,          // sticker play: the title, bottom row and ⚙️ are hidden (never saved, so the app opens normally)
 };

@@ -4,18 +4,23 @@
 // Shape: { words: { the: { heard: 3, known: true, knownAt: 1729700000000, lastSeen: "2026-10-23", seenAt: 1729700000000, listenAt: 1729700000000, buildAt: 1729700000000, sticker: "🦀", set: "beach" } },
 //          bestTime: { ms: 95000, count: 24 },
 //          medals: 13,
-//          scenes: ["beach"], scene: "beach", sceneToTry: "space",
+//          scenes: ["beach"], scene: "beach", scenesToTry: ["space"],
 //          prizes: [{ emoji: "🐶", at: 1729700000000 }],
 //          lastGame: { game: "listen", inARow: 2 } }
 // A sticker without `set` was earned before sticker sets, and doesn't count toward one.
-// `scene` is the scene showing (none means the dots), and `sceneToTry` makes 🖼️ glow after "Not now".
+// `scene` is the scene showing (none means the dots), and `scenesToTry` are the new scenes not looked at yet, counted on 🖼️.
 // `prizes` are the prize stickers picked with trophies, one per trophy, in the order they were picked.
 // `lastGame` is the game finished most recently and how many times in a row; a finished reading round clears it.
 
 function loadProgress() {
   try {
     const data = JSON.parse(readStorage(STORAGE_KEY));
-    if (data && data.words && typeof data.words === 'object') return data;
+    if (data && data.words && typeof data.words === 'object') {
+      // Before the count on 🖼️, one new scene at a time made it glow
+      if (data.sceneToTry) data.scenesToTry = [data.sceneToTry];
+      delete data.sceneToTry;
+      return data;
+    }
   } catch (e) { /* corrupt: start fresh */ }
   return { words: {} };
 }
@@ -104,10 +109,22 @@ const collectingSet = () => STICKER_SETS.find((set) => setStickersEarned(set).le
 // A scene stays unlocked once earned, even if a sticker is taken away later. Only Reset all progress locks it again.
 const unlockedScenes = () => state.progress.scenes || [];
 
+// New scenes not looked at yet. Opening the 🖼️ tray, or "Let's go!" on the "set complete!" card, counts as looking.
+const scenesToTry = () => state.progress.scenesToTry || [];
+
+function markSceneToTry(id) {
+  if (!scenesToTry().includes(id)) state.progress.scenesToTry = [...scenesToTry(), id];
+}
+
+function markSceneTried(id) {
+  state.progress.scenesToTry = scenesToTry().filter((s) => s !== id);
+  if (!state.progress.scenesToTry.length) delete state.progress.scenesToTry;
+}
+
 function unlockScene(id) {
   if (unlockedScenes().includes(id)) return;
   state.progress.scenes = [...unlockedScenes(), id];
-  state.progress.sceneToTry = id; // 🖼️ glows until it's seen, even if the app closes before "set complete!" shows
+  markSceneToTry(id); // counted on 🖼️ until it's seen, even if the app closes before "set complete!" shows
   state.newScenes.push(id); // "set complete!" shows on the home screen
   saveProgress();
 }

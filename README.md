@@ -6,7 +6,7 @@ A simple sight-word practice app for young readers. Plain HTML, CSS and JavaScri
 - **🧩 Sound it out** plays the word one sound at a time, lighting up each part, then says the whole word. Each part that makes a sound is underlined. Letters that make one sound together, like "th", "ch" and "ee", stay together, and silent letters (like the "e" in "like") are shown faded and skipped. The button only shows for words whose sounds are listed (see [Adding words](#adding-words)).
 - **Next ➜** moves on, but only after the word has been heard (until then, tapping it wiggles the word).
 - **I know it! ⭐** gives that word a star and a sticker. Stars are only earned this way.
-- Stickers collect on the home screen. Each one is an emoji from a themed sticker set (see [Sticker sets and scenes](#sticker-sets-and-scenes)) with its word on a tag, and it stays the same once earned. Stickers can be dragged anywhere on the home screen, even over the title and buttons, and stay where they're put. The **🎲** button in the top-left corner, beside the **🏆**, slides them all back into a fresh random layout around the title. **Reset all progress** also puts them back.
+- Stickers collect on the home screen. Each one is an emoji from a themed sticker set (see [Sticker sets and scenes](#sticker-sets-and-scenes)) with its word on a tag, and it stays the same once earned. They sit behind the title and buttons. In [sticker play](#sticker-play) they can be dragged anywhere on the home screen, and stay where they're put; otherwise they stay still. The **🎲** button, in sticker play, slides them all back into a fresh random layout around the title. **Reset all progress** also puts them back.
 - A round shows up to 10 words, once each, then returns to the home screen. Words learned that round glow there. To change the length, edit `ROUND_MAX_WORDS` in `js/config.js`.
 
 ## Home screen buttons
@@ -24,7 +24,7 @@ Below a dotted line are the separate games:
 
 ## Trophies
 
-The trophy pill at the bottom of the home screen fills with yellow toward the next trophy, from 🏅 at one end to how many trophies have been earned at the other. Above it is the matching star pill (see [Sticker sets and scenes](#sticker-sets-and-scenes)). On short screens the two sit side by side. Tapping the trophy pill, or the **🏆** button in the top-left corner, opens **My Trophies**, which shows starred words out of the total, the best time from **⏱️ Timed run**, and the medals and trophies so far.
+The trophy pill at the bottom of the home screen fills with yellow toward the next trophy, from 🏅 at one end to how many trophies have been earned at the other. Above it is the matching star pill (see [Sticker sets and scenes](#sticker-sets-and-scenes)). On short screens the two sit side by side. Tapping the trophy pill, or the **🏆** button in sticker play, opens **My Trophies**, which shows starred words out of the total, the best time from **⏱️ Timed run**, and the medals and trophies so far.
 
 Each game of **👂 Listen & tap** or **🧱 Build the word** has three medals, and the bar at the top fills with the points earned. Finishing always earns bronze, gold is every word right the first time, and silver is at least 60% of the points (change these with `GAME_MEDALS` in `js/config.js`).
 
@@ -38,7 +38,7 @@ A new best time, medal or trophy shows on the home screen after the round, flyin
 
 Each trophy earns a prize sticker that the child picks. After a game that earns a trophy, a "🎁 Pick your prize!" card shows every sticker that isn't on the board yet: the animals, food and toys outside the sticker sets (`STICKER_EMOJI` in `js/config.js`). Tapping one shows it big with "Put this sticker on your board?", so a slip doesn't use up the prize: **Yes!** puts it on the board with a 🏆 tag instead of a word, and **Choose again** goes back to the grid. A prize sticker can be dragged and shuffled like the others. Prize stickers don't belong to a word or a set, so they never change stars, word stickers or scenes.
 
-**Later** saves the pick. Until it's picked, the trophy pill glows, a red bubble on the **🏆** button shows how many prizes are waiting, and **My Trophies** opens with a big **🎁 Prizes to pick!** button at the top, with the same bubble. Trophies from medals earned before prize stickers came in get a pick each too. Prize stickers are saved with progress, so **Reset all progress** clears them.
+**Later** saves the pick. Until it's picked, the trophy pill glows, a red bubble on the 🐵 / 🙈 switch (and on **🏆** in sticker play) shows how many prizes are waiting, and **My Trophies** opens with a big **🎁 Prizes to pick!** button at the top, with the same bubble. Trophies from medals earned before prize stickers came in get a pick each too. Prize stickers are saved with progress, so **Reset all progress** clears them.
 
 ## Sticker sets and scenes
 
@@ -46,15 +46,17 @@ Stickers come in themed sets of 5, and every set has a scene: a soft background 
 
 - Each new star's sticker is the next one in the first set that isn't finished yet, in the order the star pill shows them, so the pill colors in from the left as it fills. Finishing a set unlocks its scene. The set size, which is also the stars a scene takes, is `SET_SIZE` in `js/config.js`. The sets and their scenes are `STICKER_SETS` there, and the scene colors are the `[data-bg]` styles in `style.css`.
 - The star pill at the bottom of the home screen shows the set being collected: earned stickers in color, missing ones as dark shapes, and a dashed box with the scene they unlock. It fills with yellow as the set fills, like the trophy pill beside it. On short screens it only fills, from ⭐ to the scene. After a round that earns stickers, the line under the buttons can add "2 more to finish the set!".
-- When a set is finished, a "🎉 Beach set complete!" card shows the set on its new scene once the round is over, with a sound. **Let's go!** switches to it. **Not now** keeps the current scene, and the **🖼️** button glows until the scenes are next opened.
-- **🖼️**, beside **🎲** once the first scene is unlocked, opens a tray of every scene with its set underneath. Locked scenes show 🔒 and their missing stickers as dark shapes. Tapping one wiggles its 🔒, then the **Let's Read!** button behind the tray wiggles too, as a hint that reading is how to unlock it (the pause between is `LOCKED_HINT_MS` in `js/config.js`). Tapping an unlocked scene switches to it, and the stickers stay where they are. The dots are always there as the free scene.
+- When a set is finished, a "🎉 Beach set complete!" card shows the set on its new scene once the round is over, with a sound. **Let's go!** switches to it. **Not now** keeps the current scene. Until the scenes are next opened, a red bubble on the 🐵 / 🙈 switch (and on **🖼️** in sticker play) counts the new scenes.
+- **🖼️**, beside **🎲** in sticker play once the first scene is unlocked, opens a tray of every scene with its set underneath. Locked scenes show 🔒 and their missing stickers as dark shapes. Tapping one wiggles its 🔒, then the 🐵 / 🙈 switch behind the tray wiggles too, as a hint to go back and read, and "Learn more words to unlock more scenes!" shows over the bottom of the tray for a moment (the pause before the wiggle is `LOCKED_HINT_MS` and the message's time is `SCENE_HINT_MS`, in `js/config.js`). Tapping an unlocked scene switches to it, and the stickers stay where they are. The dots are always there as the free scene.
 - Stickers earned before sets came in keep their emoji and don't count toward a set, so sets start with the next new sticker. Once every set is full, or for words beyond the sets, stickers are picked at random from `STICKER_EMOJI`, as before.
 - A scene stays unlocked once earned. Taking a sticker away in the Grown-up corner leaves a gap in its set, which the next star fills first. A turned-off word's sticker is hidden but still counts toward its set. Giving a sticker in the Grown-up corner counts like a star.
 - **Reset all progress** locks every scene again and goes back to the dots.
 
 ## Sticker play
 
-The **🐵 / 🙈** switch under **⚙️** lets a child clear the home screen to play with the stickers and the scene. Sliding it to 🙈 fades out the title with its game buttons, and the bottom row (the star and trophy pills, the version number and **Update**). The top buttons stay: 🏆, 🎲, 🖼️ and ⚙️. Stickers stay where they are and can be dragged anywhere, including where the title was. Sliding it back to 🐵 brings everything back.
+The **🐵 / 🙈** switch, alone in the top-left corner, opens the child's sticker corner. Sliding it to 🙈 fades out the title with its game buttons, the bottom row (the star and trophy pills, the version number and **Update**) and **⚙️** (with 🛠️ and 🎙 on this computer). **🏆**, **🎲** and **🖼️** slide out in a row beside the switch; outside sticker play they're hidden. Stickers can only be dragged while it's on, anywhere, including where the title was. Sliding it back to 🐵 brings everything back.
+
+A red bubble on the switch adds up what's waiting inside: prize stickers to pick and new scenes not looked at yet. While sticker play is on, the switch's bubble goes away and **🏆** and **🖼️** each show their own count. The 🖼️ count clears when the scene tray is opened, or when **Let's go!** picks the new scene.
 
 While it's on, "set complete!" cards and automatic updates wait until it's switched off. It's never saved, so the app always opens with everything showing.
 
@@ -196,7 +198,7 @@ The app and recordings are saved the first time the site is opened online, so gi
 
 ## Developer tools
 
-When the app runs at `http://localhost:8000`, a **🛠️** button appears on the right of the home screen, below **⚙️** and the 🐵 / 🙈 switch. It previews the update statuses: Normal, Downloading, Update ready and Updating. The **Update to latest version** button works in the preview too. Updating plays the real message and fades, with a plain reload in place of a new version. Saved progress isn't changed.
+When the app runs at `http://localhost:8000`, a **🛠️** button appears on the right of the home screen, below **⚙️**. It previews the update statuses: Normal, Downloading, Update ready and Updating. The **Update to latest version** button works in the preview too. Updating plays the real message and fades, with a plain reload in place of a new version. Saved progress isn't changed.
 
 The panel also links to **🔊 Sound effects** (`sounds.html`), a page that plays every sound effect straight from `js/sound-effects.js`, along with the other ideas tried before each one was picked. To try a new idea, add it to `SOUND_IDEAS` in `js/sound-lab.js` and compare it there.
 

@@ -45,7 +45,12 @@ function renderScene() {
   setSceneBackground(els.home, id);
   els.sceneDecor.replaceChildren(...(id ? sceneDecor(findSet(id)) : []));
   els.scenesBtn.hidden = unlockedScenes().length === 0;
-  els.scenesBtn.classList.toggle('glow', Boolean(state.progress.sceneToTry));
+  // New scenes not looked at yet: a red bubble on 🖼️ says how many
+  const toTry = scenesToTry().length;
+  els.scenesBadge.hidden = toTry === 0;
+  els.scenesBadge.textContent = toTry;
+  els.scenesBtn.setAttribute('aria-label', toTry ? `Choose a scene, ${plural(toTry, 'new scene')}` : 'Choose a scene');
+  renderPlayBadge();
 }
 
 // The star pill: ⭐, the set being collected, and the scene it unlocks, filling as the set fills.
@@ -72,9 +77,11 @@ function setsLeftLine() {
 // ---------- The 🖼️ tray ----------
 
 let lockedHintTimer = null;
+let sceneHintTimer = null;
 
 function openSceneTray() {
-  delete state.progress.sceneToTry; // the new scene has been seen
+  els.sceneHint.classList.remove('show');
+  delete state.progress.scenesToTry; // the new scenes have been seen
   saveProgress();
   renderScene();
   renderSceneTray();
@@ -120,11 +127,15 @@ function sceneThumb(id, icon, name, locked, isCurrent) {
   thumb.addEventListener('click', () => {
     if (locked) {
       // The icon and 🔒 wiggle, not the whole picture: its corners would poke out of the tray and show scroll bars.
-      // Then Let's Read! wiggles behind the tray, as a hint that reading is how to unlock it.
+      // Then the 🐵/🙈 switch wiggles behind the tray, as a hint to go back and read, and a message says so.
       playAnim(art, 'wiggle');
       playAnim(lock, 'wiggle');
       clearTimeout(lockedHintTimer);
-      lockedHintTimer = setTimeout(() => playAnim(els.start, 'wiggle'), LOCKED_HINT_MS);
+      lockedHintTimer = setTimeout(() => playAnim(els.playToggle, 'wiggle'), LOCKED_HINT_MS);
+      els.sceneHint.textContent = 'Learn more words to unlock more scenes!';
+      els.sceneHint.classList.add('show');
+      clearTimeout(sceneHintTimer);
+      sceneHintTimer = setTimeout(() => els.sceneHint.classList.remove('show'), SCENE_HINT_MS);
       return;
     }
     chooseScene(id);
@@ -137,7 +148,7 @@ function sceneThumb(id, icon, name, locked, isCurrent) {
 function chooseScene(id) {
   if (id) state.progress.scene = id;
   else delete state.progress.scene;
-  if (state.progress.sceneToTry === id) delete state.progress.sceneToTry;
+  markSceneTried(id);
   saveProgress();
   renderScene();
 }
@@ -174,12 +185,12 @@ function showNextSceneCard() {
   playEffect('sceneUnlocked');
 }
 
-// "Let's go!" switches to the new scene. "Not now" (or closing the card) keeps the current one, and 🖼️ glows.
+// "Let's go!" switches to the new scene. "Not now" (or closing the card) keeps the current one, and it's counted on 🖼️.
 function closeSceneCard() {
   const id = els.sceneCard.dataset.scene;
   if (els.sceneCard.returnValue === 'go') chooseScene(id);
   else {
-    state.progress.sceneToTry = id;
+    markSceneToTry(id);
     saveProgress();
     renderScene();
   }

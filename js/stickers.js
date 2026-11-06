@@ -120,7 +120,7 @@ function loadStickerSpots() {
 
 function makeDraggable(el, key) {
   el.addEventListener('pointerdown', (e) => {
-    if (e.button > 0) return;
+    if (e.button > 0 || !state.playing) return; // stickers only move in sticker play
     e.preventDefault();
     const board = els.board.getBoundingClientRect();
     const start = { x: parseFloat(el.style.left), y: parseFloat(el.style.top) };
