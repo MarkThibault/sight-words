@@ -178,6 +178,19 @@
     <p id="scene-hint" class="scene-hint" role="status"></p>
   </dialog>
 
+  <!-- A finished sticker set: a short celebration that closes by itself (or on a tap) and shrinks into the 🐵/🙈 switch -->
+  <div id="scene-celebration" class="scene-celebration" hidden>
+    <div id="scene-celebration-card" class="scene-celebration-card" role="status">
+      <h2 id="scene-celebration-title"></h2>
+      <div id="scene-celebration-preview" class="scene-preview">
+        <div id="scene-celebration-decor" class="scene-decor" aria-hidden="true"></div>
+        <p id="scene-celebration-name" class="scene-preview-name"></p>
+        <div id="scene-celebration-set" class="scene-preview-set"></div>
+      </div>
+      <div class="scene-celebration-timer" aria-hidden="true"><div id="scene-celebration-bar"></div></div>
+    </div>
+  </div>
+
   <dialog id="trophy-panel" class="panel trophy-panel" aria-labelledby="trophy-title">
     <h2 id="trophy-title">🏆 My Trophies</h2>
     <!-- First thing in the window while prizes are waiting -->

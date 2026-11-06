@@ -1,7 +1,7 @@
 'use strict';
 
 // Scenes: the backgrounds behind the sticker board. Finishing a sticker set (see progress.js) unlocks its scene,
-// and its icon flies into the 🐵/🙈 switch (see stickers.js). The 🖼️ button picks between the scenes unlocked so far,
+// celebrated with a short "set complete!" card that shrinks into the 🐵/🙈 switch. The 🖼️ button picks between the scenes unlocked so far,
 // and the dots are free.
 // Also the star pill at the bottom of the home screen, which shows the set being collected.
 
@@ -11,9 +11,9 @@ function currentScene() {
   return id && unlockedScenes().includes(id) && findSet(id) ? id : null;
 }
 
-// A scene's faded emoji.
-function sceneDecor(set) {
-  return set.decor.map(([emoji, size, left, top]) => {
+// A scene's faded emoji. `topOnly` keeps the ones in the top half, for the small preview on "set complete!".
+function sceneDecor(set, topOnly = false) {
+  return set.decor.filter(([, , , top]) => !topOnly || top < 50).map(([emoji, size, left, top]) => {
     const el = document.createElement('span');
     el.textContent = emoji;
     el.style.setProperty('--size', size);
@@ -160,4 +160,61 @@ function chooseScene(id) {
   markSceneTried(id);
   saveProgress();
   renderScene();
+}
+
+// ---------- "Set complete!" ----------
+// After the new stickers have flown into the switch, a finished set gets a short celebration: its scene with the five
+// stickers, confetti and the new-scene sound. A bar empties over SCENE_CELEBRATION_MS, or a tap skips ahead, and then
+// the card shrinks into the switch. `done` runs once it's there.
+function celebrateScene(set, done) {
+  state.celebrating = true;
+  els.sceneCelebrationTitle.textContent = `🎉 ${set.name.replace(/^The /, '')} set complete!`;
+  setSceneBackground(els.sceneCelebrationPreview, set.id);
+  els.sceneCelebrationDecor.replaceChildren(...sceneDecor(set, true));
+  els.sceneCelebrationName.textContent = `New scene: ${set.name}`;
+  els.sceneCelebrationSet.replaceChildren(...setStickers(set).map((emoji) => {
+    const el = document.createElement('span');
+    el.textContent = emoji;
+    return el;
+  }));
+  const overlay = els.sceneCelebration;
+  const card = els.sceneCelebrationCard;
+  overlay.hidden = false;
+  playEffect('sceneUnlocked');
+  confetti();
+  if (!reduceMotion) {
+    card.animate([{ scale: 0.4, opacity: 0 }, { scale: 1.06, opacity: 1, offset: 0.7 }, { scale: 1, opacity: 1 }],
+      { duration: 450, easing: 'ease-out' });
+  }
+  const bar = els.sceneCelebrationBar.animate([{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }],
+    { duration: SCENE_CELEBRATION_MS, fill: 'forwards' });
+
+  let leaving = false;
+  const leave = () => {
+    if (leaving) return;
+    leaving = true;
+    clearTimeout(timer);
+    overlay.removeEventListener('click', leave);
+    overlay.classList.add('leaving'); // the dimming fades as the card goes
+    const end = () => {
+      bar.cancel();
+      card.getAnimations().forEach((anim) => anim.cancel());
+      overlay.hidden = true;
+      overlay.classList.remove('leaving');
+      state.celebrating = false;
+      done();
+    };
+    if (reduceMotion) {
+      end();
+      return;
+    }
+    const from = card.getBoundingClientRect();
+    const to = els.playToggle.getBoundingClientRect();
+    const dx = to.left + to.width / 2 - (from.left + from.width / 2);
+    const dy = to.top + to.height / 2 - (from.top + from.height / 2);
+    card.animate([{ translate: '0 0', scale: 1, opacity: 1 }, { translate: `${dx}px ${dy}px`, scale: 0.04, opacity: 0.6 }],
+      { duration: 900, easing: 'cubic-bezier(0.5, 0, 0.3, 1)', fill: 'forwards' }).onfinish = end;
+  };
+  const timer = setTimeout(leave, SCENE_CELEBRATION_MS);
+  overlay.addEventListener('click', leave);
 }
