@@ -113,6 +113,7 @@ function renderTrophyMeter() {
   els.trophyBadge.hidden = prizes === 0;
   els.trophyBadge.textContent = prizes;
   els.trophyBtn.setAttribute('aria-label', prizes ? `My trophies, ${plural(prizes, 'prize')} to pick` : 'My trophies');
+  renderPlayBadge();
   els.trophyMeter.style.setProperty('--fill', `${(toward / MEDALS_PER_TROPHY) * 100}%`);
   els.trophyCount.textContent = `🏆 ${trophyCount()}`;
   els.trophyMeter.setAttribute('aria-label', `My trophies: ${trophyCount()}, and ${toward} of ${MEDALS_PER_TROPHY} medals toward the next`);

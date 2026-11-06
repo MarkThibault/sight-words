@@ -66,7 +66,8 @@ button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulat
 
 #home { display: grid; place-items: center; }
 
-.sticker-board { position: absolute; inset: 0; pointer-events: none; --s: 120px; }
+/* behind the title, buttons and bottom row (z-index 0 keeps a dragged sticker under them too) */
+.sticker-board { position: absolute; inset: 0; z-index: 0; pointer-events: none; --s: 120px; }
 
 .home-center {
   position: relative;
@@ -253,13 +254,15 @@ h1 {
   background: #fff;
   border: 3px solid var(--yellow);
   border-radius: 50%;
-  transition: scale 0.15s;
+  transition: scale 0.15s, opacity 0.3s, visibility 0.3s;
 }
 .settings-btn.pressing { scale: 1.2; transition: scale 0.8s; }
-/* beside the ⚙️ button, same look */
-/* always reachable, even under dragged stickers */
-.trophy-btn { right: auto; left: max(16px, env(safe-area-inset-left)); z-index: 4; }
-.shuffle-btn { right: auto; left: calc(max(16px, env(safe-area-inset-left)) + 68px); z-index: 4; }
+/* sticker play's buttons, the same look as ⚙️: in a row beside the switch, sliding out from behind it when it's on */
+.trophy-btn, .shuffle-btn, .scenes-btn { right: auto; z-index: 4; transition: scale 0.15s, opacity 0.25s, visibility 0.25s, translate 0.25s ease-out; }
+.trophy-btn { left: calc(max(16px, env(safe-area-inset-left)) + 120px); --tuck: -120px; }
+.shuffle-btn { left: calc(max(16px, env(safe-area-inset-left)) + 188px); --tuck: -188px; }
+.scenes-btn { left: calc(max(16px, env(safe-area-inset-left)) + 256px); --tuck: -256px; }
+#home:not(.playing) :is(.trophy-btn, .shuffle-btn, .scenes-btn) { translate: var(--tuck) 0; opacity: 0; visibility: hidden; }
 .die { display: inline-block; }
 .die-shadow {
   position: absolute;
@@ -273,9 +276,6 @@ h1 {
   pointer-events: none;
 }
 .recorder-btn { right: calc(max(16px, env(safe-area-inset-right)) + 68px); color: inherit; text-decoration: none; }
-/* 🖼️ beside 🎲, once a scene is unlocked. It glows (gently, without flashing) until a new scene has been seen. */
-.scenes-btn { right: auto; left: calc(max(16px, env(safe-area-inset-left)) + 136px); z-index: 4; }
-.scenes-btn.glow { box-shadow: 0 0 0 5px rgba(255, 212, 59, 0.55); }
 /* the one-time tip for grown-ups: a speech bubble just below ⚙️, pointing up at it, above the stickers */
 .grownup-tip {
   position: absolute;
@@ -307,12 +307,13 @@ h1 {
 }
 .grownup-tip p { margin: 0; }
 .grownup-tip button { flex: none; padding: 8px 16px; border: 0; border-radius: 12px; font-size: 1rem; }
-/* sticker play: a switch under ⚙️. The knob shows 🐵 while everything shows, and slides to 🙈 to hide the title and bottom row */
+/* sticker play: a switch in the top-left corner. The knob shows 🐵 while everything shows, and slides to 🙈 to hide
+   the title, bottom row and ⚙️ and bring out 🏆 🎲 🖼️ */
 .play-toggle {
   position: absolute;
-  top: calc(max(16px, env(safe-area-inset-top)) + 68px);
-  right: max(16px, env(safe-area-inset-right));
-  z-index: 4;
+  top: max(16px, env(safe-area-inset-top));
+  left: max(16px, env(safe-area-inset-left));
+  z-index: 5; /* 🏆 🎲 🖼️ slide out from behind it */
   width: 108px;
   height: 56px;
   padding: 0 4px;
@@ -341,14 +342,16 @@ h1 {
   transition: left 0.2s ease-out;
 }
 .playing .play-knob { left: 55px; }
-/* what sticker play hides, with a gentle fade */
-.home-center, .home-footer, .grownup-tip { transition: opacity 0.3s, visibility 0.3s; }
-#home.playing .home-center, #home.playing .home-footer, #home.playing .grownup-tip { opacity: 0; visibility: hidden; }
-/* developer tools, on localhost only: below the play switch */
-.dev-btn { top: calc(max(16px, env(safe-area-inset-top)) + 136px); z-index: 4; }
+/* what sticker play hides, with a gentle fade: everything but the stickers, the scene and its own buttons */
+.home-center, .home-footer, .grownup-tip, .dev-panel { transition: opacity 0.3s, visibility 0.3s; }
+#home.playing :is(.home-center, .home-footer, .grownup-tip, #settings-btn, .recorder-btn, .dev-btn, .dev-panel) { opacity: 0; visibility: hidden; }
+/* the switch's red bubble goes away in sticker play, where 🏆 and 🖼️ count their own */
+.play-toggle .count-badge { top: -8px; right: -8px; }
+/* developer tools, on localhost only: below ⚙️ */
+.dev-btn { top: calc(max(16px, env(safe-area-inset-top)) + 68px); z-index: 4; }
 .dev-panel {
   position: absolute;
-  top: calc(max(16px, env(safe-area-inset-top)) + 136px);
+  top: calc(max(16px, env(safe-area-inset-top)) + 68px);
   right: calc(max(16px, env(safe-area-inset-right)) + 68px);
   z-index: 4;
   max-width: calc(100vw - 100px);
@@ -458,9 +461,8 @@ h1 {
 }
 .sticker.flying { position: fixed; z-index: 20; }
 
-/* stickers can be picked up and moved around the home screen */
-/* above the title and buttons (z-index 1), so they're never hidden behind them; 🎲 stays on top to tidy them up */
-.sticker-board .sticker { z-index: 2; pointer-events: auto; touch-action: none; cursor: grab; }
+/* stickers can be picked up and moved around the home screen, only in sticker play; otherwise they stay put */
+#home.playing .sticker-board .sticker { pointer-events: auto; touch-action: none; cursor: grab; }
 .sticker.dragging { z-index: 3; cursor: grabbing; scale: 1.15; filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.2)); transition: scale 0.1s; }
 .sticker.gliding { transition: left 0.5s ease-in-out, top 0.5s ease-in-out, width 0.5s, height 0.5s, margin 0.5s; }
 
@@ -728,17 +730,18 @@ h1 {
   .settings-btn { width: 44px; height: 44px; font-size: 1.3rem; }
   .grownup-tip { top: calc(max(16px, env(safe-area-inset-top)) + 58px); padding: 6px 6px 6px 14px; font-size: 1rem; }
   .grownup-tip::before { right: 11px; }
-  .shuffle-btn { left: calc(max(16px, env(safe-area-inset-left)) + 52px); }
-  .scenes-btn { left: calc(max(16px, env(safe-area-inset-left)) + 104px); }
+  .trophy-btn { left: calc(max(16px, env(safe-area-inset-left)) + 96px); --tuck: -96px; }
+  .shuffle-btn { left: calc(max(16px, env(safe-area-inset-left)) + 148px); --tuck: -148px; }
+  .scenes-btn { left: calc(max(16px, env(safe-area-inset-left)) + 200px); --tuck: -200px; }
   .scene-tray { top: calc(max(16px, env(safe-area-inset-top)) + 56px); }
-  .scene-tray::before { left: 111px; }
+  .scene-tray::before { left: 207px; }
   .recorder-btn { right: calc(max(16px, env(safe-area-inset-right)) + 52px); }
-  .play-toggle { top: calc(max(16px, env(safe-area-inset-top)) + 52px); width: 88px; height: 44px; font-size: 1.1rem; }
+  .play-toggle { width: 88px; height: 44px; font-size: 1.1rem; }
   .play-end { width: 34px; }
   .play-knob { top: 2px; left: 2px; width: 34px; height: 34px; font-size: 1.25rem; }
   .playing .play-knob { left: 46px; }
-  .dev-btn { top: calc(max(16px, env(safe-area-inset-top)) + 104px); }
-  .dev-panel { top: calc(max(16px, env(safe-area-inset-top)) + 104px); right: calc(max(16px, env(safe-area-inset-right)) + 52px); }
+  .dev-btn { top: calc(max(16px, env(safe-area-inset-top)) + 52px); }
+  .dev-panel { top: calc(max(16px, env(safe-area-inset-top)) + 52px); right: calc(max(16px, env(safe-area-inset-right)) + 52px); }
   .update-btn { padding: 7px 15px; font-size: 0.9rem; }
   .die-shadow { display: none; }
 }
@@ -803,7 +806,7 @@ h1 {
   content: '';
   position: absolute;
   top: -13px;
-  left: 149px; /* under the middle of 🖼️ */
+  left: 269px; /* under the middle of 🖼️ */
   width: 18px;
   height: 18px;
   background: #fff;
@@ -811,6 +814,27 @@ h1 {
   border-left: 4px solid var(--yellow);
   rotate: 45deg;
 }
+/* "Learn more words to unlock more scenes!": over the bottom of the tray for a moment, so the tray doesn't change size */
+.scene-hint {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  margin: 0;
+  padding: 10px 14px;
+  background: #fff3bf;
+  border: 3px solid var(--yellow-dark);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+  pointer-events: none;
+}
+.scene-hint.show { opacity: 1; visibility: visible; }
 .scene-list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 130px));
