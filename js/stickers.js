@@ -93,7 +93,7 @@ function stickerSlots(count) {
 }
 
 // The title, buttons and counters on the home screen, which stickers stay out from behind.
-const blockerRects = () => [els.homeCenter, els.starCount, els.trophyMeter, els.settingsBtn, els.recorderBtn, els.shuffleBtn, els.trophyBtn, els.appVersion, els.updateBtn, els.devBtn]
+const blockerRects = () => [els.homeCenter, els.starCount, els.trophyMeter, els.settingsBtn, els.recorderBtn, els.shuffleBtn, els.scenesBtn, els.trophyBtn, els.appVersion, els.updateBtn, els.devBtn]
   .filter((el) => !el.hidden).map((el) => el.getBoundingClientRect());
 
 // ---------- Dragging ----------

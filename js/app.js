@@ -47,6 +47,12 @@ async function init() {
   els.recorderBtn.hidden = !['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
   onLongPress(els.settingsBtn, 800, openPanel);
   els.shuffleBtn.addEventListener('click', shuffleStickers);
+  els.scenesBtn.addEventListener('click', openSceneTray);
+  // a tap outside the tray closes it
+  els.sceneTray.addEventListener('click', (e) => { if (e.target === els.sceneTray) els.sceneTray.close(); });
+  els.sceneGo.addEventListener('click', () => els.sceneCard.close('go'));
+  els.sceneLater.addEventListener('click', () => els.sceneCard.close('later'));
+  els.sceneCard.addEventListener('close', closeSceneCard);
   els.voiceSection.hidden = !canSpeak;
   els.voiceSelect.addEventListener('change', () => chooseVoice(els.voiceSelect.value));
   els.voiceTest.addEventListener('click', () => speak('Let’s read! the, and, you'));

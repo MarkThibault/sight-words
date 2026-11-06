@@ -1,9 +1,12 @@
 'use strict';
 
-// Saved progress: stars, stickers, heard counts, the best time and the medals earned in games.
-// Shape: { words: { the: { heard: 3, known: true, knownAt: 1729700000000, lastSeen: "2026-10-23", seenAt: 1729700000000, listenAt: 1729700000000, buildAt: 1729700000000, sticker: "🐶" } },
+// Saved progress: stars, stickers, heard counts, the best time, the medals earned in games, and the scenes unlocked.
+// Shape: { words: { the: { heard: 3, known: true, knownAt: 1729700000000, lastSeen: "2026-10-23", seenAt: 1729700000000, listenAt: 1729700000000, buildAt: 1729700000000, sticker: "🦀", set: "beach" } },
 //          bestTime: { ms: 95000, count: 24 },
-//          medals: 13 }
+//          medals: 13,
+//          scenes: ["beach"], scene: "beach", sceneToTry: "space" }
+// A sticker without `set` was earned before sticker sets, and doesn't count toward one.
+// `scene` is the scene showing (none means the dots), and `sceneToTry` makes 🖼️ glow after "Not now".
 
 function loadProgress() {
   try {
@@ -49,21 +52,60 @@ function setKnown(word, known) {
   const s = stats(word);
   s.known = known;
   s.knownAt = known ? Date.now() : 0;
-  if (!known) delete s.sticker; // earning it again gives a new surprise
+  if (!known) {
+    // earning it again gives a new sticker, filling the gap in its set first
+    delete s.sticker;
+    delete s.set;
+  }
   saveProgress();
 }
 
-// The word's saved sticker, picking a surprise one first if it doesn't have one yet.
-// Prefers emoji not already on the board, so stickers repeat only once every one is used.
+// The word's saved sticker, picking one first if it doesn't have one yet: the first missing sticker of the first set
+// that isn't full, in the order the star pill shows them, and finishing that set unlocks its scene. Once every set is full, it picks from
+// STICKER_EMOJI, preferring emoji not already on the board.
 function stickerFor(word) {
   const s = stats(word);
   if (!s.sticker) {
-    const used = new Set(state.allWords.map((w) => stats(w).sticker));
-    const unused = STICKER_EMOJI.filter((e) => !used.has(e));
-    s.sticker = randomItem(unused.length ? unused : STICKER_EMOJI);
+    const set = collectingSet();
+    if (set) {
+      const earned = setStickersEarned(set);
+      s.sticker = setStickers(set).find((e) => !earned.includes(e));
+      s.set = set.id;
+      if (earned.length + 1 === SET_SIZE) unlockScene(set.id);
+    } else {
+      const used = new Set(state.allWords.map((w) => stats(w).sticker));
+      const unused = STICKER_EMOJI.filter((e) => !used.has(e));
+      s.sticker = randomItem(unused.length ? unused : STICKER_EMOJI);
+    }
     saveProgress();
   }
   return s.sticker;
+}
+
+// ---------- Sticker sets and scenes ----------
+
+const setStickers = (set) => set.stickers.slice(0, SET_SIZE);
+const findSet = (id) => STICKER_SETS.find((set) => set.id === id);
+
+// The set's stickers earned so far. Turned-off words still count, so their sticker is never given out twice.
+function setStickersEarned(set) {
+  const earned = new Set(state.allWords.filter((w) => stats(w).known && stats(w).set === set.id).map((w) => stats(w).sticker));
+  return setStickers(set).filter((e) => earned.has(e));
+}
+
+// The set being collected: the first one with a sticker missing, so a sticker taken away is replaced first.
+// null once every set is full.
+const collectingSet = () => STICKER_SETS.find((set) => setStickersEarned(set).length < SET_SIZE) || null;
+
+// A scene stays unlocked once earned, even if a sticker is taken away later. Only Reset all progress locks it again.
+const unlockedScenes = () => state.progress.scenes || [];
+
+function unlockScene(id) {
+  if (unlockedScenes().includes(id)) return;
+  state.progress.scenes = [...unlockedScenes(), id];
+  state.progress.sceneToTry = id; // 🖼️ glows until it's seen, even if the app closes before "set complete!" shows
+  state.newScenes.push(id); // "set complete!" shows on the home screen
+  saveProgress();
 }
 
 // A best time only counts for a word list of the same size, so adding words starts a fresh record.

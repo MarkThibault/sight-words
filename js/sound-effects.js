@@ -135,6 +135,19 @@ const SOUND_EFFECTS = {
       return 1.6;
     },
   },
+  sceneUnlocked: {
+    label: '🖼️ New scene',
+    where: 'The "set complete!" card, when a finished sticker set unlocks its scene',
+    play(t) {
+      // the new-star shimmer made bigger, the way the trophy sound is a bigger medal sound:
+      // its four rising notes, the run again one step higher, then a held chord with the sparkle twinkling over it
+      [1047, 1319, 1568, 2093].forEach((freq, i) => effectNote(t + i * 0.06, freq, 0.6, { volume: 0.12 }));
+      [1319, 1568, 2093, 2637].forEach((freq, i) => effectNote(t + 0.34 + i * 0.06, freq, 0.6, { volume: 0.12 }));
+      [1047, 1568, 2093].forEach((freq) => effectNote(t + 0.62, freq, 1, { volume: 0.07 }));
+      [2637, 3136, 4186, 3136].forEach((freq, i) => effectNote(t + 0.7 + i * 0.08, freq, 0.4, { volume: 0.05 }));
+      return 1.25;
+    },
+  },
   diceRoll: {
     label: '🎲 Dice',
     where: 'The 🎲 button, which shuffles the stickers',

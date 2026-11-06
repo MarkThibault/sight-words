@@ -32,16 +32,17 @@ A sight-word practice app for a 5-year-old, used mostly on a tablet. See `README
 ## Rules the app must keep
 
 - Only **I know it!** earns stars and stickers. Other games are practice and never change them.
-- Reset all progress also clears best times, medals, trophies and sticker spots, but turned-off words stay off.
+- Stickers come in sets of `SET_SIZE` (`STICKER_SETS` in `js/config.js`), and finishing a set unlocks its scene. Stickers earned before sets keep their emoji and don't count toward one. A scene stays unlocked once earned, and a sticker taken away leaves a gap that the next star fills first. Scene emoji and icons never repeat a set's sticker. When words are added beyond the sets, add more sets.
+- Reset all progress also clears best times, medals, trophies, sticker spots and scenes, so the board goes back to the dots, but turned-off words stay off.
 - Game rewards are gentle: a wrong answer gets the soft boop and another try, never a failure. Finishing a game always earns at least bronze, so bronze's share in `GAME_MEDALS` has to stay at or below the lowest possible score.
 - Medals and trophies only come from finishing Listen & tap or Build the word. They never change stars or stickers.
 - Words and sounds play from the recordings in `audio/`, and the device voice is only a fallback. Recorded files aren't generated, so never overwrite or delete them.
 - Sound effects are the exception: they're made in code in `js/sound-effects.js`, with no recordings. Pick new ones by ear on `sounds.html`, keep the ideas not chosen in `SOUND_IDEAS` in `js/sound-lab.js`, and keep them about as loud as the wrong-answer boop.
 - Every word needs an entry in `WORD_PARTS` in `js/phonics.js`, or it has no Sound it out and can't be used in Build the word. A silent letter uses a silent sound such as `SILENT_E`.
-- Stickers sit above the title and buttons. The trophy meter and the 🏆 and 🎲 buttons stay above the stickers.
+- Stickers sit above the title and buttons. The trophy pill and the 🏆, 🎲 and 🖼️ buttons stay above the stickers. Scenes sit behind the stickers and stay soft and light, so the cream panel and sticker tags stay easy to read.
 - The recorder button only shows on localhost.
 - Keep tunable numbers in `js/config.js`.
-- The look stays kid-friendly: the Andika font, chunky rounded buttons and emoji icons. Check phone and tablet sizes, because the home screen can run out of room for stickers. The star count, trophy meter and update statuses share the bottom row on short screens, so check them with the Update button and "Downloading new version" showing.
+- The look stays kid-friendly: the Andika font, chunky rounded buttons and emoji icons. Check phone and tablet sizes, because the home screen can run out of room for stickers. The star pill, trophy pill and update statuses share the bottom row on short screens, so check them with the Update button and "Downloading new version" showing. The two pills keep the same width.
 
 ## Testing in the browser
 
