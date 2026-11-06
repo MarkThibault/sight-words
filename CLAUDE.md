@@ -31,11 +31,11 @@ A sight-word practice app for a 5-year-old, used mostly on a tablet. See `README
 
 ## Rules the app must keep
 
-- Only **I know it!** earns stars and stickers. Other games are practice and never change them.
+- Only **I know it!** earns stars and word stickers. Other games are practice and never change them.
 - Stickers come in sets of `SET_SIZE` (`STICKER_SETS` in `js/config.js`), and finishing a set unlocks its scene. Stickers earned before sets keep their emoji and don't count toward one. A scene stays unlocked once earned, and a sticker taken away leaves a gap that the next star fills first. Scene emoji and icons never repeat a set's sticker. When words are added beyond the sets, add more sets.
-- Reset all progress also clears best times, medals, trophies, sticker spots and scenes, so the board goes back to the dots, but turned-off words stay off.
+- Reset all progress also clears best times, medals, trophies, prize stickers, sticker spots and scenes, so the board goes back to the dots, but turned-off words stay off.
 - Game rewards are gentle: a wrong answer gets the soft boop and another try, never a failure. Finishing a game always earns at least bronze, so bronze's share in `GAME_MEDALS` has to stay at or below the lowest possible score.
-- Medals and trophies only come from finishing Listen & tap or Build the word. They never change stars or stickers.
+- Medals and trophies only come from finishing Listen & tap or Build the word. They never change stars or word stickers. Each trophy earns one prize sticker the child picks from `STICKER_EMOJI` (never a set sticker), with a 🏆 tag. It isn't part of a set, so it never changes scenes.
 - Words and sounds play from the recordings in `audio/`, and the device voice is only a fallback. Recorded files aren't generated, so never overwrite or delete them.
 - Sound effects are the exception: they're made in code in `js/sound-effects.js`, with no recordings. Pick new ones by ear on `sounds.html`, keep the ideas not chosen in `SOUND_IDEAS` in `js/sound-lab.js`, and keep them about as loud as the wrong-answer boop.
 - Every word needs an entry in `WORD_PARTS` in `js/phonics.js`, or it has no Sound it out and can't be used in Build the word. A silent letter uses a silent sound such as `SILENT_E`.

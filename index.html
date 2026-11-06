@@ -50,7 +50,8 @@
       </div>
     </div>
     <!-- Grown-ups: press and hold this to open the settings panel -->
-    <button id="trophy-btn" class="settings-btn trophy-btn" aria-label="My trophies" title="My trophies">🏆</button>
+    <!-- The red bubble counts the prize stickers waiting to be picked -->
+    <button id="trophy-btn" class="settings-btn trophy-btn" aria-label="My trophies" title="My trophies">🏆<span id="trophy-badge" class="count-badge" aria-hidden="true" hidden></span></button>
     <button id="shuffle-btn" class="settings-btn shuffle-btn" aria-label="Shuffle the stickers" title="Shuffle the stickers" hidden><span id="shuffle-die" class="die">🎲</span><span id="shuffle-shadow" class="die-shadow"></span></button>
     <!-- Shown once the first scene is unlocked: picks the background behind the stickers -->
     <button id="scenes-btn" class="settings-btn scenes-btn" aria-label="Choose a scene" title="Choose a scene" hidden>🖼️</button>
@@ -144,6 +145,25 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
+  <!-- Each trophy earns a prize sticker: any sticker not on the board yet -->
+  <dialog id="prize-card" class="panel prize-card" aria-labelledby="prize-title">
+    <h2 id="prize-title">🎁 Pick your prize!</h2>
+    <p id="prize-note" class="prize-note">You earned a trophy! Tap a sticker to put it on your board.</p>
+    <div id="prize-list" class="prize-list"></div>
+    <div id="prize-actions" class="panel-actions prize-actions">
+      <button id="prize-later" class="prize-later">Later</button>
+    </div>
+    <!-- After tapping a sticker: one more tap to be sure, so a slip doesn't use up the prize -->
+    <div id="prize-confirm" class="prize-confirm" hidden>
+      <span id="prize-chosen" class="prize-chosen"></span>
+      <p class="prize-question">Put this sticker on your board?</p>
+      <div class="prize-confirm-buttons">
+        <button id="prize-yes" class="big-btn prize-yes">Yes! ✅</button>
+        <button id="prize-back" class="prize-later">Choose again</button>
+      </div>
+    </div>
+  </dialog>
+
   <!-- Trophies: what's been accomplished so far -->
   <!-- Scenes: pick the background behind the stickers. Locked ones show their set as dark shapes. -->
   <dialog id="scene-tray" class="scene-tray" aria-label="Choose a scene">
@@ -166,6 +186,8 @@
 
   <dialog id="trophy-panel" class="panel trophy-panel" aria-labelledby="trophy-title">
     <h2 id="trophy-title">🏆 My Trophies</h2>
+    <!-- First thing in the window while prizes are waiting -->
+    <button id="prize-btn" class="prize-btn" hidden><span id="prize-btn-text"></span><span id="prize-btn-badge" class="count-badge" aria-hidden="true"></span></button>
     <ul id="trophy-list" class="trophy-list"></ul>
     <div class="panel-actions trophy-actions">
       <button id="trophy-close" class="primary">Done</button>
@@ -212,7 +234,7 @@
         <p>Stickers come in themed sets of <span data-number="setSize"></span>. The star pill at the bottom of the home screen shows the set being collected, and finishing it unlocks a new scene behind the stickers, like the beach or outer space. Once the first scene is earned, <b>🖼️</b> switches between them.</p>
         <h4>Medals and trophies</h4>
         <p>Finishing a game of <b>Listen &amp; tap</b> or <b>Build the word</b> earns a medal: bronze just for finishing, silver for <span data-number="silver"></span>% of the points, and gold for every word right the first time. A game left partway earns nothing.</p>
-        <p>Each medal fills the trophy pill at the bottom of the home screen: 1 for bronze, 2 for silver and 3 for gold. Every <span data-number="medalsPerTrophy"></span> earns a trophy. Tap <b>🏆</b> to see them all.</p>
+        <p>Each medal fills the trophy pill at the bottom of the home screen: 1 for bronze, 2 for silver and 3 for gold. Every <span data-number="medalsPerTrophy"></span> earns a trophy, and each trophy lets your child pick a prize sticker for the board, with a 🏆 tag instead of a word. Tap <b>🏆</b> to see them all, or to pick a prize saved for later.</p>
         <h4>Turning words on and off</h4>
         <p>Each word has a switch. A word that's off is skipped in every round and game, and its sticker is hidden until it's back on. Words stay off even after <b>Reset all progress</b>, and at least one word always stays on.</p>
         <h4>Installing for offline play</h4>

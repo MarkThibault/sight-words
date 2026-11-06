@@ -9,6 +9,56 @@ function openTrophies() {
   els.trophyPanel.showModal();
 }
 
+// ---------- Prize stickers ----------
+
+let prizeCardTimer = null;
+let prizeChoice = null; // the sticker tapped, waiting for "Yes!"
+
+// "Pick your prize!": every sticker not on the board yet. Picking puts it on the board, and "Later" saves the pick,
+// with the trophy pill glowing and a button in My Trophies until it's picked.
+function openPrizeCard() {
+  clearTimeout(prizeCardTimer);
+  if (!prizesToPick() || els.home.hidden || document.querySelector('dialog[open]')) return;
+  renderPrizeCard();
+  els.prizeCard.showModal();
+  els.prizeList.scrollTop = 0;
+}
+
+function renderPrizeCard() {
+  showPrizeConfirm(null);
+  const left = prizesToPick();
+  els.prizeTitle.textContent = left > 1 ? `🎁 Pick your prizes! (${left})` : '🎁 Pick your prize!';
+  els.prizeList.replaceChildren(...prizeChoices().map((emoji) => {
+    const choice = document.createElement('button');
+    choice.className = 'prize-choice';
+    choice.textContent = emoji;
+    choice.addEventListener('click', () => showPrizeConfirm(emoji));
+    return choice;
+  }));
+}
+
+// "Put this sticker on your board?" in place of the grid, with the sticker shown big. null goes back to the grid.
+function showPrizeConfirm(emoji) {
+  prizeChoice = emoji;
+  const confirming = emoji !== null;
+  els.prizeConfirm.hidden = !confirming;
+  els.prizeNote.hidden = confirming;
+  els.prizeList.hidden = confirming;
+  els.prizeActions.hidden = confirming;
+  if (confirming) {
+    els.prizeChosen.textContent = emoji;
+    playAnim(els.prizeChosen, 'pop');
+    els.prizeYes.focus();
+  }
+}
+
+function pickPrize(emoji) {
+  state.newStickers.push(addPrize(emoji)); // pops onto the board
+  playEffect('stickerDown');
+  if (prizesToPick()) renderPrizeCard();
+  else els.prizeCard.close();
+}
+
 // ---------- Medals ----------
 
 const medalsForScore = (points, maxPoints) => GAME_MEDALS.filter(({ share }) => points / maxPoints >= share).length;
@@ -57,6 +107,12 @@ const medalToast = (result) => `${result.emoji} A ${result.name} medal!`;
 function renderTrophyMeter() {
   const toward = medalsTowardTrophy();
   els.homeMedal.classList.toggle('waiting', toward === 0);
+  // Prizes waiting to be picked: the trophy pill glows, and a red bubble on 🏆 says how many
+  const prizes = prizesToPick();
+  els.trophyMeter.classList.toggle('glow', prizes > 0);
+  els.trophyBadge.hidden = prizes === 0;
+  els.trophyBadge.textContent = prizes;
+  els.trophyBtn.setAttribute('aria-label', prizes ? `My trophies, ${plural(prizes, 'prize')} to pick` : 'My trophies');
   els.trophyMeter.style.setProperty('--fill', `${(toward / MEDALS_PER_TROPHY) * 100}%`);
   els.trophyCount.textContent = `🏆 ${trophyCount()}`;
   els.trophyMeter.setAttribute('aria-label', `My trophies: ${trophyCount()}, and ${toward} of ${MEDALS_PER_TROPHY} medals toward the next`);
@@ -65,8 +121,10 @@ function renderTrophyMeter() {
 // After a game: the best medal flies into the meter, or a new trophy into the count.
 function flyGameMedal(result) {
   playEffect(result.newTrophy ? 'trophy' : 'medal');
-  if (result.newTrophy) flyMedal('🏆', els.trophyCount);
-  else flyMedal(result.emoji, els.homeMedal);
+  if (result.newTrophy) {
+    flyMedal('🏆', els.trophyCount);
+    prizeCardTimer = setTimeout(openPrizeCard, PRIZE_CARD_DELAY_MS);
+  } else flyMedal(result.emoji, els.homeMedal);
 }
 
 // A new record or medal: it pops up over the home screen and flies into the trophy pill.
@@ -118,4 +176,9 @@ function renderTrophies() {
     row.append(iconEl, nameEl, valueEl);
     return row;
   }));
+  const left = prizesToPick();
+  els.prizeBtn.hidden = left === 0;
+  els.prizeBtnText.textContent = left > 1 ? '🎁 Prizes to pick!' : '🎁 A prize to pick!';
+  els.prizeBtnBadge.textContent = left;
+  els.prizeBtn.setAttribute('aria-label', `Pick your ${plural(left, 'prize')}`);
 }
