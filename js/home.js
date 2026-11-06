@@ -30,16 +30,30 @@ function renderHome() {
   els.bestTime.textContent = best === null ? 'No best time yet' : `Best: ${formatTime(best)}`;
 
   // The games are open from the start, with every word that's turned on. After GAME_REPEAT_LIMIT of one game in a row,
-  // its button waits until something else is played.
+  // its button waits until something else is played. A waiting button looks greyed out but stays tappable, so a tap
+  // can wiggle the other activities instead of doing nothing.
   const listenWaits = gameWaiting('listen');
-  els.listenBtn.disabled = !canListen() || listenWaits;
+  els.listenBtn.disabled = !canListen();
+  setGameWaiting(els.listenBtn, listenWaits);
   els.listenNote.textContent = listenWaits ? WAIT_NOTE : (canListen() ? 'Find the word' : 'Needs 2 words');
   const buildWaits = gameWaiting('build');
-  els.buildBtn.disabled = buildableWords().length === 0 || buildWaits;
+  els.buildBtn.disabled = buildableWords().length === 0;
+  setGameWaiting(els.buildBtn, buildWaits);
   els.buildNote.textContent = buildWaits ? WAIT_NOTE : 'Order the sounds';
 
   renderSummary();
   renderStickers();
+}
+
+function setGameWaiting(btn, waiting) {
+  btn.classList.toggle('waiting', waiting);
+  btn.setAttribute('aria-disabled', String(waiting));
+}
+
+// A tap on a waiting game wiggles everything that can be played instead, as a hint to pick one of those.
+function hintOtherActivities(game) {
+  const others = [els.start, els.missingBtn, els.timedBtn, game === 'listen' ? els.buildBtn : els.listenBtn];
+  others.filter((btn) => !btn.disabled && !btn.classList.contains('waiting')).forEach((btn) => playAnim(btn, 'wiggle'));
 }
 
 function renderSummary() {

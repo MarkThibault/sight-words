@@ -13,7 +13,8 @@ const buildableWords = () => state.words.filter(wordParts);
 
 function startBuild() {
   const words = buildableWords();
-  if (words.length === 0 || gameWaiting('build')) return;
+  if (words.length === 0) return;
+  if (gameWaiting('build')) { hintOtherActivities('build'); return; }
   const deck = pickWords(words, GAME_MAX_WORDS, 'buildAt');
   const maxPoints = deck.length * BUILD_WORD_POINTS;
   buildRound = { deck, total: deck.length, maxPoints, lit: 0, result: null, points: 0 };
