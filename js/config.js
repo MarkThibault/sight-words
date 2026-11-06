@@ -40,13 +40,34 @@ const UPDATE_MESSAGE_MS = 900;  // how long "Updating…" shows before the page 
 const UPDATE_FADE_MS = 400;     // the fade before reloading; matches html::after in style.css
 const UPDATE_RELOAD_WAIT_MS = 3000; // reloads anyway if the new version hasn't taken over by then
 const STICKER_COLORS = ['#e03131', '#e8590c', '#e67700', '#2f9e44', '#0c8599', '#1971c2', '#7048e8', '#c2255c'];
-// Surprise stickers: one is picked at random when a word is learned, then saved with that word.
+// Stickers come in sets, each with a scene for the home screen. Every "I know it!" earns the next sticker of the
+// first set with one still missing, in the order listed here (and shown in the star pill), and finishing a set unlocks its scene. Each set needs SET_SIZE stickers.
+// A scene is a soft background (.scene-<id> in style.css) plus a few faded emoji: [emoji, size in px on a tablet,
+// left %, top %]. Scene emoji and icons never repeat a set's sticker, so they're never mistaken for stickers.
+const SET_SIZE = 5;            // stickers in a set, which is also the stars it takes to unlock a scene
+const STICKER_SETS = [
+  { id: 'beach', name: 'The Beach', icon: '🏖️', stickers: ['🦀', '🐚', '⛵', '🌴', '🍦'],
+    decor: [['☀️', 64, 70, 3], ['☁️', 46, 33, 8], ['☁️', 36, 12, 18], ['🏖️', 110, 4, 84], ['☁️', 40, 88, 30]] },
+  { id: 'space', name: 'Outer Space', icon: '🌌', stickers: ['🚀', '🌙', '🪐', '👽', '🛸'],
+    decor: [['🌑', 80, 74, 6], ['☄️', 50, 3, 30], ['🌍', 76, 5, 74], ['✨', 40, 90, 52], ['✨', 34, 30, 6]] },
+  { id: 'sea', name: 'Under the Sea', icon: '🌊', stickers: ['🐙', '🐠', '🐳', '🦈', '🐡'],
+    decor: [['🫧', 50, 30, 14], ['🐟', 46, 86, 30], ['🪸', 100, 4, 86], ['🌿', 90, 90, 86], ['🫧', 40, 70, 92]] },
+  { id: 'farm', name: 'The Farm', icon: '🌾', stickers: ['🐮', '🐷', '🐔', '🐴', '🚜'],
+    decor: [['☀️', 60, 88, 6], ['☁️', 44, 28, 9], ['☁️', 34, 62, 15], ['🌾', 70, 5, 88], ['🏡', 84, 93, 80]] },
+  { id: 'jungle', name: 'The Jungle', icon: '🍃', stickers: ['🦁', '🐵', '🦜', '🐯', '🐘'],
+    decor: [['🌿', 90, 4, 12], ['🍃', 50, 92, 18], ['🌺', 46, 8, 72], ['🌿', 80, 95, 84], ['🍃', 40, 50, 95]] },
+  { id: 'garden', name: 'The Garden', icon: '🌷', stickers: ['🌻', '🌸', '🐝', '🐞', '🦋'],
+    decor: [['☀️', 60, 90, 7], ['☁️', 40, 22, 10], ['🌷', 70, 6, 90], ['🌼', 50, 94, 86], ['🌱', 46, 50, 95]] },
+  { id: 'party', name: 'Party Time', icon: '🎉', stickers: ['🎂', '🧁', '🍩', '🍭', '🎈'],
+    decor: [['🎉', 70, 8, 10], ['🎊', 60, 92, 14], ['🪅', 64, 7, 88], ['✨', 40, 90, 60], ['🎀', 50, 94, 90]] },
+];
+// Stickers once every set is full (or for words beyond the sets), picked at random as before.
+// Stickers earned before sets came in keep their emoji from this older, bigger list.
 const STICKER_EMOJI = [
-  '🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔',
-  '🐧', '🐤', '🦉', '🐴', '🦄', '🐝', '🐞', '🦋', '🐢', '🐙', '🦀', '🐠', '🐬', '🐳', '🦕', '🦖',
-  '🦒', '🦓', '🐘', '🦔', '🍎', '🍌', '🍉', '🍓', '🍒', '🍍', '🥕', '🌽', '🍕', '🍩', '🍪', '🧁',
-  '🍦', '🍭', '🎂', '🌈', '🌞', '🌙', '🌻', '🌸', '⛄', '🚀', '🚗', '🚒', '🚌', '🚂', '🚁', '⛵',
-  '🚜', '⚽', '🏀', '🎈', '🎁', '🎨', '🧸', '🥁', '👑'];
+  '🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐸', '🐧', '🐤', '🦉', '🦄', '🐢', '🐬',
+  '🦕', '🦖', '🦒', '🦓', '🦔', '🍎', '🍌', '🍉', '🍓', '🍒', '🍍', '🥕', '🌽', '🍕', '🍪', '🌈',
+  '🌞', '⛄', '🚗', '🚒', '🚌', '🚂', '🚁', '⚽', '🏀', '🎁', '🎨', '🧸', '🥁', '👑'];
+const SCENE_CARD_DELAY_MS = 1500; // after a round, how long the new stickers get to land before "set complete" shows
 const CONFETTI_COLORS = ['#ff6b6b', '#ffa94d', '#ffd43b', '#69db7c', '#4dabf7', '#9775fa', '#f783ac'];
 // Only used if words.json can't be loaded (for example, when index.html is opened straight from disk).
 const FALLBACK_WORDS = ['was', 'you', 'me', 'like', 'my', 'yes', 'for', 'see', 'as', 'the', 'can', 'he',

@@ -28,8 +28,9 @@
   <link rel="stylesheet" href="style.css?v=1.15.1">
 </head>
 <body>
-  <!-- Home: earned stickers are scattered across the background -->
+  <!-- Home: earned stickers are scattered across the background, which is the dots or a scene the child unlocked -->
   <main id="home" class="screen">
+    <div id="scene-decor" class="scene-decor" aria-hidden="true"></div>
     <div id="sticker-board" class="sticker-board" aria-label="My stickers"></div>
     <div id="home-center" class="home-center">
       <h1>Sight Words</h1>
@@ -51,6 +52,8 @@
     <!-- Grown-ups: press and hold this to open the settings panel -->
     <button id="trophy-btn" class="settings-btn trophy-btn" aria-label="My trophies" title="My trophies">🏆</button>
     <button id="shuffle-btn" class="settings-btn shuffle-btn" aria-label="Shuffle the stickers" title="Shuffle the stickers" hidden><span id="shuffle-die" class="die">🎲</span><span id="shuffle-shadow" class="die-shadow"></span></button>
+    <!-- Shown once the first scene is unlocked: picks the background behind the stickers -->
+    <button id="scenes-btn" class="settings-btn scenes-btn" aria-label="Choose a scene" title="Choose a scene" hidden>🖼️</button>
     <!-- The sound recorder: only shown when running on this computer (it saves into the project folder) -->
     <!-- Developer tools: only shown on localhost (see js/devtools.js) -->
     <button id="dev-btn" class="settings-btn dev-btn" aria-label="Developer tools" title="Developer tools" hidden>🛠️</button>
@@ -74,12 +77,16 @@
       <button id="grownup-tip-ok" class="primary">Got it</button>
     </div>
     <div class="home-footer">
-      <!-- A medal, a bar filling up to the next trophy, and how many trophies so far. Opens My Trophies. -->
+      <!-- Two matching pills that fill from the left. Stars: the sticker set being collected and the scene it unlocks.
+           Trophies: medals toward the next trophy, and how many trophies so far (it opens My Trophies). -->
       <div class="home-counts">
-        <div id="star-count" class="star-count"></div>
-        <button id="trophy-meter" class="trophy-meter" title="My trophies">
+        <div id="star-count" class="count-pill star-count" role="img">
+          <span aria-hidden="true">⭐</span>
+          <span id="star-set" class="star-set" aria-hidden="true"></span>
+          <span id="star-scene" class="star-scene" aria-hidden="true"></span>
+        </div>
+        <button id="trophy-meter" class="count-pill trophy-meter" title="My trophies">
           <span id="home-medal" class="home-medal">🏅</span>
-          <span class="meter-track"><span id="home-fill" class="meter-fill"></span></span>
           <span id="trophy-count" class="trophy-count"></span>
         </button>
       </div>
@@ -138,6 +145,25 @@
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <!-- Trophies: what's been accomplished so far -->
+  <!-- Scenes: pick the background behind the stickers. Locked ones show their set as dark shapes. -->
+  <dialog id="scene-tray" class="scene-tray" aria-label="Choose a scene">
+    <div id="scene-list" class="scene-list"></div>
+  </dialog>
+
+  <!-- A finished sticker set unlocks its scene -->
+  <dialog id="scene-card" class="panel scene-card" aria-labelledby="scene-card-title">
+    <h2 id="scene-card-title"></h2>
+    <div id="scene-card-preview" class="scene-preview">
+      <div id="scene-card-decor" class="scene-decor" aria-hidden="true"></div>
+      <p id="scene-card-name" class="scene-preview-name"></p>
+      <div id="scene-card-set" class="scene-preview-set"></div>
+    </div>
+    <div class="scene-card-buttons">
+      <button id="scene-go" class="big-btn scene-go"></button>
+      <button id="scene-later" class="scene-later">Not now</button>
+    </div>
+  </dialog>
+
   <dialog id="trophy-panel" class="panel trophy-panel" aria-labelledby="trophy-title">
     <h2 id="trophy-title">🏆 My Trophies</h2>
     <ul id="trophy-list" class="trophy-list"></ul>
@@ -182,12 +208,13 @@
         </ul>
         <p>In the games, a wrong answer gets a soft sound and another try, never a failure.</p>
         <h4>Stars and stickers</h4>
-        <p>Only <b>I know it!</b> earns a star, and every star comes with a surprise sticker on the home screen. Stickers can be dragged anywhere, and <b>🎲</b> tidies them up. The other games are practice and never change stars or stickers. You can also give or take away a sticker here in the Grown-up Corner.</p>
+        <p>Only <b>I know it!</b> earns a star, and every star comes with a sticker on the home screen. Stickers can be dragged anywhere, and <b>🎲</b> tidies them up. The other games are practice and never change stars or stickers. You can also give or take away a sticker here in the Grown-up Corner.</p>
+        <p>Stickers come in themed sets of <span data-number="setSize"></span>. The star pill at the bottom of the home screen shows the set being collected, and finishing it unlocks a new scene behind the stickers, like the beach or outer space. Once the first scene is earned, <b>🖼️</b> switches between them.</p>
         <h4>Medals and trophies</h4>
         <p>Finishing a game of <b>Listen &amp; tap</b> or <b>Build the word</b> earns a medal: bronze just for finishing, silver for <span data-number="silver"></span>% of the points, and gold for every word right the first time. A game left partway earns nothing.</p>
-        <p>Each medal fills the trophy meter at the bottom of the home screen: 1 for bronze, 2 for silver and 3 for gold. Every <span data-number="medalsPerTrophy"></span> earns a trophy. Tap <b>🏆</b> to see them all.</p>
+        <p>Each medal fills the trophy pill at the bottom of the home screen: 1 for bronze, 2 for silver and 3 for gold. Every <span data-number="medalsPerTrophy"></span> earns a trophy. Tap <b>🏆</b> to see them all.</p>
         <h4>Turning words on and off</h4>
-        <p>Each word has a switch. A word that's off is skipped in every round and game, left out of the star count, and its sticker is hidden until it's back on. Words stay off even after <b>Reset all progress</b>, and at least one word always stays on.</p>
+        <p>Each word has a switch. A word that's off is skipped in every round and game, and its sticker is hidden until it's back on. Words stay off even after <b>Reset all progress</b>, and at least one word always stays on.</p>
         <h4>Installing for offline play</h4>
         <ul>
           <li><b>iPad / iPhone:</b> open the site in Safari, then <b>Share → Add to Home Screen</b>.</li>
@@ -225,6 +252,7 @@
   <script src="js/sound-effects.js?v=1.15.1"></script>
   <script src="js/effects.js?v=1.15.1"></script>
   <script src="js/stickers.js?v=1.15.1"></script>
+  <script src="js/scenes.js?v=1.15.1"></script>
   <script src="js/home.js?v=1.15.1"></script>
   <script src="js/practice.js?v=1.15.1"></script>
   <script src="js/listen.js?v=1.15.1"></script>

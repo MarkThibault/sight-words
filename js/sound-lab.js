@@ -5,6 +5,34 @@
 // To try a new idea, add it to SOUND_IDEAS using the building blocks in js/sound-effects.js.
 
 const SOUND_IDEAS = {
+  harpSweep: {
+    label: 'Harp sweep',
+    where: 'New scene. A harp sweep up, landing on a soft chord',
+    play(t) {
+      [523, 587, 659, 784, 880, 1047, 1175, 1319].forEach((freq, i) => effectNote(t + i * 0.05, freq, 0.5, { type: 'triangle', volume: 0.12 }));
+      [523, 659, 784].forEach((freq) => effectNote(t + 0.45, freq, 0.9, { volume: 0.1 }));
+      return 1.35;
+    },
+  },
+  sceneMagic: {
+    label: 'Magic reveal',
+    where: 'New scene. A quick shimmer up, then a sparkle on top',
+    play(t) {
+      [784, 988, 1175, 1568, 1976].forEach((freq, i) => effectNote(t + i * 0.04, freq, 0.7, { volume: 0.1 }));
+      effectCrackle(t + 0.2, 0.5, { perSecond: 120, shape: (p) => 1 - p, from: 6000, to: 8000, volume: 0.25 });
+      return 0.9;
+    },
+  },
+  sceneWhoosh: {
+    label: 'Whoosh and chime',
+    where: 'New scene. A soft whoosh, like a curtain opening, then two bell notes',
+    play(t) {
+      effectCrackle(t, 0.45, { perSecond: 0, shape: (p) => Math.sin(Math.PI * p), from: 600, to: 3000, volume: 0.35, hiss: 0.5 });
+      effectNote(t + 0.4, 784, 0.6, { type: 'triangle', volume: 0.16 });
+      effectNote(t + 0.55, 1047, 0.9, { type: 'triangle', volume: 0.16 });
+      return 1.45;
+    },
+  },
   dingDing: {
     label: 'Ding-ding',
     where: 'Right answer. Two rising bell notes: too much like collecting a coin',

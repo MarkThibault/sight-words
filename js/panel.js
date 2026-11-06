@@ -97,6 +97,7 @@ function fillGuideNumbers() {
     buildStars: BUILD_UNLOCK_STARS,
     silver: Math.round(GAME_MEDALS.find((m) => m.name === 'silver').share * 100),
     medalsPerTrophy: MEDALS_PER_TROPHY,
+    setSize: SET_SIZE,
   };
   els.panelGuide.querySelectorAll('[data-number]').forEach((el) => {
     el.textContent = numbers[el.dataset.number];
@@ -118,6 +119,7 @@ function hideGrownupTip() {
 function confirmReset() {
   resetProgress();
   state.lastRound = null;
+  state.newScenes = [];
   renderPanel();
   showResetConfirm(false);
 }

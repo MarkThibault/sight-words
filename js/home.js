@@ -10,10 +10,12 @@ function showScreen(name) {
   if (name === 'home') {
     renderHome();
     homeShown();
+    showSceneCardsSoon();
   }
 }
 
 function renderHome() {
+  renderScene();
   updateCounters();
   renderTrophyMeter();
 
@@ -77,11 +79,18 @@ function renderSummary() {
       : `⏱️ ${formatTime(last.ms)} (best is ${formatTime(last.best)})`;
     lines.push(time);
   }
+  const setLine = n > 0 && setsLeftLine();
+  if (setLine) {
+    const more = document.createElement('span');
+    more.className = 'summary-time';
+    more.textContent = setLine;
+    lines.push(more);
+  }
   els.stickerHint.replaceChildren(...lines);
 }
 
 function updateCounters() {
   const stars = knownWords().length;
-  els.starCount.innerHTML = `⭐ ${stars}<span class="star-more"> of ${state.words.length} stars</span><span class="star-less">/${state.words.length}</span>`;
+  renderStarPill();
   els.mini.textContent = `⭐ ${stars} / ${state.words.length}`;
 }

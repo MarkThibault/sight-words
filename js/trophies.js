@@ -53,11 +53,11 @@ function updateGameMeter(game, meter, wordDone = false) {
 
 const medalToast = (result) => `${result.emoji} A ${result.name} medal!`;
 
-// On the home screen: a medal, a bar filling up to the next trophy, and how many trophies so far.
+// On the home screen: a pill that fills up toward the next trophy, from 🏅 to how many trophies so far.
 function renderTrophyMeter() {
   const toward = medalsTowardTrophy();
   els.homeMedal.classList.toggle('waiting', toward === 0);
-  els.homeFill.style.width = `${(toward / MEDALS_PER_TROPHY) * 100}%`;
+  els.trophyMeter.style.setProperty('--fill', `${(toward / MEDALS_PER_TROPHY) * 100}%`);
   els.trophyCount.textContent = `🏆 ${trophyCount()}`;
   els.trophyMeter.setAttribute('aria-label', `My trophies: ${trophyCount()}, and ${toward} of ${MEDALS_PER_TROPHY} medals toward the next`);
 }
@@ -69,7 +69,7 @@ function flyGameMedal(result) {
   else flyMedal(result.emoji, els.homeMedal);
 }
 
-// A new record or medal: it pops up over the home screen and flies into the trophy meter.
+// A new record or medal: it pops up over the home screen and flies into the trophy pill.
 function flyMedal(emoji = '🏅', target = els.trophyCount) {
   if (reduceMotion) {
     playAnim(els.trophyMeter, 'wiggle');
