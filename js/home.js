@@ -27,12 +27,11 @@ function renderHome() {
   const best = bestTime();
   els.bestTime.textContent = best === null ? 'No best time yet' : `Best: ${formatTime(best)}`;
 
-  const starsNeeded = LISTEN_UNLOCK_STARS - knownWords().length;
-  els.listenBtn.disabled = starsNeeded > 0;
-  els.listenNote.textContent = starsNeeded > 0 ? `🔒 ${plural(starsNeeded, 'more star')}` : 'Find the word';
-  const buildStarsNeeded = BUILD_UNLOCK_STARS - knownWords().length;
-  els.buildBtn.disabled = buildStarsNeeded > 0 || buildableWords().length === 0;
-  els.buildNote.textContent = buildStarsNeeded > 0 ? `🔒 ${plural(buildStarsNeeded, 'more star')}` : 'Order the sounds';
+  // The games are open from the start, with every word that's turned on
+  els.listenBtn.disabled = !canListen();
+  els.listenNote.textContent = canListen() ? 'Find the word' : 'Needs 2 words';
+  els.buildBtn.disabled = buildableWords().length === 0;
+  els.buildNote.textContent = 'Order the sounds';
 
   renderSummary();
   renderStickers();

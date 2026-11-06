@@ -93,8 +93,6 @@ function fillGuideNumbers() {
   const numbers = {
     roundMax: ROUND_MAX_WORDS,
     listenChoices: LISTEN_CHOICES,
-    listenStars: LISTEN_UNLOCK_STARS,
-    buildStars: BUILD_UNLOCK_STARS,
     silver: Math.round(GAME_MEDALS.find((m) => m.name === 'silver').share * 100),
     medalsPerTrophy: MEDALS_PER_TROPHY,
     setSize: SET_SIZE,

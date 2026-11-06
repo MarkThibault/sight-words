@@ -1,14 +1,17 @@
 'use strict';
 
-// Listen & tap: hear a starred word, then find it among a few choices.
+// Listen & tap: hear a word, then find it among a few choices. It uses every word that's turned on, starred or not.
 // It's practice only, so it never changes stars or stickers ("I know it!" does that).
 
 let listenRound = null;      // the game being played: { words, deck, total, maxPoints, lit, result, points, wordPoints, target, busy }
 let listenTimer = null;      // the pause before the next word
 
+// It needs at least two words to choose between.
+const canListen = () => state.words.length >= 2;
+
 function startListen() {
-  const words = knownWords();
-  if (words.length < LISTEN_UNLOCK_STARS) return;
+  const words = state.words;
+  if (!canListen()) return;
   const deck = pickWords(words, GAME_MAX_WORDS, 'listenAt');
   const maxPoints = deck.length * LISTEN_WORD_POINTS;
   listenRound = { words, deck, total: deck.length, maxPoints, lit: 0, result: null, points: 0, wordPoints: 0, target: null, busy: false };
