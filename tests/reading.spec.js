@@ -1,7 +1,7 @@
 // Let's Read, stars and stickers: only "I know it!" earns them, and they fill the sticker sets in order.
 'use strict';
 
-const { test, expect, WORDS, STICKER_SETS, SET_SIZE, openApp, savedProgress, starred, openGrownupCorner } = require('./helpers');
+const { test, expect, WORDS, STICKER_SETS, SET_SIZE, openApp, savedProgress, starred, panelRow, openGrownupCorner } = require('./helpers');
 
 const [beach, space] = STICKER_SETS;
 const knownInOrder = (progress) => Object.entries(progress.words)
@@ -78,4 +78,38 @@ test('Next waits until the word has been heard', async ({ page }) => {
   await page.locator('#next-btn').click();
   await expect(page.locator('#word')).not.toHaveText(first);
   expect((await savedProgress(page)).words[first]).toMatchObject({ heard: 1, known: false });
+});
+
+test('a Timed run keeps the best time, which only counts for the same number of words', async ({ page }) => {
+  // Two words on, so each run is short
+  await openApp(page, { offWords: WORDS.slice(2) });
+  await expect(page.locator('#best-time')).toHaveText('No best time yet');
+  const timedRun = async (pause) => {
+    await page.locator('#timed-btn').click();
+    await expect(page.locator('#timer')).toBeVisible();
+    for (let i = 0; i < 2; i++) {
+      await expect(page.locator('#know-btn')).toBeEnabled();
+      await page.waitForTimeout(pause);
+      await page.locator('#know-btn').click();
+    }
+    await expect(page.locator('#home')).toBeVisible();
+  };
+
+  // The first run is a new best
+  await timedRun(0);
+  await expect(page.locator('#sticker-hint')).toContainText('New best time');
+  const best = (await savedProgress(page)).bestTime;
+  expect(best).toMatchObject({ count: 2 });
+  await expect(page.locator('#best-time')).toHaveText(/^Best: \d+:\d\d$/);
+
+  // A slower run shows its time beside the best, and doesn't replace it
+  await timedRun(1500);
+  await expect(page.locator('#sticker-hint')).toContainText('(best is');
+  expect((await savedProgress(page)).bestTime).toEqual(best);
+
+  // With another word turned on, the times don't compare, so it starts fresh
+  await openGrownupCorner(page);
+  await panelRow(page, WORDS[2]).locator('.word-switch').click();
+  await page.locator('#panel-close').click();
+  await expect(page.locator('#best-time')).toHaveText('No best time yet');
 });

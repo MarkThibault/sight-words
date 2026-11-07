@@ -44,8 +44,8 @@ const savedItem = (page, key) => page.evaluate((k) => localStorage.getItem(k), k
 
 // The app's own word list and sticker sets, read from its files, so the tests follow any change to them.
 const WORDS = JSON.parse(fs.readFileSync(path.join(ROOT, 'words.json'), 'utf8'));
-const { STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY } = vm.runInNewContext(
-  `${fs.readFileSync(path.join(ROOT, 'js', 'config.js'), 'utf8')};({ STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY })`);
+const { STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS } = vm.runInNewContext(
+  `${fs.readFileSync(path.join(ROOT, 'js', 'config.js'), 'utf8')};({ STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS })`);
 
 // Saved word progress with a star on each of these words, earned one after another in this order.
 // `more(word, i)` adds to a word's entry, such as its sticker.
@@ -53,6 +53,12 @@ function starred(words, more = () => ({})) {
   return Object.fromEntries(words.map((word, i) =>
     [word, { heard: 1, known: true, knownAt: 1_700_000_000_000 + i * 1000, lastSeen: null, ...more(word, i) }]));
 }
+
+// Matches an element's whole text, so a short word like "a" doesn't also match "can".
+const exactly = (text) => new RegExp(`^${text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`);
+
+// The Grown-up corner's row for a word.
+const panelRow = (page, word) => page.locator('#panel-list li').filter({ has: page.locator('.panel-word', { hasText: exactly(word) }) });
 
 // The ⚙️ button opens the Grown-up corner after a press and hold.
 async function openGrownupCorner(page) {
@@ -64,4 +70,4 @@ async function openGrownupCorner(page) {
   await base.expect(page.locator('#parent-panel')).toBeVisible();
 }
 
-module.exports = { test, expect: base.expect, WORDS, STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, openApp, savedProgress, savedItem, starred, openGrownupCorner };
+module.exports = { test, expect: base.expect, WORDS, STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS, openApp, savedProgress, savedItem, starred, exactly, panelRow, openGrownupCorner };
