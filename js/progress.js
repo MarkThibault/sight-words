@@ -76,8 +76,8 @@ function setKnown(word, known) {
 const stickerFor = (word) => stats(word).sticker;
 
 // The next sticker: the first missing sticker of the first set that isn't full, in the order the star pill shows
-// them, and finishing that set unlocks its scene. Once every set is full, it picks from STICKER_EMOJI, preferring
-// emoji not already on the board. Saved by the caller.
+// them, and finishing that set unlocks its scene. Once every set is full, it's a random one from STICKER_EMOJI
+// that isn't on the board yet. Saved by the caller.
 function giveSticker(word) {
   const s = stats(word);
   if (s.sticker) return;
@@ -88,9 +88,7 @@ function giveSticker(word) {
     s.set = set.id;
     if (earned.length + 1 === SET_SIZE) unlockScene(set.id);
   } else {
-    const used = new Set([...state.allWords.map((w) => stats(w).sticker), ...prizeStickers().map((p) => p.emoji)]);
-    const unused = STICKER_EMOJI.filter((e) => !used.has(e));
-    s.sticker = randomItem(unused.length ? unused : STICKER_EMOJI);
+    s.sticker = randomItem(stickersNotOnBoard());
   }
 }
 
@@ -175,9 +173,11 @@ function markStickerToSee(key) {
 }
 const prizesToPick = () => Math.max(0, trophyCount() - prizeStickers().length);
 
-// Every sticker outside the sets that isn't on the board yet. Once they're all used, any of them again.
-function prizeChoices() {
-  const used = new Set([...state.allWords.map((w) => stats(w).known && stats(w).sticker), ...prizeStickers().map((p) => p.emoji)]);
+// Every sticker outside the sets that isn't on the board yet, as a word's sticker or a prize. Once they're all
+// there, any of them again. Prizes are picked from these, and so are word stickers once every set is full.
+// Only words with a star have a sticker, so turned-off words count too and their sticker is never given out twice.
+function stickersNotOnBoard() {
+  const used = new Set([...state.allWords.map((w) => stats(w).sticker), ...prizeStickers().map((p) => p.emoji)]);
   const left = STICKER_EMOJI.filter((e) => !used.has(e));
   return left.length ? left : STICKER_EMOJI;
 }

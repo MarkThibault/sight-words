@@ -28,7 +28,7 @@ function renderPrizeCard() {
   showPrizeConfirm(null);
   const left = prizesToPick();
   els.prizeTitle.textContent = left > 1 ? `🎁 Pick your prizes! (${left})` : '🎁 Pick your prize!';
-  els.prizeList.replaceChildren(...prizeChoices().map((emoji) => {
+  els.prizeList.replaceChildren(...stickersNotOnBoard().map((emoji) => {
     const choice = document.createElement('button');
     choice.className = 'prize-choice';
     choice.textContent = emoji;

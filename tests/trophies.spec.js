@@ -74,3 +74,14 @@ test('"Later" saves the prize, and My Trophies offers it again', async ({ page }
   await expect(page.locator('#prize-card')).toBeVisible();
   expect((await savedProgress(page)).prizes).toBeUndefined();
 });
+
+test('once every sticker outside the sets is on the board, the prize grid offers them all again', async ({ page }) => {
+  // A prize for every sticker in the list, and enough medals for one more trophy
+  const prizes = STICKER_EMOJI.map((emoji, i) => ({ emoji, at: 1_700_000_000_000 + i }));
+  await openApp(page, { progress: { words: {}, medals: (prizes.length + 1) * MEDALS_PER_TROPHY, prizes } });
+
+  await page.locator('#trophy-meter').click();
+  await page.locator('#prize-btn').click();
+  await expect(page.locator('#prize-card')).toBeVisible();
+  expect(await page.locator('#prize-list .prize-choice').allTextContents()).toEqual(STICKER_EMOJI);
+});
