@@ -20,6 +20,10 @@ module.exports = defineConfig({
     channel: process.platform === 'win32' ? 'msedge' : 'chrome',
     // Sound can start without a tap. Clicks in the tests are real anyway, but a game waits for each clip to end.
     launchOptions: { args: ['--autoplay-policy=no-user-gesture-required'] },
+    // When a test fails, keep a screenshot and a step-by-step trace in test-results/ (open a trace with
+    // `npx playwright show-trace <file>`). GitHub saves the folder with the run.
+    screenshot: 'only-on-failure',
+    trace: 'retain-on-failure',
   },
   projects: [
     { name: 'phone', use: { viewport: { width: 390, height: 844 } } },
