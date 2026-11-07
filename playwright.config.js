@@ -10,6 +10,9 @@ module.exports = defineConfig({
   timeout: 90_000, // a whole game plays its real recordings, which takes a while
   expect: { timeout: 10_000 },
   fullyParallel: true,
+  // Tests spend most of their time waiting for recordings to finish, not working the processor, so GitHub's 4-core
+  // machines run 4 at once instead of Playwright's usual half (2). Elsewhere it's that usual half.
+  workers: process.env.CI ? 4 : undefined,
   // On GitHub a failed test runs once more, so the failure's details are seen twice, but the check still fails:
   // a test that only passes on a retry is hiding something (like the stickers on the title when the font came late).
   retries: process.env.CI ? 1 : 0,

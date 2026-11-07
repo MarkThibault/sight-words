@@ -1,7 +1,7 @@
 // Trophies: every MEDALS_PER_TROPHY medals earns one, and each lets the child pick a prize sticker for the board.
 'use strict';
 
-const { test, expect, WORDS, STICKER_SETS, STICKER_EMOJI, MEDALS_PER_TROPHY, openApp, savedProgress, starred, exactly } = require('./helpers');
+const { test, expect, WORDS, STICKER_SETS, STICKER_EMOJI, MEDALS_PER_TROPHY, SHORT_GAME, openApp, savedProgress, starred, exactly } = require('./helpers');
 
 // Plays a whole game of Listen & tap, tapping the right word every time.
 async function playListen(page) {
@@ -26,6 +26,7 @@ test('a game that completes a trophy offers a prize sticker that isn\'t on the b
       medals: 2 * MEDALS_PER_TROPHY - 1,
       prizes: [{ emoji: firstPrize, at: 1_700_000_000_000 }],
     },
+    offWords: SHORT_GAME,
   });
   await playListen(page);
   await expect(page.locator('#sticker-hint')).toContainText('New trophy! You have 2!');
@@ -59,7 +60,7 @@ test('a game that completes a trophy offers a prize sticker that isn\'t on the b
 });
 
 test('"Later" saves the prize, and My Trophies offers it again', async ({ page }) => {
-  await openApp(page, { progress: { words: {}, medals: MEDALS_PER_TROPHY - 1 } });
+  await openApp(page, { progress: { words: {}, medals: MEDALS_PER_TROPHY - 1 }, offWords: SHORT_GAME });
   await playListen(page);
   await expect(page.locator('#prize-card')).toBeVisible({ timeout: 10_000 });
   await page.locator('#prize-later').click();
