@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -26,3 +26,12 @@ jobs:
 
       - name: Play the app
         run: npm test
+
+      # A failed test's screenshot and trace, downloadable from the run's page for a week
+      - name: Save what the failed tests saw
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 7
