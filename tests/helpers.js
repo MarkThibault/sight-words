@@ -44,8 +44,8 @@ const savedItem = (page, key) => page.evaluate((k) => localStorage.getItem(k), k
 
 // The app's own word list and sticker sets, read from its files, so the tests follow any change to them.
 const WORDS = JSON.parse(fs.readFileSync(path.join(ROOT, 'words.json'), 'utf8'));
-const { STICKER_SETS, SET_SIZE } = vm.runInNewContext(
-  `${fs.readFileSync(path.join(ROOT, 'js', 'config.js'), 'utf8')};({ STICKER_SETS, SET_SIZE })`);
+const { STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY } = vm.runInNewContext(
+  `${fs.readFileSync(path.join(ROOT, 'js', 'config.js'), 'utf8')};({ STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY })`);
 
 // Saved word progress with a star on each of these words, earned one after another in this order.
 // `more(word, i)` adds to a word's entry, such as its sticker.
@@ -64,4 +64,4 @@ async function openGrownupCorner(page) {
   await base.expect(page.locator('#parent-panel')).toBeVisible();
 }
 
-module.exports = { test, expect: base.expect, WORDS, STICKER_SETS, SET_SIZE, openApp, savedProgress, savedItem, starred, openGrownupCorner };
+module.exports = { test, expect: base.expect, WORDS, STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, openApp, savedProgress, savedItem, starred, openGrownupCorner };

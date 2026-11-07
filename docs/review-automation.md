@@ -36,7 +36,7 @@ A missing clip is the main reason for this step: it fails quietly today, because
 Use Playwright to open the real app at phone and tablet sizes on every pull request, and:
 
 - ✅ Play a round of Let's Read, Listen & tap and Build the word, and check the stars, stickers and medals.
-- ✅ Check the reward rules: sticker sets fill in order, a taken-away sticker's gap fills first, games never change stars, a game waits its turn, and reset keeps turned-off words off. (The games used to unlock at a number of stars; now they're open from the start.)
+- ✅ Check the reward rules: sticker sets fill in order, a taken-away sticker's gap fills first, games never change stars, a trophy offers a prize sticker not already on the board, a game waits its turn, and reset keeps turned-off words off. (The games used to unlock at a number of stars; now they're open from the start.)
 - ✅ Check that stickers don't land on the title or buttons, using a set number of stickers.
 - ✅ Fail on any script error.
 

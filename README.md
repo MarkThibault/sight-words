@@ -148,6 +148,7 @@ Every pull request plays the app in a real browser, at a phone size and a tablet
 | --- | --- |
 | `reading.spec.js` | A round of **Let's Read** gives stars and fills the sticker sets in order, finished sets unlock their scenes, a sticker taken away leaves a gap the next star fills, and **Next** waits until the word is heard |
 | `games.spec.js` | **Listen & tap** and **Build the word** earn the right medal and never change stars or stickers, a wrong answer gets another try, a game waits its turn after two in a row, and **Reset all progress** clears every reward but keeps turned-off words off |
+| `trophies.spec.js` | A game that completes a trophy offers a prize sticker, never a set sticker or one already on the board; the pick lands on the board with a 🏆 tag; and **Later** saves it for My Trophies |
 | `layout.spec.js` | Stickers stay off the title, buttons and pills |
 
 Each test starts from fresh saved progress, set up in the test, and fails on any script error. They can't tell how a sound sounds or a game feels, so keep trying changes on a tablet.
