@@ -190,11 +190,11 @@ h1 {
 .count-pill > * { position: relative; }
 /* the five stickers of the set being collected: earned ones in color, the rest as dark shapes */
 .star-set { display: flex; gap: 3px; }
-.set-sticker { width: 27px; height: 27px; display: grid; place-items: center; font-size: 17px; background: #fff9db; border: 2px solid var(--yellow); border-radius: 50%; }
+.set-sticker { width: 27px; height: 27px; display: grid; place-items: center; font-size: 17px; line-height: 1; background: #fff9db; border: 2px solid var(--yellow); border-radius: 50%; }
 .set-sticker.earned { background: #fff3bf; }
 .set-sticker:not(.earned) > span, .thumb-sticker:not(.earned) > span { filter: brightness(0); opacity: 0.25; }
 /* the scene the set unlocks */
-.star-scene { flex: none; width: 30px; height: 30px; display: grid; place-items: center; font-size: 18px; border: 2px dashed var(--yellow-dark); border-radius: 8px; filter: grayscale(0.4); opacity: 0.75; }
+.star-scene { flex: none; width: 30px; height: 30px; display: grid; place-items: center; font-size: 18px; line-height: 1; border: 2px dashed var(--yellow-dark); border-radius: 8px; filter: grayscale(0.4); opacity: 0.75; }
 /* always reachable, even under dragged stickers */
 .trophy-meter { z-index: 4; cursor: pointer; pointer-events: auto; }
 .home-medal { flex: none; }
