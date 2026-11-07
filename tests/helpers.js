@@ -47,6 +47,10 @@ const WORDS = JSON.parse(fs.readFileSync(path.join(ROOT, 'words.json'), 'utf8'))
 const { STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS } = vm.runInNewContext(
   `${fs.readFileSync(path.join(ROOT, 'js', 'config.js'), 'utf8')};({ STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS })`);
 
+// Words to turn off so only the first four are on: a game then plays 4 words instead of 8, enough to check its
+// rules in half the time.
+const SHORT_GAME = WORDS.slice(4);
+
 // Saved word progress with a star on each of these words, earned one after another in this order.
 // `more(word, i)` adds to a word's entry, such as its sticker.
 function starred(words, more = () => ({})) {
@@ -70,4 +74,4 @@ async function openGrownupCorner(page) {
   await base.expect(page.locator('#parent-panel')).toBeVisible();
 }
 
-module.exports = { test, expect: base.expect, WORDS, STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS, openApp, savedProgress, savedItem, starred, exactly, panelRow, openGrownupCorner };
+module.exports = { test, expect: base.expect, WORDS, STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS, SHORT_GAME, openApp, savedProgress, savedItem, starred, exactly, panelRow, openGrownupCorner };
