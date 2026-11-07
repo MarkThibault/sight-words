@@ -86,3 +86,18 @@ test('once every sticker outside the sets is on the board, the prize grid offers
   await expect(page.locator('#prize-card')).toBeVisible();
   expect(await page.locator('#prize-list .prize-choice').allTextContents()).toEqual(STICKER_EMOJI);
 });
+
+test('"Pick your prize!" waits while sticker play is on, then opens when it\'s switched off', async ({ page }) => {
+  await openApp(page, { progress: { words: {}, medals: MEDALS_PER_TROPHY - 1 }, offWords: SHORT_GAME });
+  await playListen(page);
+
+  // Straight into sticker play, before the card is due
+  await page.locator('#play-toggle').click();
+  await page.waitForTimeout(2500); // longer than the card's usual wait
+  await expect(page.locator('#prize-card')).toBeHidden();
+  await expect(page.locator('#trophy-badge')).toHaveText('1'); // 🏆 shows the prize waiting
+
+  // Switching sticker play off brings it up
+  await page.locator('#play-toggle').click();
+  await expect(page.locator('#prize-card')).toBeVisible();
+});

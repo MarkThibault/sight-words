@@ -12,6 +12,7 @@ function openTrophies() {
 // ---------- Prize stickers ----------
 
 let prizeCardTimer = null;
+let prizeCardWaiting = false; // a new trophy's "Pick your prize!", waiting for sticker play to be switched off
 let prizeChoice = null; // the sticker tapped, waiting for "Yes!"
 
 // "Pick your prize!": every sticker not on the board yet. Picking puts it on the board, and "Later" saves the pick,
@@ -22,6 +23,20 @@ function openPrizeCard() {
   renderPrizeCard();
   els.prizeCard.showModal();
   els.prizeList.scrollTop = 0;
+}
+
+// After a game earns a trophy, "Pick your prize!" opens by itself, unless sticker play is on: like other pop-ups, it
+// waits until sticker play is switched off. Meanwhile 🏆 in sticker play shows the prize waiting, to pick there.
+function offerPrizeCard() {
+  if (state.playing) prizeCardWaiting = true;
+  else openPrizeCard();
+}
+
+// Sticker play was switched off.
+function openWaitingPrizeCard() {
+  if (!prizeCardWaiting) return;
+  prizeCardWaiting = false;
+  openPrizeCard();
 }
 
 function renderPrizeCard() {
@@ -129,7 +144,7 @@ function flyGameMedal(result) {
   playEffect(result.newTrophy ? 'trophy' : 'medal');
   if (result.newTrophy) {
     flyMedal('🏆', els.trophyCount);
-    prizeCardTimer = setTimeout(openPrizeCard, PRIZE_CARD_DELAY_MS);
+    prizeCardTimer = setTimeout(offerPrizeCard, PRIZE_CARD_DELAY_MS);
   } else flyMedal(result.emoji, els.homeMedal);
 }
 

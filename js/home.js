@@ -114,14 +114,17 @@ function renderSummary() {
 
 // Sticker play: the 🐵/🙈 switch hides the title, its buttons, the bottom row and ⚙️, and shows 🏆, 🎲 and 🖼️
 // beside it. Only then can the stickers be moved. New stickers waiting inside the switch pop onto the board as it opens.
-// Stickers and scenes flying into the switch wait until it's switched back.
+// Stickers and scenes flying into the switch, and a new trophy's "Pick your prize!", wait until it's switched back.
 function setPlaying(on) {
   state.playing = on;
   els.home.classList.toggle('playing', on);
   els.playToggle.setAttribute('aria-checked', String(on));
   els.playKnob.textContent = on ? '🙈' : '🐵';
   if (on) openStickersToSee();
-  else flyInSoon();
+  else {
+    openWaitingPrizeCard();
+    flyInSoon();
+  }
   renderPlayBadge();
 }
 
