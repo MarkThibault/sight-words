@@ -75,13 +75,16 @@ async function init() {
   els.guideBack.addEventListener('click', () => showGuide(false));
   els.grownupTipOk.addEventListener('click', hideGrownupTip);
 
+  // Words are sized to fit their card, and stickers placed around the title and buttons, so both are measured again
+  // when the window changes size or a font arrives late (the kid-friendly font, on a slow first visit), which changes
+  // the size of the text around them.
+  const refit = () => (els.home.hidden ? fitAllWords() : renderStickers());
   let resizeTimer = null;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => (els.home.hidden ? fitAllWords() : renderStickers()), 150);
+    resizeTimer = setTimeout(refit, 150);
   });
-  // The kid-friendly font may arrive after the first word is shown
-  document.fonts.ready.then(fitAllWords);
+  document.fonts.addEventListener('loadingdone', refit);
 
   state.allWords = await loadWords();
   state.offWords = loadOffWords();

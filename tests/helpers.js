@@ -35,7 +35,7 @@ async function openApp(page, { progress, offWords, stickerSpots, stickerSeed } =
     sessionStorage.setItem('test.seeded', '1');
     for (const [key, value] of Object.entries(data)) if (value) localStorage.setItem(key, value);
   }, saved);
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' }); // not the full load, which waits for every font
   await base.expect(page.locator('#start-btn')).toBeEnabled();
 }
 
