@@ -60,7 +60,7 @@ New stickers earned outside sticker play (from **I know it!**, or a prize picked
 
 A red bubble on the switch adds up what's waiting inside: new stickers, prize stickers to pick and new scenes not looked at yet. It counts up as each new one lands. While sticker play is on, the switch's bubble goes away and **🏆** and **🖼️** each show their own count. The 🖼️ count clears when the scene tray is opened, or when the new scene is picked.
 
-While it's on, stickers flying in and automatic updates wait until it's switched off. It's never saved, so the app always opens with everything showing.
+While it's on, stickers flying in, a new trophy's **Pick your prize!** and automatic updates wait until it's switched off. Meanwhile **🏆** counts the prize waiting, so it can be picked there too. It's never saved, so the app always opens with everything showing.
 
 ## Sound effects
 
