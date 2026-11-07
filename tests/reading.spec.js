@@ -113,3 +113,29 @@ test('a Timed run keeps the best time, which only counts for the same number of 
   await page.locator('#panel-close').click();
   await expect(page.locator('#best-time')).toHaveText('No best time yet');
 });
+
+test('stars from an older save get their stickers as the app opens, and drawing the screens saves nothing', async ({ page }) => {
+  // Saved before stickers came with the star: three stars, no stickers
+  const words = WORDS.slice(0, 3);
+  await openApp(page, { progress: { words: starred(words) } });
+  const progress = await savedProgress(page);
+  expect(words.map((w) => [progress.words[w].sticker, progress.words[w].set]))
+    .toEqual(beach.stickers.slice(0, 3).map((sticker) => [sticker, 'beach']));
+
+  // From here on, only earning or changing something saves: drawing the home screen, the Grown-up corner and
+  // My Trophies doesn't
+  await page.evaluate(() => {
+    window.savesWhileLooking = [];
+    const setItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = function (key, value) {
+      if (key.startsWith('sightWords.')) window.savesWhileLooking.push(key);
+      return setItem.call(this, key, value);
+    };
+    renderHome();
+  });
+  await openGrownupCorner(page);
+  await page.locator('#panel-close').click();
+  await page.locator('#trophy-meter').click();
+  await page.locator('#trophy-close').click();
+  expect(await page.evaluate(() => window.savesWhileLooking)).toEqual([]);
+});

@@ -49,7 +49,7 @@ A sight-word practice app for a 5-year-old, used mostly on a tablet. See `README
 
 ## Testing in the browser
 
-- **Protect saved progress.** Rendering test stars can write to `localStorage`, because `stickerFor` saves. Back up the `sightWords.*` keys to `sessionStorage` first and restore them exactly afterward.
+- **Protect saved progress.** Giving test stars with `setKnown` saves them, along with their stickers, to `localStorage`. Back up the `sightWords.*` keys to `sessionStorage` first and restore them exactly afterward. Drawing a screen never saves.
 - **Start audio with a real click.** The audio context stays suspended without one, and a suspended clip never reports that it ended, so games can appear to hang.
 - **Be clear about what was checked.** Logging audio order isn't hearing it, and the built-in browser can't use the microphone. Say when something hasn't been heard or tried on a real tablet.
 - Finish by checking the console for script errors.
