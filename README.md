@@ -156,6 +156,8 @@ Every pull request plays the app in a real browser, at a phone size and a tablet
 
 Each test starts from fresh saved progress, set up in the test, and fails on any script error. They can't tell how a sound sounds or a game feels, so keep trying changes on a tablet.
 
+On GitHub, a failed test runs once more so its failure shows twice, but the check still fails even if the second try passes: a test that only passes sometimes is hiding a real problem. A failed test's screenshot and trace are saved with the run, under **Artifacts**.
+
 To run them on your computer, install the test tools once, then run the tests:
 
 ```
