@@ -135,30 +135,11 @@ function flyGameMedal(result) {
 
 // A new record or medal: it pops up over the home screen and flies into the trophy pill.
 function flyMedal(emoji = '🏅', target = els.trophyCount) {
-  if (reduceMotion) {
-    playAnim(els.trophyMeter, 'wiggle');
-    return;
-  }
   const medal = document.createElement('span');
   medal.className = 'flying-medal';
   medal.textContent = emoji;
-  document.body.append(medal);
-  const from = els.stickerHint.getBoundingClientRect();
-  const to = target.getBoundingClientRect();
-  const x0 = `${from.left + from.width / 2}px`;
-  const y0 = `${from.top + from.height / 2}px`;
-  const x1 = `${to.left + to.width / 2}px`;
-  const y1 = `${to.top + to.height / 2}px`;
-  const anim = medal.animate([
-    { left: x0, top: y0, scale: 0, rotate: '-180deg' },
-    { left: x0, top: y0, scale: 1.2, rotate: '0deg', offset: 0.25 },
-    { left: x0, top: y0, scale: 1, rotate: '0deg', offset: 0.5 },
-    { left: x1, top: y1, scale: 0.35, rotate: '360deg' },
-  ], { duration: 1600, easing: 'ease-in-out' });
-  anim.onfinish = () => {
-    medal.remove();
-    playAnim(els.trophyMeter, 'wiggle');
-  };
+  flyInto(medal, els.stickerHint, target, { duration: 1600, endScale: 0.35, endSpin: '360deg', pop: 1.2, popAt: 0.25 },
+    () => playAnim(els.trophyMeter, 'wiggle'));
 }
 
 function renderTrophies() {

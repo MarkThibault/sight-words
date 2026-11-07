@@ -152,6 +152,7 @@ Every pull request plays the app in a real browser, at a phone size and a tablet
 | `words.spec.js` | A word turned off in the Grown-up corner is skipped in rounds and games, its sticker hides until it's back on, and the last word on can't be turned off |
 | `scenes.spec.js` | The 🖼️ tray tags a new scene "New!" once, a locked scene says how to unlock it, and picking a scene changes the background |
 | `from-disk.spec.js` | Opening `index.html` straight from disk still works, with the built-in word list |
+| `motion.spec.js` | New stickers fly into 🏠 and the 🐵/🙈 switch, and medals into the trophy pill, landing and counting with the device's "reduce motion" setting on or off |
 | `layout.spec.js` | Stickers stay off the title, buttons and pills, move out of the way when the font arrives late, and stay out from behind 🏆 🎲 and 🖼️ in sticker play |
 
 Each test starts from fresh saved progress, set up in the test, and fails on any script error. They can't tell how a sound sounds or a game feels, so keep trying changes on a tablet.
@@ -182,7 +183,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `phonics.js` | The sounds, and how each word splits into them for **Sound it out** |
 | `audio.js` | Playing the recordings in `audio/`, or the device's voice for anything not recorded |
 | `sound-effects.js` | The sound effects, made in code: right answer, new star, medal, trophy, dice and stickers |
-| `effects.js` | Toasts and confetti |
+| `effects.js` | Toasts, confetti, and stickers and medals flying into place |
 | `stickers.js` | Drawing stickers, laying them out on the home screen, dragging them around, and flying new ones into the 🐵 / 🙈 switch |
 | `scenes.js` | Scenes behind the stickers: the star pill, and the 🖼️ tray |
 | `home.js` | Home screen and switching screens |
