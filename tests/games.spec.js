@@ -1,7 +1,7 @@
 // Listen & tap and Build the word: practice that earns medals, never stars or stickers, and takes turns.
 'use strict';
 
-const { test, expect, WORDS, SET_SIZE, openApp, savedProgress, starred, exactly, openGrownupCorner } = require('./helpers');
+const { test, expect, WORDS, SET_SIZE, STICKER_SETS, openApp, savedProgress, starred, exactly, openGrownupCorner } = require('./helpers');
 
 // Stars and stickers, which the games must never change.
 const stickersOf = (progress) => Object.fromEntries(Object.entries(progress.words).map(([w, s]) => [w, [s.known, s.sticker, s.set]]));
@@ -61,8 +61,10 @@ test('Build the word: putting every part in order earns gold, but no stars', asy
 });
 
 test('after two games of one kind in a row, it waits until something else is finished', async ({ page }) => {
-  // Every word has a star but one, so Missing words is a one-word reading round
-  await openApp(page, { progress: { words: starred(WORDS.slice(1)), lastGame: { game: 'listen', inARow: 2 } } });
+  // Every word has a star but one, so Missing words is a one-word reading round. Their scenes are already unlocked,
+  // or "set complete!" would play over the home screen and catch the taps.
+  const scenes = STICKER_SETS.map((set) => set.id);
+  await openApp(page, { progress: { words: starred(WORDS.slice(1)), scenes, lastGame: { game: 'listen', inARow: 2 } } });
   const listen = page.locator('#listen-btn');
   await expect(listen).toHaveClass(/waiting/);
   await expect(page.locator('#listen-note')).toHaveText('🔄 Play something else first');

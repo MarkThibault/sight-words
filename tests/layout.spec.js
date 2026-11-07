@@ -1,7 +1,7 @@
 // The home screen at phone and tablet sizes: stickers stay out from behind the title and buttons.
 'use strict';
 
-const { test, expect, WORDS, openApp, starred } = require('./helpers');
+const { test, expect, WORDS, STICKER_SETS, openApp, starred } = require('./helpers');
 
 // With all 31 stickers, short phones run out of room and stickers overlap the buttons (a known limit), so this
 // uses a number that should always fit.
@@ -54,4 +54,24 @@ test('stickers move out of the way when the font arrives late', async ({ page })
   await page.waitForLoadState('load');
   await expect.poll(() => page.evaluate(() => els.homeCenter.getBoundingClientRect().height)).not.toBe(before);
   await expect.poll(() => checkStickers(page)).toEqual({ covering: [], outOfPlace: 0 });
+});
+
+// Outside sticker play, 🏆 🎲 and 🖼️ are tucked away behind the 🐵/🙈 switch, and slide out beside it when it opens.
+// Stickers are placed while they're tucked away, so the spot they slide into has to be kept clear too.
+test('in sticker play, stickers stay out from behind 🏆 🎲 and 🖼️', async ({ page }) => {
+  // Their scenes are already unlocked (so 🖼️ shows), or "set complete!" would play over the screen and catch the tap
+  const scenes = STICKER_SETS.map((set) => set.id);
+  await openApp(page, { progress: { words: starred(WORDS.slice(0, 20)), scenes }, stickerSeed: 7 });
+  await page.waitForLoadState('load');
+  await page.locator('#play-toggle').click();
+  await expect(page.locator('#scenes-btn')).toBeVisible();
+  await page.waitForFunction(() => document.getAnimations().length === 0); // the buttons have finished sliding out
+
+  const behind = await page.evaluate(() => {
+    const hits = (a, b) => a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+    return [els.trophyBtn, els.shuffleBtn, els.scenesBtn, els.playToggle].flatMap((button) => [...els.board.querySelectorAll('.sticker')]
+      .filter((sticker) => hits(sticker.querySelector('.sticker-art').getBoundingClientRect(), button.getBoundingClientRect()))
+      .map((sticker) => `${sticker.dataset.key} behind #${button.id}`));
+  });
+  expect(behind).toEqual([]);
 });
