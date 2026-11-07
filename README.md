@@ -153,6 +153,7 @@ Every pull request plays the app in a real browser, at a phone size and a tablet
 | `scenes.spec.js` | The 🖼️ tray tags a new scene "New!" once, a locked scene says how to unlock it, and picking a scene changes the background |
 | `from-disk.spec.js` | Opening `index.html` straight from disk still works, with the built-in word list |
 | `motion.spec.js` | New stickers fly into 🏠 and the 🐵/🙈 switch, and medals into the trophy pill, landing and counting with the device's "reduce motion" setting on or off |
+| `busy.spec.js` | A downloaded update installs on reopening only when nothing is in the way (sticker play, a pop-up, another screen or a "set complete!" celebration), and new stickers wait to fly in while My Trophies is open |
 | `layout.spec.js` | Stickers stay off the title, buttons and pills, move out of the way when the font arrives late, and stay out from behind 🏆 🎲 and 🖼️ in sticker play |
 
 Each test starts from fresh saved progress, set up in the test, and fails on any script error. They can't tell how a sound sounds or a game feels, so keep trying changes on a tablet.
