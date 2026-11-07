@@ -18,7 +18,7 @@ let prizeChoice = null; // the sticker tapped, waiting for "Yes!"
 // with the trophy pill glowing and a button in My Trophies until it's picked.
 function openPrizeCard() {
   clearTimeout(prizeCardTimer);
-  if (!prizesToPick() || els.home.hidden || document.querySelector('dialog[open]')) return;
+  if (!prizesToPick() || homeIsBusy()) return;
   renderPrizeCard();
   els.prizeCard.showModal();
   els.prizeList.scrollTop = 0;

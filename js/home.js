@@ -15,6 +15,11 @@ function showScreen(name) {
 
 const WAIT_NOTE = '🔄 Play something else first';
 
+// Something on the home screen is in the way of a pop-up, a fly-in or an update: another screen is showing, a pop-up
+// is already open, or a "set complete!" celebration is playing. Sticker play is checked separately where it matters,
+// since 🏆 can open "Pick your prize!" during it.
+const homeIsBusy = () => els.home.hidden || state.celebrating || Boolean(document.querySelector('dialog[open]'));
+
 function renderHome() {
   renderScene();
   updateCounters();

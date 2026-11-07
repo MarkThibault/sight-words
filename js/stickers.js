@@ -102,7 +102,7 @@ function flyInSoon() {
 
 // One at a time, stickers first. Waits for the next visit to the home screen if something else is open.
 function flyNextIn() {
-  if (els.home.hidden || state.playing || state.celebrating || document.querySelector('dialog[open]')) return;
+  if (homeIsBusy() || state.playing) return;
   if (state.stickersToFly.length) {
     const key = state.stickersToFly.shift();
     const sticker = boardStickers().find((s) => s.key === key);
