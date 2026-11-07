@@ -1,12 +1,11 @@
 // Listen & tap and Build the word: practice that earns medals, never stars or stickers, and takes turns.
 'use strict';
 
-const { test, expect, WORDS, SET_SIZE, openApp, savedProgress, starred, openGrownupCorner } = require('./helpers');
+const { test, expect, WORDS, SET_SIZE, openApp, savedProgress, starred, exactly, openGrownupCorner } = require('./helpers');
 
 // Stars and stickers, which the games must never change.
 const stickersOf = (progress) => Object.fromEntries(Object.entries(progress.words).map(([w, s]) => [w, [s.known, s.sticker, s.set]]));
 const someStars = () => ({ words: starred(WORDS.slice(0, 3)) });
-const exactly = (text) => new RegExp(`^${text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`);
 
 test('Listen & tap: a wrong tap gets another try, and finishing earns a medal but no stars', async ({ page }) => {
   await openApp(page, { progress: someStars() });
