@@ -1,7 +1,7 @@
 // Trophies: every MEDALS_PER_TROPHY medals earns one, and each lets the child pick a prize sticker for the board.
 'use strict';
 
-const { test, expect, WORDS, STICKER_SETS, STICKER_EMOJI, MEDALS_PER_TROPHY, openApp, savedProgress, starred } = require('./helpers');
+const { test, expect, WORDS, STICKER_SETS, STICKER_EMOJI, MEDALS_PER_TROPHY, openApp, savedProgress, starred, exactly } = require('./helpers');
 
 // Plays a whole game of Listen & tap, tapping the right word every time.
 async function playListen(page) {
@@ -10,7 +10,7 @@ async function playListen(page) {
   for (let i = 0; i < total; i++) {
     await expect(page.locator('#listen-count')).toHaveText(`${i + 1} / ${total}`);
     const target = await page.evaluate(() => listenRound.target);
-    await page.locator('#listen-choices .listen-choice').filter({ hasText: new RegExp(`^${target}$`) }).click();
+    await page.locator('#listen-choices .listen-choice').filter({ hasText: exactly(target) }).click();
   }
   await expect(page.locator('#home')).toBeVisible({ timeout: 15_000 });
 }
