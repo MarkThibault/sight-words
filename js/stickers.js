@@ -137,34 +137,13 @@ function flyNextIn() {
 
 // It pops up in the middle of the home screen, flies into the switch, and the switch wiggles as the count goes up.
 function flyIntoSwitch(el, landSound) {
-  const land = () => {
-    el.remove();
+  inTheAir += 1;
+  flyInto(el, els.stickerHint, els.playToggle, { duration: 1200, endScale: 0.25 }, () => {
     inTheAir -= 1;
     playAnim(els.playToggle, 'wiggle');
     if (landSound) playEffect(landSound);
     renderPlayBadge();
-  };
-  inTheAir += 1;
-  if (reduceMotion) {
-    land();
-    return;
-  }
-  const from = els.stickerHint.getBoundingClientRect();
-  const to = els.playToggle.getBoundingClientRect();
-  const x0 = `${from.left + from.width / 2}px`;
-  const y0 = `${from.top + from.height / 2}px`;
-  const x1 = `${to.left + to.width / 2}px`;
-  const y1 = `${to.top + to.height / 2}px`;
-  el.style.left = x1;
-  el.style.top = y1;
-  document.body.append(el);
-  const anim = el.animate([
-    { left: x0, top: y0, scale: 0, rotate: '-180deg' },
-    { left: x0, top: y0, scale: 1.15, rotate: '0deg', offset: 0.3 },
-    { left: x0, top: y0, scale: 1, rotate: '0deg', offset: 0.5 },
-    { left: x1, top: y1, scale: 0.25, rotate: '0deg' },
-  ], { duration: 1200, easing: 'ease-in-out' });
-  anim.onfinish = land;
+  });
 }
 
 // Lay the screen out as a grid of sticker-sized cells, skipping cells behind the title and buttons.
@@ -301,28 +280,5 @@ function flySticker(word) {
   const el = makeSticker(wordSticker(word));
   el.classList.add('flying');
   el.style.setProperty('--s', '160px');
-  const from = els.card.getBoundingClientRect();
-  const to = els.homeBtn.getBoundingClientRect();
-  const x0 = `${from.left + from.width / 2}px`;
-  const y0 = `${from.top + from.height / 2}px`;
-  const x1 = `${to.left + to.width / 2}px`;
-  const y1 = `${to.top + to.height / 2}px`;
-  el.style.left = x1;
-  el.style.top = y1;
-  document.body.append(el);
-
-  if (reduceMotion) {
-    setTimeout(() => el.remove(), 600);
-    return;
-  }
-  const anim = el.animate([
-    { left: x0, top: y0, scale: 0, rotate: '-360deg' },
-    { left: x0, top: y0, scale: 1.15, rotate: '0deg', offset: 0.3 },
-    { left: x0, top: y0, scale: 1, rotate: '0deg', offset: 0.5 },
-    { left: x1, top: y1, scale: 0.3, rotate: '0deg' },
-  ], { duration: 1100, easing: 'ease-in-out' });
-  anim.onfinish = () => {
-    el.remove();
-    playAnim(els.homeBtn, 'wiggle');
-  };
+  flyInto(el, els.card, els.homeBtn, { duration: 1100, endScale: 0.3, spin: '-360deg' }, () => playAnim(els.homeBtn, 'wiggle'));
 }
