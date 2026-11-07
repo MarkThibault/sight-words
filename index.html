@@ -66,6 +66,14 @@
         <button data-status="ready" aria-pressed="false">Update ready</button>
         <button data-status="updating" aria-pressed="false">Updating</button>
       </div>
+      <!-- Sets up the moment just before a reward, so the real one plays next. Changes this browser's saved progress. -->
+      <div class="dev-row">
+        <span>Jump to:</span>
+        <button id="dev-trophy-next">🏆 Next game earns a trophy</button>
+        <button id="dev-set-next">⭐ One star from a set</button>
+        <button id="dev-restore" hidden>↩️ Restore my progress</button>
+      </div>
+      <p id="dev-note" class="dev-note" role="status" hidden></p>
       <div class="dev-row">
         <a class="dev-link" href="sounds.html">🔊 Sound effects</a>
       </div>
