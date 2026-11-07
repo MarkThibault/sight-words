@@ -154,6 +154,7 @@ Every pull request plays the app in a real browser, at a phone size and a tablet
 | `from-disk.spec.js` | Opening `index.html` straight from disk still works, with the built-in word list |
 | `motion.spec.js` | New stickers fly into 🏠 and the 🐵/🙈 switch, and medals into the trophy pill, landing and counting with the device's "reduce motion" setting on or off |
 | `busy.spec.js` | A downloaded update installs on reopening only when nothing is in the way (sticker play, a pop-up, another screen or a "set complete!" celebration), and new stickers wait to fly in while My Trophies is open |
+| `devtools.spec.js` | The 🛠️ panel's jumps lead to the real trophy, prize and "set complete!" moments, and **Restore my progress** puts saved progress back exactly |
 | `layout.spec.js` | Stickers stay off the title, buttons and pills, move out of the way when the font arrives late, and stay out from behind 🏆 🎲 and 🖼️ in sticker play |
 
 Each test starts from fresh saved progress, set up in the test, and fails on any script error. They can't tell how a sound sounds or a game feels, so keep trying changes on a tablet.
@@ -229,7 +230,14 @@ The app and recordings are saved the first time the site is opened online, so gi
 
 ## Developer tools
 
-When the app runs at `http://localhost:8000`, a **🛠️** button appears on the right of the home screen, below **⚙️**. It previews the update statuses: Normal, Downloading, Update ready and Updating. The **Update to latest version** button works in the preview too. Updating plays the real message and fades, with a plain reload in place of a new version. Saved progress isn't changed.
+When the app runs at `http://localhost:8000`, a **🛠️** button appears on the right of the home screen, below **⚙️**. It opens a panel, which a tap anywhere else closes (that tap still does what it tapped). The panel previews the update statuses: Normal, Downloading, Update ready and Updating. The **Update to latest version** button works in the preview too. Updating plays the real message and fades, with a plain reload in place of a new version. Saved progress isn't changed.
+
+**Jump to** sets up the moment just before a reward, so you can watch the real one without playing up to it:
+
+- **🏆 Next game earns a trophy** puts the medals one short of the next trophy. Any medal from the next game of **Listen & tap** or **Build the word** then plays the medal flight, the trophy fanfare and **Pick your prize!**
+- **⭐ One star from a set** gives stars, with their stickers, to words without one until the set being collected needs one more. The next **I know it!** on a new word (**🎯 Missing words** shows only those) finishes the set with its celebration.
+
+Both go through the same code as real play, so what you see is what a child would see. They change this browser's saved progress, so the first jump keeps a backup, and **↩️ Restore my progress** puts it back exactly and restarts the app.
 
 The panel also links to **🔊 Sound effects** (`sounds.html`), a page that plays every sound effect straight from `js/sound-effects.js`, along with the other ideas tried before each one was picked. To try a new idea, add it to `SOUND_IDEAS` in `js/sound-lab.js` and compare it there.
 
