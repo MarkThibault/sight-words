@@ -210,7 +210,16 @@ function stickerSlots(count) {
 
 // The title, buttons and counters on the home screen, which stickers stay out from behind.
 const blockerRects = () => [els.homeCenter, els.starCount, els.trophyMeter, els.settingsBtn, els.playToggle, els.recorderBtn, els.shuffleBtn, els.scenesBtn, els.trophyBtn, els.appVersion, els.updateBtn, els.devBtn]
-  .filter((el) => !el.hidden).map((el) => el.getBoundingClientRect());
+  .filter((el) => !el.hidden).map(restingRect);
+
+// Where an element sits without its slide (its CSS translate). Outside sticker play, 🏆 🎲 and 🖼️ are slid away
+// behind the 🐵/🙈 switch, but stickers have to stay clear of the spot they slide out to.
+function restingRect(el) {
+  const rect = el.getBoundingClientRect();
+  const slide = getComputedStyle(el).translate;
+  const [x, y = 0] = slide === 'none' ? [0, 0] : slide.split(' ').map(parseFloat);
+  return { left: rect.left - x, right: rect.right - x, top: rect.top - y, bottom: rect.bottom - y };
+}
 
 // ---------- Dragging ----------
 // Saved as { key: [x, y, when] }, with x and y as fractions of the screen so they fit any screen size.
