@@ -89,6 +89,7 @@ async function init() {
   state.allWords = await loadWords();
   state.offWords = loadOffWords();
   applyOffWords();
+  giveMissingStickers();
   els.start.disabled = false;
   els.timedBtn.disabled = false;
   showScreen('home');

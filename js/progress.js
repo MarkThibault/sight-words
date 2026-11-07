@@ -58,38 +58,49 @@ function markHeard(word) {
   saveProgress();
 }
 
+// A star comes with its sticker, given here. Taking the star away takes the sticker too, so earning it again gives
+// a new one, filling the gap in its set first.
 function setKnown(word, known) {
   const s = stats(word);
   s.known = known;
   s.knownAt = known ? Date.now() : 0;
-  if (!known) {
-    // earning it again gives a new sticker, filling the gap in its set first
+  if (known) giveSticker(word);
+  else {
     delete s.sticker;
     delete s.set;
   }
   saveProgress();
 }
 
-// The word's saved sticker, picking one first if it doesn't have one yet: the first missing sticker of the first set
-// that isn't full, in the order the star pill shows them, and finishing that set unlocks its scene. Once every set is full, it picks from
-// STICKER_EMOJI, preferring emoji not already on the board.
-function stickerFor(word) {
+// A word with a star always has its sticker, so this only reads it.
+const stickerFor = (word) => stats(word).sticker;
+
+// The next sticker: the first missing sticker of the first set that isn't full, in the order the star pill shows
+// them, and finishing that set unlocks its scene. Once every set is full, it picks from STICKER_EMOJI, preferring
+// emoji not already on the board. Saved by the caller.
+function giveSticker(word) {
   const s = stats(word);
-  if (!s.sticker) {
-    const set = collectingSet();
-    if (set) {
-      const earned = setStickersEarned(set);
-      s.sticker = setStickers(set).find((e) => !earned.includes(e));
-      s.set = set.id;
-      if (earned.length + 1 === SET_SIZE) unlockScene(set.id);
-    } else {
-      const used = new Set([...state.allWords.map((w) => stats(w).sticker), ...prizeStickers().map((p) => p.emoji)]);
-      const unused = STICKER_EMOJI.filter((e) => !used.has(e));
-      s.sticker = randomItem(unused.length ? unused : STICKER_EMOJI);
-    }
-    saveProgress();
+  if (s.sticker) return;
+  const set = collectingSet();
+  if (set) {
+    const earned = setStickersEarned(set);
+    s.sticker = setStickers(set).find((e) => !earned.includes(e));
+    s.set = set.id;
+    if (earned.length + 1 === SET_SIZE) unlockScene(set.id);
+  } else {
+    const used = new Set([...state.allWords.map((w) => stats(w).sticker), ...prizeStickers().map((p) => p.emoji)]);
+    const unused = STICKER_EMOJI.filter((e) => !used.has(e));
+    s.sticker = randomItem(unused.length ? unused : STICKER_EMOJI);
   }
-  return s.sticker;
+}
+
+// Saves from before stickers came with the star can have a star without one. They get theirs as the app opens,
+// oldest star first, the order they'd have been given in.
+function giveMissingStickers() {
+  const missing = state.allWords.filter((w) => stats(w).known && !stats(w).sticker);
+  if (!missing.length) return;
+  missing.sort((a, b) => stats(a).knownAt - stats(b).knownAt).forEach(giveSticker);
+  saveProgress();
 }
 
 // ---------- Sticker sets and scenes ----------
