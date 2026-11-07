@@ -140,6 +140,28 @@ python serve.py
 
 `serve.py` works like `python -m http.server 8000`, and also lets the sound recorder save into `audio/`. It only answers this computer; to try the app on a tablet on the same Wi-Fi, use `python -m http.server 8000` instead.
 
+## Tests
+
+Every pull request plays the app in a real browser, at a phone size and a tablet size, and fails if something a child would notice breaks. The tests are in `tests/`:
+
+| File | What it checks |
+| --- | --- |
+| `reading.spec.js` | A round of **Let's Read** gives stars and fills the sticker sets in order, finished sets unlock their scenes, a sticker taken away leaves a gap the next star fills, and **Next** waits until the word is heard |
+| `games.spec.js` | **Listen & tap** and **Build the word** earn the right medal and never change stars or stickers, a wrong answer gets another try, a game waits its turn after two in a row, and **Reset all progress** clears every reward but keeps turned-off words off |
+| `trophies.spec.js` | A game that completes a trophy offers a prize sticker, never a set sticker or one already on the board; the pick lands on the board with a 🏆 tag; and **Later** saves it for My Trophies |
+| `layout.spec.js` | Stickers stay off the title, buttons and pills |
+
+Each test starts from fresh saved progress, set up in the test, and fails on any script error. They can't tell how a sound sounds or a game feels, so keep trying changes on a tablet.
+
+To run them on your computer, install the test tools once, then run the tests:
+
+```
+npm install
+npm test
+```
+
+They use the Edge already on a Windows computer, or Chrome elsewhere, so no browser is downloaded. They start their own copy of `serve.py` on port 8123, so the usual one on port 8000 can stay open. `npx playwright test --project=tablet` runs only the tablet size, and `npx playwright test --headed` shows the browser while it plays. The app itself still has no dependencies: `package.json` is only for the tests.
+
 ## How the code is organized
 
 The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` (no modules, so opening the file from disk still works). Each file can use anything from the files loaded before it.
@@ -170,7 +192,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `recorder.js` | The sound recorder page (`recorder.html`) |
 | `sound-lab.js` | The developer sound effects page (`sounds.html`), and the ideas tried along the way |
 
-Offline play lives in `sw.js` and the app's name and icons in `manifest.webmanifest`, both next to `index.html`.
+Offline play lives in `sw.js` and the app's name and icons in `manifest.webmanifest`, both next to `index.html`. The browser tests are in `tests/`, with their settings in `playwright.config.js`.
 
 ## App version
 
