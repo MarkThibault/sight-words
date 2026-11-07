@@ -10,7 +10,10 @@ module.exports = defineConfig({
   timeout: 90_000, // a whole game plays its real recordings, which takes a while
   expect: { timeout: 10_000 },
   fullyParallel: true,
+  // On GitHub a failed test runs once more, so the failure's details are seen twice, but the check still fails:
+  // a test that only passes on a retry is hiding something (like the stickers on the title when the font came late).
   retries: process.env.CI ? 1 : 0,
+  failOnFlakyTests: Boolean(process.env.CI),
   reporter: process.env.CI ? [['github'], ['list']] : 'list',
   use: {
     // localhost, not 127.0.0.1, so offline play stays off and every test loads the files as they are now
