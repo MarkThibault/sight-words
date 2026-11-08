@@ -44,9 +44,7 @@ function renderPrizeCard() {
   const left = prizesToPick();
   els.prizeTitle.textContent = left > 1 ? `🎁 Pick your prizes! (${left})` : '🎁 Pick your prize!';
   els.prizeList.replaceChildren(...stickersNotOnBoard().map((emoji) => {
-    const choice = document.createElement('button');
-    choice.className = 'prize-choice';
-    choice.textContent = emoji;
+    const choice = make('button', 'prize-choice', emoji);
     choice.addEventListener('click', () => showPrizeConfirm(emoji));
     return choice;
   }));
@@ -88,12 +86,9 @@ function renderGameMeter(meter, fraction, lit) {
   if (!meter.firstChild) {
     meter.innerHTML = '<div class="meter-track"><div class="meter-fill"></div></div>';
     meter.append(...GAME_MEDALS.map(({ emoji, share }) => {
-      const slot = document.createElement('span');
-      slot.className = 'meter-slot';
+      const slot = make('span', 'meter-slot');
       slot.style.left = `${share * 100}%`;
-      const medal = document.createElement('span');
-      medal.textContent = emoji;
-      slot.append(medal);
+      slot.append(make('span', '', emoji));
       return slot;
     }));
   }
@@ -150,9 +145,7 @@ function flyGameMedal(result) {
 
 // A new record or medal: it pops up over the home screen and flies into the trophy pill.
 function flyMedal(emoji = '🏅', target = els.trophyCount) {
-  const medal = document.createElement('span');
-  medal.className = 'flying-medal';
-  medal.textContent = emoji;
+  const medal = make('span', 'flying-medal', emoji);
   flyInto(medal, els.stickerHint, target, { duration: 1600, endScale: 0.35, endSpin: '360deg', pop: 1.2, popAt: 0.25 },
     () => playAnim(els.trophyMeter, 'wiggle'));
 }
@@ -166,16 +159,9 @@ function renderTrophies() {
     ['🏆', 'Trophies', trophyCount() || null],
   ];
   els.trophyList.replaceChildren(...rows.map(([icon, name, value]) => {
-    const row = document.createElement('li');
-    const iconEl = document.createElement('span');
-    iconEl.className = 'trophy-icon';
-    iconEl.textContent = icon;
-    const nameEl = document.createElement('span');
-    nameEl.textContent = name;
-    const valueEl = document.createElement('span');
-    valueEl.className = value ? 'trophy-value' : 'trophy-value none';
-    valueEl.textContent = value || NOT_YET;
-    row.append(iconEl, nameEl, valueEl);
+    const row = make('li');
+    row.append(make('span', 'trophy-icon', icon), make('span', '', name),
+      make('span', value ? 'trophy-value' : 'trophy-value none', value || NOT_YET));
     return row;
   }));
   const left = prizesToPick();

@@ -14,8 +14,7 @@ function currentScene() {
 // A scene's faded emoji. `topOnly` keeps the ones in the top half, for the small preview on "set complete!".
 function sceneDecor(set, topOnly = false) {
   return set.decor.filter(([, , , top]) => !topOnly || top < 50).map(([emoji, size, left, top]) => {
-    const el = document.createElement('span');
-    el.textContent = emoji;
+    const el = make('span', '', emoji);
     el.style.setProperty('--size', size);
     el.style.left = `${left}%`;
     el.style.top = `${top}%`;
@@ -27,11 +26,8 @@ function sceneDecor(set, topOnly = false) {
 function setShapes(set, className) {
   const earned = setStickersEarned(set);
   return setStickers(set).map((emoji) => {
-    const el = document.createElement('span');
-    el.className = `${className}${earned.includes(emoji) ? ' earned' : ''}`;
-    const art = document.createElement('span');
-    art.textContent = emoji;
-    el.append(art);
+    const el = make('span', `${className}${earned.includes(emoji) ? ' earned' : ''}`);
+    el.append(make('span', '', emoji));
     return el;
   });
 }
@@ -93,22 +89,15 @@ function openSceneTray() {
 function renderSceneTray(fresh = []) {
   const current = currentScene();
   const dots = sceneThumb(null, '⭐', 'Dots', false, current === null);
-  const free = document.createElement('span');
-  free.className = 'thumb-set';
-  free.textContent = 'Free';
-  dots.append(free);
+  dots.append(make('span', 'thumb-set', 'Free'));
   els.sceneList.replaceChildren(dots, ...STICKER_SETS.map((set) => {
     const locked = !unlockedScenes().includes(set.id);
     const thumb = sceneThumb(set.id, set.icon, set.name, locked, current === set.id);
-    const row = document.createElement('span');
-    row.className = 'thumb-set';
+    const row = make('span', 'thumb-set');
     row.append(...setShapes(set, 'thumb-sticker'));
     thumb.append(row);
     if (fresh.includes(set.id)) {
-      const tag = document.createElement('span');
-      tag.className = 'thumb-new';
-      tag.textContent = 'New!';
-      thumb.append(tag);
+      thumb.append(make('span', 'thumb-new', 'New!'));
       thumb.setAttribute('aria-label', `${set.name}, new`);
     }
     return thumb;
@@ -116,22 +105,15 @@ function renderSceneTray(fresh = []) {
 }
 
 function sceneThumb(id, icon, name, locked, isCurrent) {
-  const thumb = document.createElement('button');
-  thumb.className = 'scene-thumb';
+  const thumb = make('button', 'scene-thumb');
   setSceneBackground(thumb, id);
   thumb.classList.toggle('locked', locked);
   thumb.classList.toggle('current', isCurrent);
   thumb.setAttribute('aria-label', locked ? `${name}, locked` : name);
   thumb.setAttribute('aria-pressed', String(isCurrent));
-  const lock = document.createElement('span');
-  if (locked) {
-    lock.className = 'thumb-lock';
-    lock.textContent = '🔒';
-    thumb.append(lock);
-  }
-  const art = document.createElement('span');
-  art.className = 'thumb-icon';
-  art.textContent = icon;
+  const lock = make('span', 'thumb-lock', '🔒');
+  const art = make('span', 'thumb-icon', icon);
+  if (locked) thumb.append(lock);
   thumb.append(art);
   thumb.addEventListener('click', () => {
     if (locked) {
@@ -173,9 +155,7 @@ function celebrateScene(set, done) {
   els.sceneCelebrationDecor.replaceChildren(...sceneDecor(set, true));
   els.sceneCelebrationName.textContent = `New scene: ${set.name}`;
   els.sceneCelebrationSet.replaceChildren(...setStickers(set).map((emoji) => {
-    const el = document.createElement('span');
-    el.textContent = emoji;
-    return el;
+    return make('span', '', emoji);
   }));
   const overlay = els.sceneCelebration;
   const card = els.sceneCelebrationCard;

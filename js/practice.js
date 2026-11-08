@@ -121,12 +121,7 @@ function soundOut() {
   stopSoundOut();
   const run = soundRun;
   const parts = wordParts(game.word);
-  const spans = parts.map(([letters, id]) => {
-    const span = document.createElement('span');
-    span.className = isSilentSound(id) ? 'part silent' : 'part';
-    span.textContent = letters;
-    return span;
-  });
+  const spans = parts.map(([letters, id]) => make('span', isSilentSound(id) ? 'part silent' : 'part', letters));
   els.word.replaceChildren(...spans);
   els.word.classList.add('split');
   fitWord();

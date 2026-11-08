@@ -94,17 +94,13 @@ function render() {
 }
 
 function row(item) {
-  const li = document.createElement('li');
-  li.className = item.kind === 'sound' && !item.usedBy.length ? 'extra' : '';
+  const li = make('li', item.kind === 'sound' && !item.usedBy.length ? 'extra' : '');
   const isRecording = recording && recording.item === item;
   const take = takes.get(item.path);
 
-  const name = document.createElement('span');
-  name.className = 'clip-name';
-  name.textContent = item.name;
+  const name = make('span', 'clip-name', item.name);
 
-  const detail = document.createElement('span');
-  detail.className = 'clip-detail';
+  const detail = make('span', 'clip-detail');
   if (item.kind === 'word') {
     detail.textContent = item.parts
       ? item.parts.map(([letters, id]) => (id ? `${letters} (${id})` : `${letters} (silent)`)).join(' · ')
@@ -113,12 +109,9 @@ function row(item) {
     detail.textContent = item.sound.as + (item.usedBy.length ? ` · used in ${item.usedBy.join(', ')}` : '');
   }
 
-  const badge = document.createElement('span');
-  badge.className = `badge ${recorded.has(item.path) ? 'done' : 'missing'}`;
-  badge.textContent = recorded.has(item.path) ? '✅ Recorded' : 'Missing';
+  const badge = recorded.has(item.path) ? make('span', 'badge done', '✅ Recorded') : make('span', 'badge missing', 'Missing');
 
-  const buttons = document.createElement('span');
-  buttons.className = 'clip-buttons';
+  const buttons = make('span', 'clip-buttons');
   buttons.append(
     button(isRecording ? '⏹ Stop' : '🎙️ Record', () => (isRecording ? stopRecording() : startRecording(item)), isRecording ? 'rec on' : 'rec'),
     button('▶ Saved', () => playSaved(item), '', !recorded.has(item.path)),
@@ -139,9 +132,7 @@ function showTab(tab) {
 }
 
 function button(label, onClick, cls = '', disabled = false) {
-  const b = document.createElement('button');
-  b.textContent = label;
-  b.className = cls;
+  const b = make('button', cls, label);
   b.disabled = disabled;
   b.addEventListener('click', onClick);
   return b;

@@ -173,13 +173,8 @@ const SOUND_IDEAS = {
 };
 
 function soundButton(effect, onPlay) {
-  const button = document.createElement('button');
-  button.className = 'sound';
-  const label = document.createElement('b');
-  label.textContent = effect.label;
-  const where = document.createElement('small');
-  where.textContent = effect.where;
-  button.append(label, where);
+  const button = make('button', 'sound');
+  button.append(make('b', '', effect.label), make('small', '', effect.where));
   button.addEventListener('click', onPlay);
   return button;
 }

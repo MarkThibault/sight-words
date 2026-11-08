@@ -73,21 +73,16 @@ function renderSummary() {
   }
 
   if (last.mode === 'listen' || last.mode === 'build') {
-    const main = document.createElement('span');
-    main.className = 'summary-main';
-    main.textContent = `🎉 You earned a ${last.result.name} medal!`;
-    const more = document.createElement('span');
-    more.className = 'summary-time';
-    more.textContent = last.result.newTrophy
+    const main = make('span', 'summary-main', `🎉 You earned a ${last.result.name} medal!`);
+    const more = make('span', 'summary-time', last.result.newTrophy
       ? `🏆 New trophy! You have ${trophyCount()}!`
-      : `🏅 +${last.result.count} toward your next trophy`;
+      : `🏅 +${last.result.count} toward your next trophy`);
     els.stickerHint.replaceChildren(main, more);
     return;
   }
 
   const n = last.learned.length;
-  const main = document.createElement('span');
-  main.className = 'summary-main';
+  const main = make('span', 'summary-main');
   if (n > 0) main.textContent = `🎉 You learned ${plural(n, 'new word')}!`;
   else if (last.capped) main.textContent = `🎉 You read ${plural(last.total, 'word')}!`;
   else if (last.mode === 'missing') main.textContent = '🎉 You practiced all your missing words!';
@@ -95,20 +90,12 @@ function renderSummary() {
   const lines = [main];
 
   if ('ms' in last) {
-    const time = document.createElement('span');
-    time.className = 'summary-time';
-    time.textContent = last.newBest
+    lines.push(make('span', 'summary-time', last.newBest
       ? `🏆 New best time: ${formatTime(last.ms)}!`
-      : `⏱️ ${formatTime(last.ms)} (best is ${formatTime(last.best)})`;
-    lines.push(time);
+      : `⏱️ ${formatTime(last.ms)} (best is ${formatTime(last.best)})`));
   }
   const setLine = n > 0 && setsLeftLine();
-  if (setLine) {
-    const more = document.createElement('span');
-    more.className = 'summary-time';
-    more.textContent = setLine;
-    lines.push(more);
-  }
+  if (setLine) lines.push(make('span', 'summary-time', setLine));
   els.stickerHint.replaceChildren(...lines);
 }
 

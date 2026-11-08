@@ -66,9 +66,7 @@ function fitListenChoices() {
 }
 
 function makeListenChoice(word) {
-  const choice = document.createElement('button');
-  choice.className = 'listen-choice';
-  choice.textContent = word;
+  const choice = make('button', 'listen-choice', word);
   choice.addEventListener('click', () => tapListenChoice(choice, word));
   return choice;
 }

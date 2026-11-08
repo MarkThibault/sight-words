@@ -3,6 +3,14 @@
 // Small general-purpose helpers shared by the other files. Nothing here knows about sight words.
 
 const $ = (id) => document.getElementById(id);
+
+// A new page element with a class and text, either of which can be left out: make('span', 'thumb-icon', '🏖️').
+function make(tag, className = '', text = '') {
+  const el = document.createElement(tag);
+  if (className) el.className = className;
+  if (text !== '') el.textContent = text;
+  return el;
+}
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // ---------- Text and time ----------
