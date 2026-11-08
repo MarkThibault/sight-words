@@ -121,7 +121,22 @@ function updateGameMeter(game, meter, wordDone = false) {
   return game.result;
 }
 
-const medalToast = (result) => `${result.emoji} A ${result.name} medal!`;
+// A word done right in either game: its points go on the bar, with a cheer for them, or the medal on the last word.
+function scoreWord(game, meter) {
+  game.points += game.wordPoints;
+  const result = updateGameMeter(game, meter, true);
+  showToast(result ? `${result.emoji} A ${result.name} medal!` : `${randomCheer()} +${plural(game.wordPoints, 'point')}`);
+}
+
+// The end of either game: it counts toward taking turns, its summary shows on the home screen, and the medal flies
+// into the trophy pill.
+function finishGame(mode, game) {
+  noteGameFinished(mode);
+  state.lastRound = { mode, total: game.total, points: game.points, result: game.result, learned: [] };
+  showScreen('home');
+  confetti();
+  flyGameMedal(game.result);
+}
 
 // On the home screen: a pill that fills up toward the next trophy, from 🏅 to how many trophies so far.
 function renderTrophyMeter() {

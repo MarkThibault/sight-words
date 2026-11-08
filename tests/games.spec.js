@@ -25,6 +25,8 @@ test('Listen & tap: a wrong tap gets another try, and finishing earns a medal bu
       await expect(wrong).toBeDisabled();
     }
     await choices.filter({ hasText: exactly(target) }).click();
+    // A cheer with the word's points (one off for the wrong tap), or the medal on the last word
+    await expect(page.locator('#toast')).toContainText(i === total - 1 ? '🥈 A silver medal!' : `+${i === 0 ? 3 : 4} points`);
   }
 
   await expect(page.locator('#home')).toBeVisible({ timeout: 15_000 });
@@ -50,6 +52,7 @@ test('Build the word: putting every part in order earns gold, but no stars', asy
       await page.locator('#build-tiles .build-tile:not(.used)').filter({ hasText: exactly(letters) }).first().click();
     }
     await expect(page.locator('#build-slots')).toHaveClass(/right/);
+    await expect(page.locator('#toast')).toContainText(i === total - 1 ? '🥇 A gold medal!' : '+5 points');
   }
 
   await expect(page.locator('#home')).toBeVisible({ timeout: 15_000 });
