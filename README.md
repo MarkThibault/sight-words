@@ -22,6 +22,8 @@ Below a dotted line are the separate games:
 - **👂 Listen & tap** — hear a word, then tap it among four choices. A wrong tap plays a soft sound, fades that choice and says the word again, until they find it. The right one plays a happy sound, then says the word. A game is up to 8 words, with the ones not shown for the longest first (change this with `GAME_MAX_WORDS` in `js/config.js`). Each word is worth up to 4 points, minus 1 for each wrong tap. It's open from the start and uses every word that's turned on, starred or not (it needs at least 2 words). It's practice only, so it never changes stars or stickers.
 - **🧱 Build the word** — hear a word, then pick out its sound parts in order ("th" + "e") by tapping them or dragging them onto the word. Extra tiles from other sight words don't belong: two or three per word, and more for short words so there are always at least 5 tiles (change these with `BUILD_MIN_TILES`, `BUILD_EXTRA_MIN` and `BUILD_EXTRA_MAX` in `js/config.js`). The parts show faintly as a guide, and each placed part plays its sound, including the last one before the whole word is said. A silent letter plays its own recording, like "silent e". A finished word plays a happy sound before the whole word is said. A wrong tile wiggles, plays a soft sound, and then plays the sound of the part they're looking for. It's open from the start and uses every word that's turned on, starred or not, including one-part words like "a" and "I" (where the job is picking the right tile from the extras). A game is up to 8 words, picked the same way. Each word is worth up to 5 points, minus 1 for each wrong tile, and never less than 1. It's practice only too, so it never changes stars or stickers.
 
+**The back button** (Android's, or the browser's) closes whatever is on top, one thing at a time: a pop-up first, then a reading round or game (like its 🏠 button), then sticker play. On the home screen with nothing open, it leaves the app. The app keeps one history entry for each thing open and takes them off again when something closes another way, so back never does nothing (`js/back.js`).
+
 ## Trophies
 
 The trophy pill at the bottom of the home screen fills with yellow toward the next trophy, from 🏅 at one end to how many trophies have been earned at the other. Above it is the matching star pill (see [Sticker sets and scenes](#sticker-sets-and-scenes)). On short screens the two sit side by side. Tapping the trophy pill, or the **🏆** button in sticker play, opens **My Trophies**, which shows starred words out of the total, the best time from **⏱️ Timed run**, and the medals and trophies so far.
@@ -154,6 +156,7 @@ Every pull request plays the app in a real browser, at a phone size and a tablet
 | `scenes.spec.js` | The 🖼️ tray tags a new scene "New!" once, a locked scene says how to unlock it, and picking a scene changes the background |
 | `from-disk.spec.js` | Opening `index.html` straight from disk still works, with the built-in word list |
 | `motion.spec.js` | New stickers fly into 🏠 and the 🐵/🙈 switch, and medals into the trophy pill, landing and counting with the device's "reduce motion" setting on or off |
+| `back.spec.js` | Back goes home from a reading round or either game (stopping it), closes a pop-up, and in sticker play closes a pop-up first, then switches sticker play off. Closing things with their own buttons, or a round ending by itself, leaves no extra back steps, so back on the home screen leaves the app |
 | `busy.spec.js` | A downloaded update installs on reopening only when nothing is in the way (sticker play, a pop-up, another screen or a "set complete!" celebration), and new stickers wait to fly in while My Trophies is open |
 | `updates.spec.js` | With a real service worker: the installed app opens and plays its recordings with no connection, a new version downloads in the background and the **Update** button installs it with progress kept and only the new saved copy left, and a downloaded version installs by itself when the app is next opened. Each test runs its own server at `127.0.0.1` (offline play is off on `localhost`) that switches to the next version the way the version bump does |
 | `devtools.spec.js` | The 🛠️ panel's jumps lead to the real trophy, prize and "set complete!" moments, and **Restore my progress** puts saved progress back exactly |
@@ -197,6 +200,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `trophies.js` | The medal bar in the games, the trophy pill on the home screen, and the My Trophies pop-up |
 | `panel.js` | Grown-up corner |
 | `offline.js` | Turning on offline play and offering new versions |
+| `back.js` | The back button: one history entry for each thing open, and closing the top one on back |
 | `devtools.js` | Developer tools, only on localhost |
 | `app.js` | Start up and button wiring |
 | `recorder.js` | The sound recorder page (`recorder.html`) |
