@@ -51,6 +51,17 @@ async function installApp(page) {
   await expect(page.locator('#app-version')).toHaveText(`v${OLD}`);
 }
 
+// How many pages of the app the browser has open, asked of the app's service worker. Any of its workers will do: it
+// counts every page of the app, whichever worker is in charge of it.
+async function openAppPages(context) {
+  for (const worker of context.serviceWorkers()) {
+    try {
+      return await worker.evaluate(() => self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((c) => c.length));
+    } catch (e) { /* that worker has stopped: try the next */ }
+  }
+  return -1; // no worker to ask yet
+}
+
 test('with no connection, the installed app still opens and plays its recordings', async ({ page, context }) => {
   await installApp(page);
   await context.setOffline(true);
@@ -99,6 +110,10 @@ test('a new version that finished downloading installs by itself when the app is
   reopened.on('pageerror', (err) => errors.push(err.message));
   reopened.on('console', (msg) => { if (msg.type() === 'error') errors.push(msg.text()); });
   await page.close();
+  // A real reopen comes well after the app has closed. Opening it again within milliseconds, while the browser still
+  // counts the old page as open, can stall the page load: the waiting version takes over first, and it can't until the
+  // old page is gone. So this waits until the browser has no pages of the app open.
+  await expect.poll(() => openAppPages(context), { timeout: 15_000 }).toBe(0);
   await reopened.goto(url, { waitUntil: 'domcontentloaded' });
   await expect(reopened.locator('#app-version')).toHaveText(`v${NEW}`, { timeout: 15_000 });
   expect(await savedProgress(reopened)).toEqual(expect.objectContaining({ medals: 4 }));
