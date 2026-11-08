@@ -1,7 +1,11 @@
 {
+  "id": "./",
   "name": "Sight Words",
   "short_name": "Sight Words",
   "description": "Sight-word practice games for young readers.",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["education", "kids", "games"],
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
