@@ -133,6 +133,8 @@ Better voices you can add for free:
 
 In the browser on that device (`localStorage`). A different tablet or browser starts fresh, and clearing the browser's website data erases progress.
 
+When the app runs installed (from the home screen, or as the Play Store app), it asks the browser to keep its saved data, so the browser doesn't clear it when the device runs low on space. Chrome decides by itself without asking anyone. In a browser tab it never asks, since some browsers (Firefox) would show a pop-up for it. Clearing the browser's website data still erases progress either way.
+
 ## Trying it on your computer
 
 Browsers won't load `words.json` when you double-click `index.html` (it falls back to a built-in copy of the list). To test with your real list, run this in the folder and open http://localhost:8000:
@@ -157,6 +159,7 @@ Every pull request plays the app in a real browser, at a phone size and a tablet
 | `from-disk.spec.js` | Opening `index.html` straight from disk still works, with the built-in word list |
 | `motion.spec.js` | New stickers fly into 🏠 and the 🐵/🙈 switch, and medals into the trophy pill, landing and counting with the device's "reduce motion" setting on or off |
 | `back.spec.js` | Back goes home from a reading round or either game (stopping it), closes a pop-up, and in sticker play closes a pop-up first, then switches sticker play off. Closing things with their own buttons, or a round ending by itself, leaves no extra back steps, so back on the home screen leaves the app |
+| `storage.spec.js` | Installed, the app asks the browser once to keep its progress; in a browser tab, or once it's kept, it never asks |
 | `busy.spec.js` | A downloaded update installs on reopening only when nothing is in the way (sticker play, a pop-up, another screen or a "set complete!" celebration), and new stickers wait to fly in while My Trophies is open |
 | `updates.spec.js` | With a real service worker: the installed app opens and plays its recordings with no connection, a new version downloads in the background and the **Update** button installs it with progress kept and only the new saved copy left, and a downloaded version installs by itself when the app is next opened. Each test runs its own server at `127.0.0.1` (offline play is off on `localhost`) that switches to the next version the way the version bump does |
 | `devtools.spec.js` | The 🛠️ panel's jumps lead to the real trophy, prize and "set complete!" moments, and **Restore my progress** puts saved progress back exactly |
