@@ -155,6 +155,7 @@ Every pull request plays the app in a real browser, at a phone size and a tablet
 | `from-disk.spec.js` | Opening `index.html` straight from disk still works, with the built-in word list |
 | `motion.spec.js` | New stickers fly into 🏠 and the 🐵/🙈 switch, and medals into the trophy pill, landing and counting with the device's "reduce motion" setting on or off |
 | `busy.spec.js` | A downloaded update installs on reopening only when nothing is in the way (sticker play, a pop-up, another screen or a "set complete!" celebration), and new stickers wait to fly in while My Trophies is open |
+| `updates.spec.js` | With a real service worker: the installed app opens and plays its recordings with no connection, a new version downloads in the background and the **Update** button installs it with progress kept and only the new saved copy left, and a downloaded version installs by itself when the app is next opened. Each test runs its own server at `127.0.0.1` (offline play is off on `localhost`) that switches to the next version the way the version bump does |
 | `devtools.spec.js` | The 🛠️ panel's jumps lead to the real trophy, prize and "set complete!" moments, and **Restore my progress** puts saved progress back exactly |
 | `layout.spec.js` | Stickers stay off the title, buttons and pills, move out of the way when the font arrives late, and stay out from behind 🏆 🎲 and 🖼️ in sticker play |
 
