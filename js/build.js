@@ -31,20 +31,11 @@ function stopBuild() {
   stopAudio();
 }
 
-function finishBuild() {
-  const { total, points, result } = buildRound;
-  stopBuild();
-  noteGameFinished('build');
-  state.lastRound = { mode: 'build', total, points, result, learned: [] };
-  showScreen('home');
-  confetti();
-  flyGameMedal(result);
-}
-
 function showBuildWord() {
   const game = buildRound;
   if (game.deck.length === 0) {
-    finishBuild();
+    stopBuild();
+    finishGame('build', game);
     return;
   }
   game.target = game.deck.shift();
@@ -154,11 +145,9 @@ function placeBuildTile(tile) {
 
 function finishBuildWord() {
   const game = buildRound;
-  game.points += game.wordPoints;
   els.buildSlots.classList.add('right');
   playAnim(els.buildSlots, 'bounce');
-  const result = updateGameMeter(game, els.buildBar, true);
-  showToast(result ? medalToast(result) : `${randomCheer()} +${plural(game.wordPoints, 'point')}`);
+  scoreWord(game, els.buildBar);
   playEffect('correct', () => sayWord(game.target, () => { buildTimer = setTimeout(showBuildWord, BUILD_NEXT_MS); }));
 }
 

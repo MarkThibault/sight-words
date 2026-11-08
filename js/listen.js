@@ -29,20 +29,11 @@ function stopListen() {
   stopAudio();
 }
 
-function finishListen() {
-  const { total, points, result } = listenRound;
-  stopListen();
-  noteGameFinished('listen');
-  state.lastRound = { mode: 'listen', total, points, result, learned: [] };
-  showScreen('home');
-  confetti();
-  flyGameMedal(result);
-}
-
 function showListenWord() {
   const game = listenRound;
   if (game.deck.length === 0) {
-    finishListen();
+    stopListen();
+    finishGame('listen', game);
     return;
   }
   game.target = game.deck.shift();
@@ -85,11 +76,9 @@ function tapListenChoice(choice, word) {
   }
 
   game.busy = true;
-  game.points += game.wordPoints;
   choice.classList.add('right');
   playAnim(choice, 'bounce');
-  const result = updateGameMeter(game, els.listenBar, true);
-  showToast(result ? medalToast(result) : `${randomCheer()} +${plural(game.wordPoints, 'point')}`);
+  scoreWord(game, els.listenBar);
   playEffect('correct', () => sayWord(game.target));
   listenTimer = setTimeout(showListenWord, LISTEN_NEXT_MS);
 }
