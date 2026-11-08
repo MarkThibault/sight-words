@@ -139,3 +139,16 @@ test('stars from an older save get their stickers as the app opens, and drawing 
   await page.locator('#trophy-close').click();
   expect(await page.evaluate(() => window.savesWhileLooking)).toEqual([]);
 });
+
+test('a new round started straight after "I know it!" still begins at its first word', async ({ page }) => {
+  await openApp(page);
+  await page.locator('#start-btn').click();
+  await page.locator('#know-btn').click();
+  // Home and into a new round before "I know it!"'s pause is over
+  await page.locator('#home-btn').click();
+  await page.locator('#start-btn').click();
+  const first = await page.evaluate(() => readingRound.word);
+  await page.waitForTimeout(1500); // longer than the pause
+  await expect(page.locator('#word')).toHaveText(first);
+  expect(await page.evaluate(() => readingRound.total - readingRound.deck.length)).toBe(1);
+});

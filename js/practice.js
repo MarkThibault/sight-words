@@ -193,7 +193,10 @@ function knowIt() {
 
   game.busy = true;
   setButtonsDisabled(true);
-  setTimeout(() => { game.busy = false; showWord(); }, 1200);
+  setTimeout(() => {
+    game.busy = false;
+    if (readingRound === game) showWord(); // not if the child left, maybe already into a new round
+  }, 1200);
 }
 
 function goNext() {
