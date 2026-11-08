@@ -59,12 +59,7 @@ function showBuildWord() {
   els.buildCount.textContent = `${position} / ${game.total}`;
   updateGameMeter(game, els.buildBar);
 
-  game.slots = game.parts.map(([letters]) => {
-    const slot = document.createElement('span');
-    slot.className = 'build-slot';
-    slot.textContent = letters; // shown faintly until it's filled in
-    return slot;
-  });
+  game.slots = game.parts.map(([letters]) => make('span', 'build-slot', letters)); // shown faintly until filled in
   els.buildSlots.classList.remove('right');
   els.buildSlots.replaceChildren(...game.slots);
 
@@ -93,9 +88,7 @@ function buildExtras(used) {
 }
 
 function makeBuildTile(letters) {
-  const tile = document.createElement('button');
-  tile.className = 'build-tile';
-  tile.textContent = letters;
+  const tile = make('button', 'build-tile', letters);
   tile.addEventListener('pointerdown', (e) => dragBuildTile(e, tile));
   // A keyboard press has no pointer to follow, so it counts like a tap.
   tile.addEventListener('click', (e) => { if (e.detail === 0) placeBuildTile(tile); });

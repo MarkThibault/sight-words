@@ -14,15 +14,8 @@ function boardStickers() {
 
 function makeSticker({ key, emoji, label: text }) {
   const h = hash(key);
-  const el = document.createElement('div');
-  el.className = 'sticker';
-  const art = document.createElement('span');
-  art.className = 'sticker-art';
-  art.textContent = emoji;
-  const label = document.createElement('span');
-  label.className = 'sticker-word';
-  label.textContent = text;
-  el.append(art, label);
+  const el = make('div', 'sticker');
+  el.append(make('span', 'sticker-art', emoji), make('span', 'sticker-word', text));
   el.style.setProperty('--c', STICKER_COLORS[h % STICKER_COLORS.length]);
   el.style.setProperty('--r', `${(h % 31) - 15}deg`);
   return el;

@@ -23,8 +23,7 @@ function renderPanel() {
     const row = document.createElement('li');
     row.classList.toggle('off', !isOn);
     // The switch turns a word on or off for practice; at least one word always stays on.
-    const name = document.createElement('label');
-    name.className = 'panel-word';
+    const name = make('label', 'panel-word');
     const toggle = document.createElement('input');
     toggle.type = 'checkbox';
     toggle.className = 'word-switch';
@@ -36,12 +35,8 @@ function renderPanel() {
       renderPanel();
     });
     name.append(toggle, word);
-    const heard = document.createElement('span');
-    heard.className = 'panel-heard';
-    heard.textContent = s.heard ? `heard ${s.heard}×` : 'not yet';
-    const chip = document.createElement('button');
-    chip.className = `chip${s.known ? ' on' : ''}`;
-    chip.textContent = s.known ? `${stickerFor(word)} Sticker` : 'No sticker';
+    const heard = make('span', 'panel-heard', s.heard ? `heard ${s.heard}×` : 'not yet');
+    const chip = make('button', `chip${s.known ? ' on' : ''}`, s.known ? `${stickerFor(word)} Sticker` : 'No sticker');
     chip.disabled = !isOn;
     chip.addEventListener('click', () => {
       setKnown(word, !s.known);

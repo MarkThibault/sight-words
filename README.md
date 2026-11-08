@@ -177,7 +177,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 
 | File | What's in it |
 | --- | --- |
-| `utils.js` | General helpers used across files: shuffling, hashing, time formatting, safe `localStorage` access, animations, long-press |
+| `utils.js` | General helpers used across files: making page elements (`make`), shuffling, hashing, time formatting, safe `localStorage` access, animations, long-press |
 | `config.js` | Settings and lists: sticker emoji, colors, cheers, fallback word list |
 | `state.js` | Page elements (`els`) and the state shared between files (`state`) |
 | `words.js` | Loading `words.json`, and the words turned off in the Grown-up corner |
