@@ -26,6 +26,18 @@ function loadProgress() {
   return { words: {} };
 }
 
+// Installed, the app asks the browser to keep its saved data, so it isn't cleared when the device runs low on space.
+// Only when installed (from the home screen, or the Play Store app, which Android opens with an android-app:// referrer):
+// in a browser tab, Firefox would show the parent a pop-up for it. Chrome decides by itself, without asking anyone.
+async function keepProgress() {
+  const installed = ['standalone', 'fullscreen', 'minimal-ui'].some((mode) => matchMedia(`(display-mode: ${mode})`).matches)
+    || document.referrer.startsWith('android-app://');
+  if (!installed || !navigator.storage || !navigator.storage.persist) return;
+  try {
+    if (!(await navigator.storage.persisted())) await navigator.storage.persist();
+  } catch (e) { /* not kept: progress still saves as before */ }
+}
+
 function saveProgress() {
   writeStorage(STORAGE_KEY, JSON.stringify(state.progress));
 }

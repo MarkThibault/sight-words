@@ -101,3 +101,4 @@ init();
 startOffline();
 startDevTools();
 startBackButton();
+keepProgress();
