@@ -69,7 +69,7 @@ function checkPhonics(words, wordParts) {
 }
 
 function checkLinks() {
-  for (const page of ['index.html', 'recorder.html', 'sounds.html']) {
+  for (const page of ['index.html', 'recorder.html', 'sounds.html', 'privacy.html']) {
     const html = fs.readFileSync(fromRoot(page), 'utf8').replace(/<!--[\s\S]*?-->/g, '');
     for (const [, link] of html.matchAll(/(?:src|href)="([^"]+)"/g)) {
       if (/^([a-z]+:|\/\/|#)/i.test(link)) continue; // another site, or a spot on this page
