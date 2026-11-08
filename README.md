@@ -160,6 +160,7 @@ Every pull request plays the app in a real browser, at a phone size and a tablet
 | `motion.spec.js` | New stickers fly into 🏠 and the 🐵/🙈 switch, and medals into the trophy pill, landing and counting with the device's "reduce motion" setting on or off |
 | `back.spec.js` | Back goes home from a reading round or either game (stopping it), closes a pop-up, and in sticker play closes a pop-up first, then switches sticker play off. Closing things with their own buttons, or a round ending by itself, leaves no extra back steps, so back on the home screen leaves the app |
 | `font.spec.js` | The Andika font loads from the app's own `fonts/` folder, in regular and bold, and the app asks nothing of any other site |
+| `manifest.spec.js` | The manifest keeps the app's identity (its `id` is the start page, as installs had before it was set), says it's English, for education and kids, and lists icons that exist at the sizes it says, with a maskable one |
 | `privacy.spec.js` | The grown-up guide links to the privacy page, which opens in its own tab, in the app's font, with nothing from another site |
 | `storage.spec.js` | Installed, the app asks the browser once to keep its progress; in a browser tab, or once it's kept, it never asks |
 | `busy.spec.js` | A downloaded update installs on reopening only when nothing is in the way (sticker play, a pop-up, another screen or a "set complete!" celebration), and new stickers wait to fly in while My Trophies is open |
@@ -211,7 +212,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `recorder.js` | The sound recorder page (`recorder.html`) |
 | `sound-lab.js` | The developer sound effects page (`sounds.html`), and the ideas tried along the way |
 
-Offline play lives in `sw.js` and the app's name and icons in `manifest.webmanifest`, both next to `index.html`. The privacy policy, for the app store and linked from the grown-up guide, is `privacy.html`: if the app ever collects or sends anything, or adds ads, purchases or links out, update it first. The Andika font is in `fonts/`, with its license (`OFL.txt`), so the app needs no other site. The browser tests are in `tests/`, with their settings in `playwright.config.js`.
+Offline play lives in `sw.js` and the app's name, identity, language, category and icons in `manifest.webmanifest`, both next to `index.html`. The privacy policy, for the app store and linked from the grown-up guide, is `privacy.html`: if the app ever collects or sends anything, or adds ads, purchases or links out, update it first. The Andika font is in `fonts/`, with its license (`OFL.txt`), so the app needs no other site. The browser tests are in `tests/`, with their settings in `playwright.config.js`.
 
 ## App version
 
