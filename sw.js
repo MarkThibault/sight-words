@@ -3,7 +3,7 @@
 // Offline play: saves the app, the font and the recordings on the device when it installs.
 // SW_VERSION is raised with APP_VERSION by .github/scripts/bump-version.sh. That change is what tells devices to update.
 
-const SW_VERSION = '1.28.0';
+const SW_VERSION = '1.28.1';
 const APP_CACHE = `sight-words-${SW_VERSION}`;
 const FONT_FILES = ['fonts/andika-regular.woff2', 'fonts/andika-bold.woff2']; // linked by fonts/andika.css, unstamped
 const NETWORK_WAIT_MS = 3000; // how long a slow connection gets before the saved copy is used
