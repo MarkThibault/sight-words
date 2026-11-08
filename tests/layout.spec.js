@@ -45,7 +45,7 @@ test('stickers move out of the way when the font arrives late', async ({ page })
   });
   let fontMayArrive;
   const held = new Promise((resolve) => { fontMayArrive = resolve; });
-  await page.route(/fonts\.gstatic\.com/, async (route) => { await held; await route.continue(); });
+  await page.route(/\/fonts\/.*\.woff2$/, async (route) => { await held; await route.continue(); });
 
   await openApp(page, withStickers);
   await expect(page.locator('#sticker-board .sticker')).toHaveCount(STICKERS);

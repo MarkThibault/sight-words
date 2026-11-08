@@ -1,0 +1,18 @@
+/* Andika by SIL International, under the SIL Open Font License (OFL.txt). Only the Latin letters, since that's all
+   the app uses. These are the files Google Fonts serves, kept here so the font needs no other site.
+   sw.js saves the two font files for offline play, so a new one must be added to FONT_FILES there. */
+@font-face {
+  font-family: 'Andika';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('andika-regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Andika';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('andika-bold.woff2') format('woff2');
+}
