@@ -100,3 +100,4 @@ async function init() {
 init();
 startOffline();
 startDevTools();
+startBackButton();

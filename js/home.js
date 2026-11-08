@@ -11,6 +11,7 @@ function showScreen(name) {
     renderHome();
     homeShown();
   }
+  syncBackButton();
 }
 
 const WAIT_NOTE = '🔄 Play something else first';
@@ -113,6 +114,7 @@ function setPlaying(on) {
     flyInSoon();
   }
   renderPlayBadge();
+  syncBackButton();
 }
 
 // A red bubble on the switch adds up what's waiting inside: new stickers, prize stickers to pick and new scenes not
