@@ -115,7 +115,7 @@ Press and hold the **⚙️** button in the top-right corner of the home screen 
 
 From there you can see how many times each word was heard, give or take away stickers, or reset all progress (including the best time, medals, trophies, prize stickers and scenes). **Reset all progress** asks first, with the question covering the whole corner so it can't be missed.
 
-**📖 What's in this app** opens a guide for grown-ups in place of the word list: the games, how stars, stickers, medals and trophies are earned, what the on/off switches do, and how to install the app for offline play. Its numbers, like the words in a round or the medals in a trophy, come from `js/config.js`, so they stay right when those change. **← Back** returns to the word list.
+**📖 What's in this app** opens a guide for grown-ups in place of the word list: the games, how stars, stickers, medals and trophies are earned, what the on/off switches do, how to install the app for offline play, and a link to the privacy page. Its numbers, like the words in a round or the medals in a trophy, come from `js/config.js`, so they stay right when those change. **← Back** returns to the word list.
 
 Each word also has an on/off switch. A word that's turned off is skipped in every round and left out of the starred words in My Trophies, and its sticker is hidden until it's turned back on. Its sticker still counts toward its set. Turned-off words are saved separately from progress, so **Reset all progress** leaves them off. At least one word always stays on.
 
@@ -160,6 +160,7 @@ Every pull request plays the app in a real browser, at a phone size and a tablet
 | `motion.spec.js` | New stickers fly into 🏠 and the 🐵/🙈 switch, and medals into the trophy pill, landing and counting with the device's "reduce motion" setting on or off |
 | `back.spec.js` | Back goes home from a reading round or either game (stopping it), closes a pop-up, and in sticker play closes a pop-up first, then switches sticker play off. Closing things with their own buttons, or a round ending by itself, leaves no extra back steps, so back on the home screen leaves the app |
 | `font.spec.js` | The Andika font loads from the app's own `fonts/` folder, in regular and bold, and the app asks nothing of any other site |
+| `privacy.spec.js` | The grown-up guide links to the privacy page, which opens in its own tab, in the app's font, with nothing from another site |
 | `storage.spec.js` | Installed, the app asks the browser once to keep its progress; in a browser tab, or once it's kept, it never asks |
 | `busy.spec.js` | A downloaded update installs on reopening only when nothing is in the way (sticker play, a pop-up, another screen or a "set complete!" celebration), and new stickers wait to fly in while My Trophies is open |
 | `updates.spec.js` | With a real service worker: the installed app opens in its font and plays its recordings with no connection, a new version downloads in the background and the **Update** button installs it with progress kept and only the new saved copy left, and a downloaded version installs by itself when the app is next opened. Each test runs its own server at `127.0.0.1` (offline play is off on `localhost`) that switches to the next version the way the version bump does |
@@ -210,7 +211,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `recorder.js` | The sound recorder page (`recorder.html`) |
 | `sound-lab.js` | The developer sound effects page (`sounds.html`), and the ideas tried along the way |
 
-Offline play lives in `sw.js` and the app's name and icons in `manifest.webmanifest`, both next to `index.html`. The Andika font is in `fonts/`, with its license (`OFL.txt`), so the app needs no other site. The browser tests are in `tests/`, with their settings in `playwright.config.js`.
+Offline play lives in `sw.js` and the app's name and icons in `manifest.webmanifest`, both next to `index.html`. The privacy policy, for the app store and linked from the grown-up guide, is `privacy.html`: if the app ever collects or sends anything, or adds ads, purchases or links out, update it first. The Andika font is in `fonts/`, with its license (`OFL.txt`), so the app needs no other site. The browser tests are in `tests/`, with their settings in `playwright.config.js`.
 
 ## App version
 
@@ -219,7 +220,7 @@ The version (for example `v1.0.0`) shows in the bottom-right corner of the home 
 The version goes up on its own: each time a pull request is merged into `main`, a GitHub Action (`.github/workflows/bump-version.yml`) raises it, commits the change and tags it (for example `v1.0.1`).
 
 - Every pull request needs exactly one version label, or its Label check fails: **`patch`** (1.0.0 → 1.0.1), **`minor`** (1.0.0 → 1.1.0) or **`major`** (1.0.0 → 2.0.0).
-- The action also updates the `?v=` stamps on the style and script links in `index.html`, `recorder.html` and `sounds.html`, and on the recordings, so tablets load the new files instead of old saved copies.
+- The action also updates the `?v=` stamps on the style and script links in `index.html`, `recorder.html`, `sounds.html` and `privacy.html`, and on the recordings, so tablets load the new files instead of old saved copies.
 - Because the bot adds a commit to `main` after each merge, pull `main` before starting a new branch.
 
 To bump by hand, run `bash .github/scripts/bump-version.sh patch` (or `minor` / `major`).
@@ -253,7 +254,7 @@ The panel also links to **🔊 Sound effects** (`sounds.html`), a page that play
 
 ## Publishing on GitHub Pages
 
-1. Create a new repository on GitHub and upload these files (`index.html`, `recorder.html`, `sounds.html`, `sw.js`, `manifest.webmanifest`, `style.css`, `recorder.css`, `words.json`, and the `js`, `audio`, `icons` and `fonts` folders).
+1. Create a new repository on GitHub and upload these files (`index.html`, `recorder.html`, `sounds.html`, `privacy.html`, `sw.js`, `manifest.webmanifest`, `style.css`, `recorder.css`, `words.json`, and the `js`, `audio`, `icons` and `fonts` folders).
 2. In the repository, go to **Settings → Pages**.
 3. Under **Build and deployment**, choose **Deploy from a branch**, pick `main` and `/ (root)`, and save.
 4. After a minute, the site is at `https://<your-username>.github.io/<repository-name>/`.
