@@ -142,7 +142,7 @@ function placeBuildTile(tile) {
     // and they keep trying.
     game.wordPoints = Math.max(BUILD_MIN_WORD_POINTS, game.wordPoints - 1);
     playAnim(tile, 'wiggle');
-    playIncorrectSound(() => saySound(id));
+    playEffect('wrong', () => saySound(id));
     return;
   }
 

@@ -82,7 +82,7 @@ function tapListenChoice(choice, word) {
     choice.disabled = true;
     choice.classList.add('wrong');
     playAnim(choice, 'wiggle');
-    playIncorrectSound(() => sayWord(game.target));
+    playEffect('wrong', () => sayWord(game.target));
     return;
   }
 

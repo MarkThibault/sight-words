@@ -60,6 +60,31 @@ test('Build the word: putting every part in order earns gold, but no stars', asy
   expect(stickersOf(after)).toEqual(before);
 });
 
+test('Build the word: a wrong tile gets the soft boop, stays in the tray, and the sound wanted plays next', async ({ page }) => {
+  await openApp(page, { offWords: SHORT_GAME });
+  await page.locator('#build-btn').click();
+  await page.waitForFunction(() => buildRound && !buildRound.busy && buildRound.next === 0);
+  // Every clip played from here on, to hear (by name) what follows the boop
+  await page.evaluate(() => {
+    const play = playClip;
+    window.clipsPlayed = [];
+    playClip = (path, ...rest) => { clipsPlayed.push(path); return play(path, ...rest); };
+  });
+  const [letters, id] = await page.evaluate(() => buildRound.parts[0]);
+  const tiles = page.locator('#build-tiles .build-tile');
+  const wrong = tiles.filter({ hasNotText: exactly(letters) }).first();
+  await wrong.click();
+
+  await expect(wrong).toHaveClass(/wiggle/);
+  await expect(wrong).not.toHaveClass(/used/); // still in the tray
+  expect(await page.evaluate(() => [buildRound.next, buildRound.wordPoints])).toEqual([0, 4]); // one point off
+  await page.waitForFunction((clip) => clipsPlayed.includes(clip), `audio/sounds/${id}.wav`);
+
+  // And the right one still goes in
+  await tiles.filter({ hasText: exactly(letters) }).first().click();
+  await expect(page.locator('#build-slots .build-slot').first()).toHaveClass(/filled|silent/);
+});
+
 test('after two games of one kind in a row, it waits until something else is finished', async ({ page }) => {
   // Every word has a star but one, so Missing words is a one-word reading round. Their scenes are already unlocked,
   // or "set complete!" would play over the home screen and catch the taps.

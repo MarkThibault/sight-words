@@ -66,7 +66,8 @@ While it's on, stickers flying in, a new trophy's **Pick your prize!** and autom
 
 Besides the recorded words and sounds, the app plays a few short sound effects. They're made in code from tones and noise in `js/sound-effects.js`, so there's nothing to record:
 
-- **Right answer:** two soft notes going up, in **👂 Listen & tap** and when a word is finished in **🧱 Build the word**, just before the word is said. A wrong answer still gets the soft "boop".
+- **Right answer:** two soft notes going up, in **👂 Listen & tap** and when a word is finished in **🧱 Build the word**, just before the word is said.
+- **Wrong answer:** a soft falling "boop" in both games, before the word or sound is played again.
 - **New star:** a shimmer when **I know it!** earns a star and sticker.
 - **Medal and trophy:** a short "ta-da" on the home screen after a game, or a bigger one when it earns a trophy.
 - **New scene:** a bigger version of the new-star shimmer, the way the trophy sound is a bigger medal sound, when a finished sticker set's "set complete!" card pops up. Each new sticker landing in the switch plays the soft sticker pat.
@@ -184,7 +185,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `speech.js` | Choosing a voice and reading words aloud |
 | `phonics.js` | The sounds, and how each word splits into them for **Sound it out** |
 | `audio.js` | Playing the recordings in `audio/`, or the device's voice for anything not recorded |
-| `sound-effects.js` | The sound effects, made in code: right answer, new star, medal, trophy, dice and stickers |
+| `sound-effects.js` | The sound effects, made in code: right and wrong answers, new star, medal, trophy, dice and stickers |
 | `effects.js` | Toasts, confetti, and stickers and medals flying into place |
 | `stickers.js` | Drawing stickers, laying them out on the home screen, dragging them around, and flying new ones into the 🐵 / 🙈 switch |
 | `scenes.js` | Scenes behind the stickers: the star pill, and the 🖼️ tray |

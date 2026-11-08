@@ -71,35 +71,6 @@ function sayThen(text, rate, then) {
   setTimeout(go, 4000);
 }
 
-// A soft falling "boop" for a wrong answer, made here so it needs no recording. `then` runs once it has finished.
-function playIncorrectSound(then) {
-  unlockAudio();
-  stopAudio();
-  if (!audioCtx) {
-    then();
-    return;
-  }
-  const run = audioRun;
-  const start = audioCtx.currentTime;
-  const tone = audioCtx.createOscillator();
-  const volume = audioCtx.createGain();
-  tone.type = 'sine';
-  tone.frequency.setValueAtTime(330, start);
-  tone.frequency.exponentialRampToValueAtTime(220, start + 0.28);
-  volume.gain.setValueAtTime(0.0001, start);
-  volume.gain.exponentialRampToValueAtTime(0.2, start + 0.03);
-  volume.gain.exponentialRampToValueAtTime(0.0001, start + 0.3);
-  tone.connect(volume);
-  volume.connect(audioCtx.destination);
-  clipSource = tone;
-  tone.onended = () => {
-    clipSource = null;
-    if (run === audioRun) then();
-  };
-  tone.start(start);
-  tone.stop(start + 0.32);
-}
-
 const sayWord = (word, then) => playClip(wordClip(word), word, { then });
 const saySound = (id, then) => playClip(soundClip(id), SOUNDS[id] ? SOUNDS[id].say : '', { rate: SOUND_RATE, then });
 

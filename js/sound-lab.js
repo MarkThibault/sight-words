@@ -202,8 +202,6 @@ function startSoundLab() {
       if (name === 'diceRoll') rollDie();
     }));
   }
-  used.append(soundButton({ label: '😕 Wrong answer', where: 'The soft boop in the games, from playIncorrectSound in js/audio.js' },
-    () => playIncorrectSound(() => {})));
 
   const ideas = $('sound-ideas');
   for (const effect of Object.values(SOUND_IDEAS)) {
