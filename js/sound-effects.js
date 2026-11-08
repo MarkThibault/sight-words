@@ -1,6 +1,6 @@
 'use strict';
 
-// Sound effects, made here from tones and noise so they need no recordings (like the wrong-answer boop in audio.js).
+// Sound effects, made here from tones and noise so they need no recordings.
 // Hear them all, and try new ones, on the developer sound page: sounds.html, from the 🛠️ button on localhost.
 
 // Every effect goes through one volume control, set by SOUND_EFFECTS_VOLUME in config.js.
@@ -17,15 +17,16 @@ function effectsOutput() {
 // ---------- Building blocks ----------
 // Each one starts at `t`, in seconds on audioCtx's clock.
 
-// One note with a quick start and a bell-like fade. `slideTo` bends it to another pitch on the way.
-function effectNote(t, freq, length, { type = 'sine', volume = 0.2, slideTo } = {}) {
+// One note with a quick start and a bell-like fade. `slideTo` bends it to another pitch on the way, and a longer
+// `attack` softens the start.
+function effectNote(t, freq, length, { type = 'sine', volume = 0.2, slideTo, attack = 0.01 } = {}) {
   const tone = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
   tone.type = type;
   tone.frequency.setValueAtTime(freq, t);
   if (slideTo) tone.frequency.exponentialRampToValueAtTime(slideTo, t + length);
   gain.gain.setValueAtTime(0.0001, t);
-  gain.gain.exponentialRampToValueAtTime(volume, t + 0.01);
+  gain.gain.exponentialRampToValueAtTime(volume, t + attack);
   gain.gain.exponentialRampToValueAtTime(0.0001, t + length);
   tone.connect(gain).connect(effectsOutput());
   tone.start(t);
@@ -96,6 +97,15 @@ const DICE_LANDINGS = [0.47, 0.70, 0.86];
 // `play` starts the effect at `t` and returns how long it lasts, in seconds.
 
 const SOUND_EFFECTS = {
+  wrong: {
+    label: '😕 Wrong answer',
+    where: 'A wrong tap in Listen & tap or Build the word, before the word or sound is played again',
+    play(t) {
+      // one soft note falling
+      effectNote(t, 330, 0.3, { slideTo: 220, attack: 0.03 });
+      return 0.32;
+    },
+  },
   correct: {
     label: '✅ Right answer',
     where: 'Listen & tap, and finishing a word in Build the word, just before the word is said',
