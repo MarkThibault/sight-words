@@ -159,9 +159,10 @@ Every pull request plays the app in a real browser, at a phone size and a tablet
 | `from-disk.spec.js` | Opening `index.html` straight from disk still works, with the built-in word list |
 | `motion.spec.js` | New stickers fly into 🏠 and the 🐵/🙈 switch, and medals into the trophy pill, landing and counting with the device's "reduce motion" setting on or off |
 | `back.spec.js` | Back goes home from a reading round or either game (stopping it), closes a pop-up, and in sticker play closes a pop-up first, then switches sticker play off. Closing things with their own buttons, or a round ending by itself, leaves no extra back steps, so back on the home screen leaves the app |
+| `font.spec.js` | The Andika font loads from the app's own `fonts/` folder, in regular and bold, and the app asks nothing of any other site |
 | `storage.spec.js` | Installed, the app asks the browser once to keep its progress; in a browser tab, or once it's kept, it never asks |
 | `busy.spec.js` | A downloaded update installs on reopening only when nothing is in the way (sticker play, a pop-up, another screen or a "set complete!" celebration), and new stickers wait to fly in while My Trophies is open |
-| `updates.spec.js` | With a real service worker: the installed app opens and plays its recordings with no connection, a new version downloads in the background and the **Update** button installs it with progress kept and only the new saved copy left, and a downloaded version installs by itself when the app is next opened. Each test runs its own server at `127.0.0.1` (offline play is off on `localhost`) that switches to the next version the way the version bump does |
+| `updates.spec.js` | With a real service worker: the installed app opens in its font and plays its recordings with no connection, a new version downloads in the background and the **Update** button installs it with progress kept and only the new saved copy left, and a downloaded version installs by itself when the app is next opened. Each test runs its own server at `127.0.0.1` (offline play is off on `localhost`) that switches to the next version the way the version bump does |
 | `devtools.spec.js` | The 🛠️ panel's jumps lead to the real trophy, prize and "set complete!" moments, and **Restore my progress** puts saved progress back exactly |
 | `layout.spec.js` | Stickers stay off the title, buttons and pills, move out of the way when the font arrives late, and stay out from behind 🏆 🎲 and 🖼️ in sticker play |
 
@@ -209,7 +210,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `recorder.js` | The sound recorder page (`recorder.html`) |
 | `sound-lab.js` | The developer sound effects page (`sounds.html`), and the ideas tried along the way |
 
-Offline play lives in `sw.js` and the app's name and icons in `manifest.webmanifest`, both next to `index.html`. The browser tests are in `tests/`, with their settings in `playwright.config.js`.
+Offline play lives in `sw.js` and the app's name and icons in `manifest.webmanifest`, both next to `index.html`. The Andika font is in `fonts/`, with its license (`OFL.txt`), so the app needs no other site. The browser tests are in `tests/`, with their settings in `playwright.config.js`.
 
 ## App version
 
@@ -230,7 +231,7 @@ Sight Words can be installed on a phone or tablet and played without internet:
 - **iPad / iPhone:** open the site in Safari, then **Share → Add to Home Screen**.
 - **Android:** open the site in Chrome, then **⋮ → Add to Home screen** or **Install app**.
 
-The app and recordings are saved the first time the site is opened online, so give it a moment before going offline. When online, the app looks for a new version when it's opened and when the home screen appears or the app is switched back to, at most once a minute. A new version downloads in the background, with "Downloading new version" showing where the version number is on the home screen. Then an **Update to latest version** button replaces the version number, reading just **Update** on smaller screens. Tapping it shows "Updating…" and fades the app out and back in. Switching to another app partway through doesn't stop it: the update finishes on coming back. The update also happens by itself the next time the app is closed and reopened, unless a game or pop-up is open, and then the button stays on offer.
+The app, its font and recordings are saved the first time the site is opened online, so give it a moment before going offline. When online, the app looks for a new version when it's opened and when the home screen appears or the app is switched back to, at most once a minute. A new version downloads in the background, with "Downloading new version" showing where the version number is on the home screen. Then an **Update to latest version** button replaces the version number, reading just **Update** on smaller screens. Tapping it shows "Updating…" and fades the app out and back in. Switching to another app partway through doesn't stop it: the update finishes on coming back. The update also happens by itself the next time the app is closed and reopened, unless a game or pop-up is open, and then the button stays on offer.
 
 **Saved progress stays on each device, at this web address:**
 - On iPad and iPhone, the home-screen app usually keeps its own progress, separate from Safari, so it starts fresh.
@@ -252,7 +253,7 @@ The panel also links to **🔊 Sound effects** (`sounds.html`), a page that play
 
 ## Publishing on GitHub Pages
 
-1. Create a new repository on GitHub and upload these files (`index.html`, `recorder.html`, `sounds.html`, `sw.js`, `manifest.webmanifest`, `style.css`, `recorder.css`, `words.json`, and the `js`, `audio` and `icons` folders).
+1. Create a new repository on GitHub and upload these files (`index.html`, `recorder.html`, `sounds.html`, `sw.js`, `manifest.webmanifest`, `style.css`, `recorder.css`, `words.json`, and the `js`, `audio`, `icons` and `fonts` folders).
 2. In the repository, go to **Settings → Pages**.
 3. Under **Build and deployment**, choose **Deploy from a branch**, pick `main` and `/ (root)`, and save.
 4. After a minute, the site is at `https://<your-username>.github.io/<repository-name>/`.

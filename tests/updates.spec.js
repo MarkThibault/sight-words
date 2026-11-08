@@ -12,7 +12,7 @@ const ROOT = path.join(__dirname, '..');
 const OLD = fs.readFileSync(path.join(ROOT, 'js', 'config.js'), 'utf8').match(/^const APP_VERSION = '([\d.]+)'/m)[1];
 const NEW = OLD.replace(/\d+$/, (patch) => Number(patch) + 1);
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json',
-  '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.wav': 'audio/wav', '.svg': 'image/svg+xml' };
+  '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.wav': 'audio/wav', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };
 
 // The version bump's changes, made as each file is served.
 const bumped = (text) => text.replaceAll(`?v=${OLD}`, `?v=${NEW}`)
@@ -62,11 +62,14 @@ async function openAppPages(context) {
   return -1; // no worker to ask yet
 }
 
-test('with no connection, the installed app still opens and plays its recordings', async ({ page, context }) => {
+test('with no connection, the installed app still opens in its font and plays its recordings', async ({ page, context }) => {
   await installApp(page);
   await context.setOffline(true);
   await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('#start-btn')).toBeEnabled();
+  const andika = await page.evaluate(async () => [...await document.fonts.load('16px Andika'), ...await document.fonts.load('700 16px Andika')]
+    .map((face) => face.weight));
+  expect(andika).toEqual(['400', '700']);
 
   await page.locator('#start-btn').click();
   await expect(page.locator('#progress-mini')).toHaveText(`⭐ 3 / ${WORDS.length}`); // the saved stars
@@ -91,8 +94,8 @@ test('a new version downloads in the background, the Update button installs it, 
   await expect(page.locator('#app-version')).toHaveText(`v${NEW}`, { timeout: 15_000 });
   expect(await page.evaluate(() => APP_VERSION)).toBe(NEW);
   expect(await savedProgress(page)).toEqual(before);
-  // Only the new version's saved copy is kept (and the font's)
-  expect((await page.evaluate(() => caches.keys())).sort()).toEqual([`sight-words-${NEW}`, 'sight-words-fonts'].sort());
+  // Only the new version's saved copy is kept
+  expect(await page.evaluate(() => caches.keys())).toEqual([`sight-words-${NEW}`]);
 });
 
 test('a new version that finished downloading installs by itself when the app is next opened', async ({ page, context }) => {
