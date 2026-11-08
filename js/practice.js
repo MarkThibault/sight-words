@@ -2,12 +2,10 @@
 
 // Practice screen: rounds, the word card, and the "I know it!" / "Next" buttons.
 
-let round = null;            // the round being played: { mode: 'all' | 'missing', timed, total, capped, learned, startedAt }
-let deck = [];               // words still to come this round
-let current = null;          // the word on the card
-let heardCurrent = false;    // has the current word been heard since it was shown?
-let busy = false;            // true while the "I know it!" animation plays
-let timerId = null;
+let readingRound = null;     // the round being played: { mode: 'all' | 'missing', timed, total, capped, learned, startedAt,
+                             // deck, word, heard, busy } (deck: words still to come; word: the one on the card; heard: since it
+                             // was shown; busy: while the "I know it!" animation plays)
+let readingTimer = null;     // the Timed run's clock
 let soundingOut = false;     // true while the word is being sounded out
 let soundRun = 0;            // counts sound-outs, so a stopped one knows to stop
 
@@ -17,22 +15,25 @@ let soundRun = 0;            // counts sound-outs, so a stopped one knows to sto
 function startRound(mode, timed = false) {
   const list = mode === 'missing' ? missingWords() : state.words;
   if (list.length === 0) return;
-  deck = timed ? shuffle(list) : pickWords(list, ROUND_MAX_WORDS, 'seenAt');
-  round = { mode, timed, total: deck.length, capped: deck.length < list.length, learned: [], startedAt: performance.now() };
+  const deck = timed ? shuffle(list) : pickWords(list, ROUND_MAX_WORDS, 'seenAt');
+  readingRound = {
+    mode, timed, total: deck.length, capped: deck.length < list.length, learned: [], startedAt: performance.now(),
+    deck, word: null, heard: false, busy: false,
+  };
   state.lastRound = null;
   els.timer.hidden = !timed;
-  els.roundBar.setAttribute('aria-valuemax', String(round.total));
+  els.roundBar.setAttribute('aria-valuemax', String(deck.length));
   showScreen('practice');
   showWord();
   if (timed) {
     updateTimer();
-    timerId = setInterval(updateTimer, 250);
+    readingTimer = setInterval(updateTimer, 250);
   }
   if (!canSpeak && !audioCtx) showToast('This browser can’t read words aloud 😕');
 }
 
 function finishRound() {
-  const done = round;
+  const done = readingRound;
   stopRound();
   noteRoundFinished(); // reading opens any game that was waiting
   const last = { mode: done.mode, total: done.total, capped: done.capped, learned: done.learned };
@@ -50,64 +51,63 @@ function finishRound() {
 
 // Leaving mid-round (the 🏠 button) just drops the round: no summary, no time recorded.
 function stopRound() {
-  clearInterval(timerId);
-  timerId = null;
+  clearInterval(readingTimer);
+  readingTimer = null;
   stopSoundOut();
-  round = null;
-  current = null;
-  deck = [];
+  readingRound = null;
   stopAudio();
 }
 
 function updateTimer() {
-  if (round) els.timer.textContent = `⏱️ ${formatTime(performance.now() - round.startedAt)}`;
+  if (readingRound) els.timer.textContent = `⏱️ ${formatTime(performance.now() - readingRound.startedAt)}`;
 }
 
 // ---------- Word card ----------
 
 function showWord() {
-  if (!round) return;
-  if (deck.length === 0) {
+  const game = readingRound;
+  if (!game) return;
+  if (game.deck.length === 0) {
     finishRound();
     return;
   }
   stopSoundOut();
-  current = deck.shift();
-  preloadClips(deck.length ? [current, deck[0]] : [current]); // this word and the next, not the whole round
-  const position = round.total - deck.length;
-  els.roundFill.style.width = `${(position / round.total) * 100}%`;
+  const word = game.word = game.deck.shift();
+  preloadClips(game.deck.length ? [word, game.deck[0]] : [word]); // this word and the next, not the whole round
+  const position = game.total - game.deck.length;
+  els.roundFill.style.width = `${(position / game.total) * 100}%`;
   els.roundBar.setAttribute('aria-valuenow', String(position));
-  heardCurrent = false;
+  game.heard = false;
 
-  els.word.textContent = current;
-  els.word.style.setProperty('--len', current.length);
+  els.word.textContent = word;
+  els.word.style.setProperty('--len', word.length);
   fitWord();
-  els.card.setAttribute('aria-label', `${current}. Tap to hear it.`);
+  els.card.setAttribute('aria-label', `${word}. Tap to hear it.`);
 
-  markSeen(current);
-  els.star.hidden = !stats(current).known;
+  markSeen(word);
+  els.star.hidden = !stats(word).known;
   els.hint.classList.remove('off');
-  els.soundOut.classList.toggle('unavailable', !wordParts(current)); // only words with their sounds listed in js/phonics.js
+  els.soundOut.classList.toggle('unavailable', !wordParts(word)); // only words with their sounds listed in js/phonics.js
   setButtonsDisabled(false);
   setNextLocked(true);
   playAnim(els.card, 'slide-in');
 }
 
 function fitWord() {
-  if (current) fitText(els.word, els.card, 48, 16);
+  if (readingRound) fitText(els.word, els.card, 48, 16);
 }
 
 function hearWord() {
   stopSoundOut();
-  sayWord(current);
+  sayWord(readingRound.word);
   playAnim(els.card, 'bounce');
   noteHeard();
 }
 
 function noteHeard() {
-  markHeard(current);
+  markHeard(readingRound.word);
   els.hint.classList.add('off');
-  heardCurrent = true;
+  readingRound.heard = true;
   setNextLocked(false);
 }
 
@@ -116,10 +116,11 @@ function noteHeard() {
 // Plays each sound in turn, lighting up its letters on the card, then the whole word.
 // Tapping again starts over; tapping the word, "I know it!" or "Next" stops it.
 function soundOut() {
-  if (busy) return;
+  const game = readingRound;
+  if (game.busy) return;
   stopSoundOut();
   const run = soundRun;
-  const parts = wordParts(current);
+  const parts = wordParts(game.word);
   const spans = parts.map(([letters, id]) => {
     const span = document.createElement('span');
     span.className = isSilentSound(id) ? 'part silent' : 'part';
@@ -144,7 +145,7 @@ function soundOut() {
     } else {
       soundingOut = false;
       showWholeWord();
-      sayWord(current);
+      sayWord(game.word);
       playAnim(els.card, 'bounce');
     }
   };
@@ -161,41 +162,43 @@ function stopSoundOut() {
 
 function showWholeWord() {
   els.word.classList.remove('split');
-  els.word.textContent = current;
+  els.word.textContent = readingRound.word;
   fitWord();
 }
 
 // ---------- Buttons ----------
 
 function knowIt() {
-  if (busy) return;
+  const game = readingRound;
+  if (game.busy) return;
   stopSoundOut();
-  if (!heardCurrent) hearWord(); // knowing it still counts as hearing it
+  if (!game.heard) hearWord(); // knowing it still counts as hearing it
 
-  if (!stats(current).known) {
-    setKnown(current, true);
-    state.stickersToFly.push(current); // flies into the 🐵/🙈 switch on the home screen
-    markStickerToSee(current); // and waits there until sticker play opens
-    round.learned.push(current);
-    flySticker(current);
+  const word = game.word;
+  if (!stats(word).known) {
+    setKnown(word, true);
+    state.stickersToFly.push(word); // flies into the 🐵/🙈 switch on the home screen
+    markStickerToSee(word); // and waits there until sticker play opens
+    game.learned.push(word);
+    flySticker(word);
     els.star.hidden = false;
     playAnim(els.star, 'pop');
     updateCounters();
-    showToast(`New sticker! ${stickerFor(current)}`);
+    showToast(`New sticker! ${stickerFor(word)}`);
     playEffect('starEarned');
   } else {
     showToast(randomCheer());
   }
   confetti();
 
-  busy = true;
+  game.busy = true;
   setButtonsDisabled(true);
-  setTimeout(() => { busy = false; showWord(); }, 1200);
+  setTimeout(() => { game.busy = false; showWord(); }, 1200);
 }
 
 function goNext() {
-  if (busy) return;
-  if (!heardCurrent) {
+  if (readingRound.busy) return;
+  if (!readingRound.heard) {
     playAnim(els.card, 'wiggle');
     return;
   }

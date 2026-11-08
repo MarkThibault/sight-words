@@ -15,7 +15,7 @@ test('a turned-off word is skipped in rounds and games, and its sticker hides un
   await page.locator('#start-btn').click();
   const shown = [];
   for (let i = 0; i < ON.length; i++) {
-    shown.push(await page.evaluate(() => current));
+    shown.push(await page.evaluate(() => readingRound.word));
     await page.locator('#card').click();
     await page.locator('#next-btn').click();
   }

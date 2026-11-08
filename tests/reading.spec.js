@@ -10,7 +10,7 @@ const knownInOrder = (progress) => Object.entries(progress.words)
 test('a round of Let\'s Read fills the sticker sets in order and unlocks their scenes', async ({ page }) => {
   await openApp(page);
   await page.locator('#start-btn').click();
-  const total = await page.evaluate(() => round.total);
+  const total = await page.evaluate(() => readingRound.total);
   expect(total).toBe(2 * SET_SIZE); // so this round finishes the first two sets
 
   for (let i = 0; i < total; i++) {
@@ -58,7 +58,7 @@ test('a sticker taken away leaves a gap that the next star fills, and the scene 
 
   // The next star fills the gap before the next set is started
   await page.locator('#missing-btn').click();
-  const word = await page.evaluate(() => current);
+  const word = await page.evaluate(() => readingRound.word);
   await page.locator('#know-btn').click();
   await page.locator('#home-btn').click();
   progress = await savedProgress(page);
