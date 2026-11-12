@@ -15,6 +15,7 @@ const SOUND_GAP_MS = 300;    // the pause between sounds when sounding a word ou
 const SOUND_EFFECTS_VOLUME = 1; // how loud the sound effects in js/sound-effects.js are (0.5 is half as loud)
 const ROUND_MAX_WORDS = 10;    // the most words in a round of Let's Read or Missing words (a Timed run uses them all)
 const GAME_MAX_WORDS = 8;      // the most words in a game of Listen & tap or Build the word
+const NEXT_WORDS = 4;          // every round and game includes this many next words to learn (the first without a star, in words.json order)
 const GAME_REPEAT_LIMIT = 2;   // games of one kind in a row before that game's button waits for the other game or a reading round
 // The medals in a game, and the share of its possible points that earns each one. Bronze has to stay at or below
 // the lowest possible score (1 point a word in both games), so finishing always earns it. Gold is every word right the first time.
@@ -74,5 +75,5 @@ const LOCKED_HINT_MS = 400;    // after a locked scene's 🔒 wiggles, the pause
 const SCENE_HINT_MS = 2500;    // how long "Learn more words to unlock more scenes!" shows in the 🖼️ tray
 const CONFETTI_COLORS = ['#ff6b6b', '#ffa94d', '#ffd43b', '#69db7c', '#4dabf7', '#9775fa', '#f783ac'];
 // Only used if words.json can't be loaded (for example, when index.html is opened straight from disk).
-const FALLBACK_WORDS = ['was', 'you', 'me', 'like', 'my', 'yes', 'for', 'see', 'as', 'the', 'can', 'he',
-  'go', 'at', 'up', 'with', 'and', 'a', 'we', 'I', 'be', 'are', 'to', 'on'];
+const FALLBACK_WORDS = ['I', 'a', 'the', 'can', 'see', 'my', 'to', 'we', 'and', 'up', 'you', 'like',
+  'go', 'he', 'on', 'at', 'me', 'was', 'yes', 'for', 'be', 'are', 'with', 'as'];

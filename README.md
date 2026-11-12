@@ -13,16 +13,22 @@ A simple sight-word practice app for young readers. Plain HTML, CSS and JavaScri
 
 The reading game and its kinds of round come first:
 
-- **Let's Read! ▶** — a round of up to 10 words. The words not shown for the longest come first, so every word gets its turn over a few rounds.
+- **Let's Read! ▶** — a round of up to 10 words. It always includes the next 4 words to learn (see [Learning order](#learning-order)), and the rest are the words not shown for the longest, so every word gets its turn over a few rounds.
 - **🎯 Missing words** — a round of up to 10 words without a star yet, picked the same way. The button shows how many are missing in total. (Greyed out until some, but not all, words have stars.)
 - **⏱️ Timed run** — a round of all the words against the clock. The best time is saved; adding or removing words starts a fresh record.
 
 Below a dotted line are the separate games:
 
-- **👂 Listen & tap** — hear a word, then tap it among four choices. A wrong tap plays a soft sound, fades that choice and says the word again, until they find it. The right one plays a happy sound, then says the word. A game is up to 8 words, with the ones not shown for the longest first (change this with `GAME_MAX_WORDS` in `js/config.js`). Each word is worth up to 4 points, minus 1 for each wrong tap. It's open from the start and uses every word that's turned on, starred or not (it needs at least 2 words). It's practice only, so it never changes stars or stickers.
+- **👂 Listen & tap** — hear a word, then tap it among four choices. A wrong tap plays a soft sound, fades that choice and says the word again, until they find it. The right one plays a happy sound, then says the word. A game is up to 8 words: the next 4 words to learn, then the ones not shown for the longest (change this with `GAME_MAX_WORDS` in `js/config.js`). Each word is worth up to 4 points, minus 1 for each wrong tap. It's open from the start and uses every word that's turned on, starred or not (it needs at least 2 words). It's practice only, so it never changes stars or stickers.
 - **🧱 Build the word** — hear a word, then pick out its sound parts in order ("th" + "e") by tapping them or dragging them onto the word. Extra tiles from other sight words don't belong: two or three per word, and more for short words so there are always at least 5 tiles (change these with `BUILD_MIN_TILES`, `BUILD_EXTRA_MIN` and `BUILD_EXTRA_MAX` in `js/config.js`). The parts show faintly as a guide, and each placed part plays its sound, including the last one before the whole word is said. A silent letter plays its own recording, like "silent e". A finished word plays a happy sound before the whole word is said. A wrong tile wiggles, plays a soft sound, and then plays the sound of the part they're looking for. It's open from the start and uses every word that's turned on, starred or not, including one-part words like "a" and "I" (where the job is picking the right tile from the extras). A game is up to 8 words, picked the same way. Each word is worth up to 5 points, minus 1 for each wrong tile, and never less than 1. It's practice only too, so it never changes stars or stickers.
 
 **The back button** (Android's, or the browser's) closes whatever is on top, one thing at a time: a pop-up first, then a reading round or game (like its 🏠 button), then sticker play. On the home screen with nothing open, it leaves the app. The app keeps one history entry for each thing open and takes them off again when something closes another way, so back never does nothing (`js/back.js`).
+
+## Learning order
+
+`words.json` lists the words in the order to learn them, and the Grown-up corner shows them in that order. Every round and game (all but the **Timed run**, which uses every word) includes the next 4 words without a star, so they keep coming back until **I know it!** gives them one. The rest of the round is picked as before, the words not shown for the longest first, which mixes in known and new words. Turned-off words are skipped. To change how many, edit `NEXT_WORDS` in `js/config.js`.
+
+The order starts with short, common words that make little sentences ("I can see the…"), spreads out tricky ones like *said* and *of*, and never puts look-alikes like *to* / *do* or *on* / *no* close together. New words go at the end in the order they should be learned.
 
 ## Trophies
 
@@ -80,7 +86,7 @@ To make them all louder or quieter, change `SOUND_EFFECTS_VOLUME` in `js/config.
 
 ## Adding words
 
-Edit `words.json`. It's a plain list:
+Edit `words.json`. It's a plain list, in the order to learn the words (see [Learning order](#learning-order)), so add new words where they should be learned, usually at the end:
 
 ```json
 ["was", "you", "me", "like", "new-word-here"]
@@ -163,6 +169,7 @@ Every pull request plays the app in a real browser, at a phone size and a tablet
 | `manifest.spec.js` | The manifest keeps the app's identity (its `id` is the start page, as installs had before it was set), says it's English, for education and kids, and lists icons that exist at the sizes it says, with a maskable one |
 | `privacy.spec.js` | The grown-up guide links to the privacy page, which opens in its own tab, in the app's font, with nothing from another site |
 | `storage.spec.js` | Installed, the app asks the browser once to keep its progress; in a browser tab, or once it's kept, it never asks |
+| `order.spec.js` | `words.json` is in the approved learning order, and **Let's Read**, **Missing words**, **Listen & tap** and **Build the word** always include the next 4 words without a star, even ones just shown, skipping turned-off words |
 | `busy.spec.js` | A downloaded update installs on reopening only when nothing is in the way (sticker play, a pop-up, another screen or a "set complete!" celebration), and new stickers wait to fly in while My Trophies is open |
 | `updates.spec.js` | With a real service worker: the installed app opens in its font and plays its recordings with no connection, a new version downloads in the background and the **Update** button installs it with progress kept and only the new saved copy left, and a downloaded version installs by itself when the app is next opened. Each test runs its own server at `127.0.0.1` (offline play is off on `localhost`) that switches to the next version the way the version bump does |
 | `devtools.spec.js` | The 🛠️ panel's jumps lead to the real trophy, prize and "set complete!" moments, and **Restore my progress** puts saved progress back exactly |

@@ -230,11 +230,17 @@ function earnMedals(count) {
   return trophyCount() > trophies;
 }
 
-// Up to `limit` words in a random order, taking the ones not shown for the longest first, so every word gets
-// its turn over a few rounds. `shownAt` is the stats field that says when a word was last shown.
+// The next words to learn: the first words without a star, in the order of words.json (the learning order).
+// Every round and game includes them, so they keep coming back until "I know it!" gives them a star.
+const nextWordsToLearn = (list) => list.filter((word) => !stats(word).known).slice(0, NEXT_WORDS);
+
+// Up to `limit` words for a round or game: the next words to learn, then the words not shown for the longest
+// (`shownAt` is when each was last shown in this activity), which mixes in known words and new ones. Shuffled.
 function pickWords(list, limit, shownAt) {
-  const longestWaiting = shuffle(list).sort((a, b) => (stats(a)[shownAt] || 0) - (stats(b)[shownAt] || 0));
-  return shuffle(longestWaiting.slice(0, limit));
+  const next = nextWordsToLearn(list).slice(0, limit);
+  const rest = list.filter((word) => !next.includes(word));
+  const longestWaiting = shuffle(rest).sort((a, b) => (stats(a)[shownAt] || 0) - (stats(b)[shownAt] || 0));
+  return shuffle([...next, ...longestWaiting.slice(0, limit - next.length)]);
 }
 
 function markShown(word, shownAt) {
