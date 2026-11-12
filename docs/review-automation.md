@@ -59,11 +59,11 @@ Not automated yet, but **tried by hand (2026-11-05):** `playwright-core` drives 
 
 ## 4. Safety rails on `main`
 
-**Status:** the template and label check are done. Branch protection is on hold, because the setup isn't worth it yet. Without it, a pull request can still be merged with a failing check, so look at the checks before merging. Pick this up if that becomes a problem. The bump workflow is already ready for it, and the steps are below.
+**Status:** all three are done. Branch protection was turned on 2026-11-12 as the "Protect main" ruleset, before the Play Store release, so a pull request with a failing check or no label can't be merged. The bump pushes past it with the deploy key, set up with the steps below.
 
 - ✅ **A pull request template:** add `.github/pull_request_template.md` with a short checklist, such as "tried on tablet", "played the sounds" and "added a `minor` label if it's a new feature".
 - ✅ **A label check:** an Action fails until the pull request has a `patch`, `minor` or `major` label, so the version bump is a deliberate choice. `.github/workflows/bump-version.yml` creates the `patch` label.
-- **Branch protection:** require the checks to pass before merging.
+- ✅ **Branch protection:** require the checks to pass before merging.
 
 **Watch out:** the bump Action pushes its commit and tag straight to `main`, and that commit never has passing checks. The Action's normal token can't be exempted from branch protection, so without a fix the version bump fails after every merge, and tablets stop getting updates.
 
@@ -78,7 +78,7 @@ To turn it on, after the checks and this workflow have merged:
 5. **Add the ruleset:** in **Settings > Rules > Rulesets > New branch ruleset**:
    - Set the status to **Active**, and the target to the default branch.
    - Add **Deploy keys** to the bypass list. Leave Repository admin off, so the rule applies to everyone.
-   - Turn on **Require status checks to pass**, and add `check` and `label`, which are the job names.
+   - Turn on **Require status checks to pass**, and add `check`, `test` and `label`, which are the job names (the basic checks, the browser tests and the label check).
    - Leave **Require branches to be up to date** off, because every merge's bump commit would make other open pull requests out of date.
 6. **Merge another pull request** and check that **Bump version** passes with the ruleset on. If it fails, set the ruleset to **Disabled** and find out why, because tablets get no update until it's fixed.
 
