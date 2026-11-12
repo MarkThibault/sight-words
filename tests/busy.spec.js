@@ -47,9 +47,13 @@ test('new stickers wait to fly in while My Trophies is open', async ({ page }) =
   await page.locator('#start-btn').click();
   await page.locator('#know-btn').click();
 
-  // Straight home and into My Trophies, before the new sticker takes off
-  await page.locator('#home-btn').click();
-  await page.locator('#trophy-meter').click();
+  // Straight home and into My Trophies, before the new sticker takes off. Both taps happen in one step: as two
+  // separate clicks, a busy computer can take longer between them than the app waits (FLY_IN_DELAY_MS), and the
+  // sticker flies before My Trophies opens.
+  await page.evaluate(() => {
+    els.homeBtn.click();
+    els.trophyMeter.click();
+  });
   await expect(page.locator('#trophy-panel')).toBeVisible();
   await page.waitForTimeout(2500); // longer than a fly-in takes
   await expect(page.locator('body > .sticker.flying')).toHaveCount(0);
