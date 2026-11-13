@@ -24,9 +24,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT), **kwargs)
 
-    # Tells recorder.html that saving is available.
+    # Tells recorder.html that saving is available, and has the browser check every file for a newer copy, so edits
+    # show on a normal reload. An unchanged file answers "not modified", so it isn't downloaded again.
     def end_headers(self):
         self.send_header('X-Recorder-Save', '1')
+        self.send_header('Cache-Control', 'no-cache')
         super().end_headers()
 
     def do_PUT(self):
