@@ -213,25 +213,3 @@ test('"I know it!" on a word that already has a star shows a short cheer, with n
   await expect(page.locator('#word')).not.toHaveText(word); // the next word comes after the usual short pause
   expect(await page.evaluate(() => window.added)).toEqual({ confetti: 0, card: 0 });
 });
-
-test('stickers learned in the round glow when sticker play opens, and the glow fades after 2 seconds', async ({ page }) => {
-  await openApp(page, { offWords: WORDS.slice(2) }); // two words, so the round is short
-  await page.locator('#start-btn').click();
-  for (let i = 0; i < 2; i++) {
-    await expect(page.locator('#know-btn')).toBeEnabled();
-    await page.locator('#know-btn').click();
-  }
-  await expect(page.locator('#play-badge')).toHaveText('2', { timeout: 10_000 });
-
-  const ringOpacity = () => page.locator('#sticker-board .sticker').evaluateAll((els) =>
-    els.map((el) => Number(getComputedStyle(el, '::before').opacity) * (getComputedStyle(el, '::before').content === 'none' ? 0 : 1)));
-  await page.locator('#play-toggle').click();
-  await expect(page.locator('#sticker-board .sticker.fresh')).toHaveCount(2);
-  expect(await ringOpacity()).toEqual([1, 1]);
-  await expect.poll(ringOpacity, { timeout: 4_000 }).toEqual([0, 0]);
-
-  // Redrawing the board (here, the screen turning) doesn't bring it back
-  await page.setViewportSize({ width: 900, height: 700 });
-  await page.waitForTimeout(300);
-  expect(await ringOpacity()).toEqual([0, 0]);
-});
