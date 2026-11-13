@@ -36,7 +36,7 @@ const BUILD_NEXT_MS = 800;     // the pause after the finished word has been sai
 // The "New sticker!" card after "I know it!" gives a star: it pops up over the word, holds so a young child can see the
 // sticker and read its word, then shrinks into 🏠. The next word comes once it lands.
 const NEW_STICKER_POP_MS = 400;   // popping up
-const NEW_STICKER_HOLD_MS = 1300; // holding still
+const NEW_STICKER_HOLD_MS = 1000; // holding still
 const NEW_STICKER_FLY_MS = 400;   // shrinking into 🏠
 const CHEERS = ['Great job!', 'Awesome!', 'You did it!', 'Super reader!', 'Way to go!', 'Fantastic!'];
 const STICKER_MIN_SIZE = 36;    // stickers shrink down to this to stay off the buttons, then start to overlap them

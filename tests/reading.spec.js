@@ -184,7 +184,7 @@ test('"I know it!" on a new word shows its sticker and word on a "New sticker!" 
   // The card showed the sticker and its word...
   expect(seen).toMatchObject({ title: 'New sticker!', art: beach.stickers[0], word });
   // ...long enough for a young child to see it, and the next word waited until it had gone into 🏠
-  expect(seen.goneAt - seen.shownAt).toBeGreaterThanOrEqual(1800);
+  expect(seen.goneAt - seen.shownAt).toBeGreaterThanOrEqual(1500);
   expect(seen.nextWordAt).toBeGreaterThanOrEqual(seen.goneAt);
   // One thing to look at: no confetti, and no "New sticker!" pill at the top
   expect(seen.confetti).toBe(0);
