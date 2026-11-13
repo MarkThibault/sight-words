@@ -149,7 +149,7 @@ Browsers won't load `words.json` when you double-click `index.html` (it falls ba
 python serve.py
 ```
 
-`serve.py` works like `python -m http.server 8000`, and also lets the sound recorder save into `audio/`. It only answers this computer; to try the app on a tablet on the same Wi-Fi, use `python -m http.server 8000` instead.
+`serve.py` works like `python -m http.server 8000`, and also lets the sound recorder save into `audio/`. It has the browser check every file for a newer copy, so edits show on a normal reload (unchanged files aren't downloaded again). It only answers this computer; to try the app on a tablet on the same Wi-Fi, use `python -m http.server 8000` instead.
 
 ## Tests
 
@@ -173,6 +173,7 @@ Every pull request plays the app in a real browser, at a phone size and a tablet
 | `busy.spec.js` | A downloaded update installs on reopening only when nothing is in the way (sticker play, a pop-up, another screen or a "set complete!" celebration), and new stickers wait to fly in while My Trophies is open |
 | `updates.spec.js` | With a real service worker: the installed app opens in its font and plays its recordings with no connection, a new version downloads in the background and the **Update** button installs it with progress kept and only the new saved copy left, and a downloaded version installs by itself when the app is next opened. Each test runs its own server at `127.0.0.1` (offline play is off on `localhost`) that switches to the next version the way the version bump does |
 | `devtools.spec.js` | The 🛠️ panel's jumps lead to the real trophy, prize and "set complete!" moments, **2 stickers waiting** sends two stickers into the switch, **Next round: 2 words** shortens only the next round, and **Restore my progress** puts saved progress back exactly |
+| `server.spec.js` | `serve.py` has the browser check each file for a newer copy, so edits show on a normal reload, and an unchanged file isn't downloaded again |
 | `layout.spec.js` | Stickers stay off the title, buttons and pills, move out of the way when the font arrives late, and stay out from behind 🏆 🎲 and 🖼️ in sticker play |
 
 Each test starts from fresh saved progress, set up in the test, and fails on any script error. They can't tell how a sound sounds or a game feels, so keep trying changes on a tablet.
