@@ -462,6 +462,27 @@ h1 {
 }
 .sticker.flying { position: fixed; z-index: 20; pointer-events: none; }
 
+/* "I know it!" gave a star: the new sticker with its word, on a card that pops up over the word and shrinks into 🏠 */
+.new-sticker-card {
+  position: fixed;
+  z-index: 20;
+  translate: -50% -50%;
+  padding: 18px 28px 24px;
+  text-align: center;
+  background: #fff;
+  border: 6px solid var(--yellow);
+  border-radius: 36px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+.new-sticker-card h2 { margin: 0 0 6px; color: var(--accent); font-size: 2.4rem; white-space: nowrap; }
+.new-sticker-card .sticker { --s: 190px; position: relative; margin: 0 auto; }
+@media (max-height: 520px) {
+  .new-sticker-card { padding: 10px 20px 14px; }
+  .new-sticker-card h2 { font-size: 1.7rem; }
+  .new-sticker-card .sticker { --s: 120px; }
+}
+
 /* stickers can be picked up and moved around the home screen, only in sticker play; otherwise they stay put */
 #home.playing .sticker-board .sticker { pointer-events: auto; touch-action: none; cursor: grab; }
 .sticker.dragging { z-index: 3; cursor: grabbing; scale: 1.15; filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.2)); transition: scale 0.1s; }

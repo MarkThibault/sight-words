@@ -148,7 +148,68 @@ test('a new round started straight after "I know it!" still begins at its first 
   await page.locator('#home-btn').click();
   await page.locator('#start-btn').click();
   const first = await page.evaluate(() => readingRound.word);
-  await page.waitForTimeout(1500); // longer than the pause
+  await page.waitForTimeout(2500); // longer than the "New sticker!" card takes
   await expect(page.locator('#word')).toHaveText(first);
   expect(await page.evaluate(() => readingRound.total - readingRound.deck.length)).toBe(1);
+});
+
+test('"I know it!" on a new word shows its sticker and word on a "New sticker!" card that holds, then flies into 🏠', async ({ page }) => {
+  await openApp(page);
+  await page.locator('#start-btn').click();
+  const word = await page.evaluate(() => readingRound.word);
+
+  // The page notes what appears and when, so a busy computer running the test can't miss the card
+  await page.evaluate(() => {
+    window.seen = { confetti: 0, toast: false };
+    new MutationObserver((changes) => {
+      for (const change of changes) {
+        for (const el of change.addedNodes) {
+          if (el.classList?.contains('confetti')) seen.confetti += 1;
+          if (el.classList?.contains('new-sticker-card')) {
+            Object.assign(seen, { shownAt: performance.now(), title: el.querySelector('h2').textContent,
+              art: el.querySelector('.sticker-art').textContent, word: el.querySelector('.sticker-word').textContent });
+          }
+        }
+        for (const el of change.removedNodes) if (el.classList?.contains('new-sticker-card')) seen.goneAt = performance.now();
+      }
+    }).observe(document.body, { childList: true });
+    new MutationObserver(() => { seen.nextWordAt ??= performance.now(); }).observe(els.word, { childList: true, characterData: true, subtree: true });
+    new MutationObserver(() => { seen.toast ||= els.toast.classList.contains('show'); }).observe(els.toast, { attributes: true });
+  });
+  await page.locator('#know-btn').click();
+  await expect(page.locator('#card-star')).toBeVisible();
+  await expect(page.locator('#word')).not.toHaveText(word); // the next word came
+  const seen = await page.evaluate(() => window.seen);
+
+  // The card showed the sticker and its word...
+  expect(seen).toMatchObject({ title: 'New sticker!', art: beach.stickers[0], word });
+  // ...long enough for a young child to see it, and the next word waited until it had gone into 🏠
+  expect(seen.goneAt - seen.shownAt).toBeGreaterThanOrEqual(1800);
+  expect(seen.nextWordAt).toBeGreaterThanOrEqual(seen.goneAt);
+  // One thing to look at: no confetti, and no "New sticker!" pill at the top
+  expect(seen.confetti).toBe(0);
+  expect(seen.toast).toBe(false);
+});
+
+test('"I know it!" on a word that already has a star shows a short cheer, with no card or confetti', async ({ page }) => {
+  await openApp(page, { progress: { words: starred(WORDS) } });
+  await page.locator('#start-btn').click();
+  const word = await page.evaluate(() => readingRound.word);
+  // The page counts what's added from here on. (Those stars finish sticker sets, so the scenes' celebrations on
+  // opening can still have confetti falling.)
+  await page.evaluate(() => {
+    window.added = { confetti: 0, card: 0 };
+    new MutationObserver((changes) => {
+      for (const change of changes) {
+        for (const el of change.addedNodes) {
+          if (el.classList?.contains('confetti')) added.confetti += 1;
+          if (el.classList?.contains('new-sticker-card')) added.card += 1;
+        }
+      }
+    }).observe(document.body, { childList: true });
+  });
+  await page.locator('#know-btn').click();
+  await expect(page.locator('#toast')).toHaveClass(/show/);
+  await expect(page.locator('#word')).not.toHaveText(word); // the next word comes after the usual short pause
+  expect(await page.evaluate(() => window.added)).toEqual({ confetti: 0, card: 0 });
 });

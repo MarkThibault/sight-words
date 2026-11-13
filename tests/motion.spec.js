@@ -1,11 +1,11 @@
-// Things that fly: a new sticker from the word card to 🏠, new stickers into the 🐵/🙈 switch, and a medal into
+// Things that fly: the "New sticker!" card from the word card to 🏠, new stickers into the 🐵/🙈 switch, and a medal into
 // the trophy pill. With motion or without (the device's "reduce motion" setting), each one lands, is counted,
 // and leaves nothing behind on the screen.
 'use strict';
 
 const { test, expect, WORDS, openApp, savedProgress, exactly } = require('./helpers');
 
-const flying = (page) => page.locator('body > .sticker.flying, body > .flying-medal');
+const flying = (page) => page.locator('body > .sticker.flying, body > .flying-medal, body > .new-sticker-card');
 
 for (const motion of ['no-preference', 'reduce']) {
   test(`new stickers and medals land, with motion set to "${motion}"`, async ({ page }) => {
@@ -13,15 +13,12 @@ for (const motion of ['no-preference', 'reduce']) {
     await openApp(page, { offWords: WORDS.slice(2) }); // two words, so the round and the game are short
     const moving = motion === 'no-preference';
 
-    // Each star's sticker pops out of the card and flies into 🏠 (or, without motion, doesn't fly at all)
+    // Each star's "New sticker!" card pops up over the word and flies into 🏠 (or, without motion, fades in and out)
     await page.locator('#start-btn').click();
     for (let i = 0; i < 2; i++) {
       await expect(page.locator('#know-btn')).toBeEnabled();
       await page.locator('#know-btn').click();
-      if (moving) {
-        await expect(flying(page)).toHaveCount(1);
-        await expect(page.locator('#home-btn')).toHaveClass(/wiggle/); // it landed
-      }
+      if (moving) await expect(page.locator('#home-btn')).toHaveClass(/wiggle/); // it landed
       await expect(flying(page)).toHaveCount(0);
     }
 

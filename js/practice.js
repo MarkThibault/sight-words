@@ -56,6 +56,7 @@ function stopRound() {
   stopSoundOut();
   readingRound = null;
   stopAudio();
+  document.querySelectorAll('.new-sticker-card').forEach((card) => card.remove()); // left mid-card: it goes with the round
 }
 
 function updateTimer() {
@@ -170,28 +171,28 @@ function knowIt() {
   if (!game.heard) hearWord(); // knowing it still counts as hearing it
 
   const word = game.word;
-  if (!stats(word).known) {
+  const isNew = !stats(word).known;
+  if (isNew) {
     setKnown(word, true);
     state.stickersToFly.push(word); // flies into the 🐵/🙈 switch on the home screen
     markStickerToSee(word); // and waits there until sticker play opens
     game.learned.push(word);
-    flySticker(word);
     els.star.hidden = false;
     playAnim(els.star, 'pop');
     updateCounters();
-    showToast(`New sticker! ${stickerFor(word)}`);
     playEffect('starEarned');
   } else {
     showToast(randomCheer());
   }
-  confetti();
 
   game.busy = true;
   setButtonsDisabled(true);
-  setTimeout(() => {
+  const next = () => {
     game.busy = false;
     if (readingRound === game) showWord(); // not if the child left, maybe already into a new round
-  }, 1200);
+  };
+  if (isNew) showNewSticker(word, next); // the next word comes once the card lands in 🏠
+  else setTimeout(next, 1200);
 }
 
 function goNext() {
