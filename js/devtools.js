@@ -1,7 +1,7 @@
 'use strict';
 
-// Developer tools, only on localhost: the 🛠️ button on the home screen previews the update statuses, and jumps to the
-// moment just before a reward. Offline play is off on localhost, so nothing here touches a real update.
+// Developer tools, only on localhost: the 🛠️ button on the home screen previews the update statuses, jumps to the
+// moment just before a reward, and shortens the next reading round. Offline play is off on localhost, so nothing here touches a real update.
 // The jumps change this browser's saved progress, so the first one keeps a backup that "Restore my progress" puts back.
 
 const DEV_BACKUP_KEY = 'devTools.progressBackup'; // not sightWords.*, so a backup never backs itself up
@@ -32,6 +32,11 @@ function startDevTools() {
 
   $('dev-trophy-next').addEventListener('click', () => jumpTo(nextGameEarnsTrophy));
   $('dev-set-next').addEventListener('click', () => jumpTo(oneStarFromSet));
+  $('dev-stickers-waiting').addEventListener('click', () => jumpTo(twoStickersWaiting));
+  $('dev-short-round').addEventListener('click', () => {
+    state.devRoundWords = 2; // saves nothing, so no backup
+    showDevNote('The next Let\'s Read or Missing words round has 2 words.');
+  });
   $('dev-restore').addEventListener('click', restoreProgress);
   $('dev-restore').hidden = !readStorage(DEV_BACKUP_KEY);
 }
@@ -49,11 +54,15 @@ function jumpTo(setUp) {
     const saved = Object.fromEntries(savedKeys().map((key) => [key, readStorage(key)]));
     writeStorage(DEV_BACKUP_KEY, JSON.stringify(saved));
   }
-  const note = $('dev-note');
-  note.textContent = setUp();
-  note.hidden = false;
+  showDevNote(setUp());
   $('dev-restore').hidden = false;
   renderHome();
+}
+
+function showDevNote(text) {
+  const note = $('dev-note');
+  note.textContent = text;
+  note.hidden = false;
 }
 
 const savedKeys = () => {
@@ -79,6 +88,19 @@ function oneStarFromSet() {
   if (!set) return 'Every sticker set is full already.';
   if (setStickersEarned(set).length < SET_SIZE - 1) return 'Not enough words without a star. Turn some on, or restore.';
   return `One more star finishes ${set.name}. 🎯 Missing words shows only the words without one.`;
+}
+
+// Stars on the first two words without one, as "I know it!" gives them: their stickers fly into the 🐵/🙈 switch
+// and wait there until sticker play opens.
+function twoStickersWaiting() {
+  const words = missingWords().slice(0, 2);
+  if (words.length < 2) return 'Not enough words without a star. Turn some on, or restore.';
+  for (const word of words) {
+    setKnown(word, true);
+    state.stickersToFly.push(word);
+    markStickerToSee(word);
+  }
+  return `2 new stickers (${words.join(', ')}) fly into the 🐵/🙈 switch. Open it to see them pop out.`;
 }
 
 // Puts back the saved progress from before the first jump, exactly, and starts the app again with it.

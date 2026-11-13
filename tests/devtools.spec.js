@@ -75,3 +75,43 @@ test('the 🛠️ panel closes on a tap outside it, and stays open for taps insi
   await page.locator('#dev-btn').click();
   await expect(panel).toBeHidden();
 });
+
+test('"2 stickers waiting" gives two stars whose stickers fly into the 🐵/🙈 switch, like real play', async ({ page }) => {
+  await openApp(page, { progress: { words: starred(WORDS.slice(0, 2)) } });
+  await page.locator('#dev-btn').click();
+  await page.locator('#dev-stickers-waiting').click();
+  await expect(page.locator('#dev-note')).toContainText('2 new stickers');
+  await expect(page.locator('#dev-restore')).toBeVisible(); // it changed saved progress, so it kept a backup
+
+  const progress = await savedProgress(page);
+  expect(Object.values(progress.words).filter((s) => s.known)).toHaveLength(4);
+  expect(progress.stickersToSee).toHaveLength(2);
+  await page.mouse.click(4, 400); // close the panel
+  await expect(page.locator('#play-badge')).toHaveText('2', { timeout: 10_000 }); // they flew in
+
+  await page.locator('#play-toggle').click();
+  await expect(page.locator('#sticker-board .sticker.pop')).toHaveCount(2);
+});
+
+test('"Next round: 2 words" makes only the next Let\'s Read round 2 words long', async ({ page }) => {
+  await openApp(page);
+  const before = await savedNow(page);
+  await page.locator('#dev-btn').click();
+  await page.locator('#dev-short-round').click();
+  await expect(page.locator('#dev-note')).toContainText('2 words');
+  expect(await savedNow(page)).toEqual(before); // saves nothing, so no backup is needed
+  await expect(page.locator('#dev-restore')).toBeHidden();
+
+  await page.mouse.click(4, 400);
+  await page.locator('#start-btn').click();
+  expect(await page.evaluate(() => readingRound.total)).toBe(2);
+  for (let i = 0; i < 2; i++) {
+    await expect(page.locator('#know-btn')).toBeEnabled();
+    await page.locator('#know-btn').click();
+  }
+  await expect(page.locator('#sticker-hint')).toContainText('You learned 2 new words!', { timeout: 10_000 });
+
+  // The round after is back to the usual length
+  await page.locator('#start-btn').click();
+  expect(await page.evaluate(() => readingRound.total)).toBeGreaterThan(2);
+});

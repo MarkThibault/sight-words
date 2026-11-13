@@ -43,4 +43,5 @@ const state = {
   celebrating: false,      // a finished set's "set complete!" celebration is showing
   lastRound: null,         // the round just finished, summarized on the home screen
   playing: false,          // sticker play: the title, bottom row and ⚙️ are hidden (never saved, so the app opens normally)
+  devRoundWords: 0,        // 🛠️ on localhost only: how many words the next reading round has (0 = the usual)
 };

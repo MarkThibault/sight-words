@@ -15,7 +15,11 @@ let soundRun = 0;            // counts sound-outs, so a stopped one knows to sto
 function startRound(mode, timed = false) {
   const list = mode === 'missing' ? missingWords() : state.words;
   if (list.length === 0) return;
-  const deck = timed ? shuffle(list) : pickWords(list, ROUND_MAX_WORDS, 'seenAt');
+  let deck = timed ? shuffle(list) : pickWords(list, ROUND_MAX_WORDS, 'seenAt');
+  if (state.devRoundWords) { // 🛠️ on localhost only: a short round for testing
+    deck = deck.slice(0, state.devRoundWords);
+    state.devRoundWords = 0;
+  }
   readingRound = {
     mode, timed, total: deck.length, capped: deck.length < list.length, learned: [], startedAt: performance.now(),
     deck, word: null, heard: false, busy: false,
