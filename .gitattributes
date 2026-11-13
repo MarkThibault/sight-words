@@ -1,0 +1,11 @@
+# Text files use LF line endings everywhere, Windows included, so every tool (editors, scripts, heredocs) writes the
+# same endings and files never end up mixed. GitHub already stores them this way.
+* text=auto eol=lf
+
+# Never touch these: recordings, images and fonts.
+*.wav binary
+*.mp3 binary
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff2 binary
