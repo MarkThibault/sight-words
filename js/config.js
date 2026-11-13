@@ -74,6 +74,7 @@ const STICKER_EMOJI = [
   '🌞', '⛄', '🚗', '🚒', '🚌', '🚂', '🚁', '⚽', '🏀', '🎁', '🎨', '🧸', '🥁', '👑'];
 const FLY_IN_DELAY_MS = 700;   // after a round, how long the home screen shows before new stickers and scenes fly into the 🐵/🙈 switch
 const FLY_IN_GAP_MS = 350;     // the time between each one taking off
+const FRESH_GLOW_MS = 2000;    // how long stickers learned in the round glow once they come out on the board
 const SCENE_CELEBRATION_MS = 2000; // how long "set complete!" shows before it shrinks into the switch (a tap skips ahead)
 const PRIZE_CARD_DELAY_MS = 1800; // after a game that earns a trophy, how long the 🏆 gets to fly in before "Pick your prize!" shows
 const LOCKED_HINT_MS = 400;    // after a locked scene's 🔒 wiggles, the pause before the 🐵/🙈 switch wiggles, back toward reading

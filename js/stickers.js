@@ -46,7 +46,7 @@ function renderStickers() {
     el.style.left = `${spot ? spot[0] * W : slots[i].x}px`;
     el.style.top = `${spot ? spot[1] * H : slots[i].y}px`;
     makeDraggable(el, sticker.key);
-    el.classList.toggle('fresh', learnedLastRound.includes(sticker.key));
+    if (learnedLastRound.includes(sticker.key)) glowFresh(el, sticker.key);
     const popIndex = state.stickersToPop.indexOf(sticker.key);
     if (popIndex >= 0) {
       el.classList.add('pop');
@@ -55,6 +55,17 @@ function renderStickers() {
     els.board.append(el);
   });
   state.stickersToPop = [];
+}
+
+// A word learned in the round just finished gets a glowing ring for its first FRESH_GLOW_MS on the board. The time
+// counts from when it first shows, so redrawing the board doesn't start the glow again.
+function glowFresh(el, key) {
+  const shownAt = state.lastRound.glowShownAt || (state.lastRound.glowShownAt = {});
+  if (!shownAt[key]) shownAt[key] = Date.now();
+  const left = FRESH_GLOW_MS - (Date.now() - shownAt[key]);
+  if (left <= 0) return;
+  el.classList.add('fresh');
+  el.style.setProperty('--glow-left', `${left}ms`);
 }
 
 // ---------- Waiting inside the 🐵/🙈 switch ----------
