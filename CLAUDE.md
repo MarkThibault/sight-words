@@ -17,7 +17,7 @@ A sight-word practice app for a 5-year-old, used mostly on a tablet. See `README
 - `serve.py` only answers this computer. It also lets `recorder.html` save clips into `audio/`.
 - Browsers cache files until the version changes. After editing, reload with a cache bypass or Ctrl+Shift+R.
 - Offline play (`sw.js`) is off on `localhost`, so edits show right away. To test it, use `http://127.0.0.1:8000`, which has its own saved data.
-- The 🛠️ button, only on `localhost`, previews the update statuses (`js/devtools.js`) and links to the sound effects page (`sounds.html`). Add other developer-only previews there.
+- The 🛠️ button, only on `localhost`, previews the update statuses (`js/devtools.js`), jumps to just before a reward, sends 2 stickers into the switch, shortens the next round to 2 words and links to the sound effects page (`sounds.html`). Its jumps back up saved progress first, and **Restore my progress** puts it back, so use them for browser checks instead of hand-written scripts. Add other developer-only previews there.
 
 ## Workflow
 
