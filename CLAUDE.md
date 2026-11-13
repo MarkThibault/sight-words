@@ -5,6 +5,7 @@ A sight-word practice app for a 5-year-old, used mostly on a tablet. See `README
 ## Stack
 
 - Plain HTML, CSS and JavaScript, hosted on GitHub Pages. No build step, no dependencies and no modules in the app. Tools for developing and checking it, like the browser tests, may have dependencies (`package.json`), but the app must never load them.
+- Text files use LF line endings, on Windows too (`.gitattributes`), so write new files with LF. Recordings, images and fonts are marked binary and never converted.
 - Scripts in `js/` load in order from `index.html` and share globals, so a new file must be added there in the right place. Opening `index.html` from disk should still work.
 - A new HTML page must be added to the `?v=` stamping in `.github/scripts/bump-version.sh` and to the link check in `.github/scripts/check-site.js`, or it misses version bumps and broken-link checks.
 - Every PR runs the basic checks in `.github/scripts/check-site.js` (script errors, missing recordings and broken links) and the browser tests in `tests/`. Run both before committing: `node .github/scripts/check-site.js` and `npm test` (after `npm install` once). See "Tests" in `README.md`.
