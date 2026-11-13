@@ -268,10 +268,37 @@ function shuffleStickers() {
   playAnim(els.shuffleShadow, 'roll-shadow');
 }
 
-// A new sticker pops out of the word card and flies into the 🏠 button.
-function flySticker(word) {
-  const el = makeSticker(wordSticker(word));
-  el.classList.add('flying');
-  el.style.setProperty('--s', '160px');
-  flyInto(el, els.card, els.homeBtn, { duration: 1100, endScale: 0.3, spin: '-360deg' }, () => playAnim(els.homeBtn, 'wiggle'));
+// "I know it!" gave a star: a "New sticker!" card with the sticker and its word pops up over the word card, holds,
+// then shrinks into the 🏠 button, which wiggles. Without motion (the device's "reduce motion" setting) it fades in and
+// out where it is instead. `landed` runs once it's gone.
+function showNewSticker(word, landed) {
+  const sticker = makeSticker(wordSticker(word));
+  const card = make('div', 'new-sticker-card');
+  card.setAttribute('role', 'status');
+  card.append(make('h2', '', 'New sticker!'), sticker);
+
+  const pop = NEW_STICKER_POP_MS;
+  const hold = NEW_STICKER_HOLD_MS;
+  const total = pop + hold + NEW_STICKER_FLY_MS;
+  const a = els.card.getBoundingClientRect();
+  const b = els.homeBtn.getBoundingClientRect();
+  const from = { left: `${a.left + a.width / 2}px`, top: `${a.top + a.height / 2}px` };
+  const to = { left: `${b.left + b.width / 2}px`, top: `${b.top + b.height / 2}px` };
+  Object.assign(card.style, from);
+  document.body.append(card);
+
+  const keyframes = reduceMotion
+    ? [{ opacity: 0 }, { opacity: 1, offset: pop / total }, { opacity: 1, offset: (pop + hold) / total }, { opacity: 0 }]
+    : [
+      { ...from, scale: 0, rotate: '-20deg', easing: 'ease-out' },
+      { ...from, scale: 1.08, rotate: '0deg', offset: (pop * 0.7) / total, easing: 'ease-in-out' },
+      { ...from, scale: 1, offset: pop / total },
+      { ...from, scale: 1, offset: (pop + hold) / total, easing: 'ease-in' },
+      { ...to, scale: 0.12 },
+    ];
+  card.animate(keyframes, { duration: total }).onfinish = () => {
+    card.remove();
+    if (!reduceMotion) playAnim(els.homeBtn, 'wiggle');
+    landed();
+  };
 }
