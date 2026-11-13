@@ -188,6 +188,8 @@ npm test
 
 They use the Edge already on a Windows computer, or Chrome elsewhere, so no browser is downloaded. They start their own copy of `serve.py` on port 8123, so the usual one on port 8000 can stay open. `npx playwright test --project=tablet` runs only the tablet size, and `npx playwright test --headed` shows the browser while it plays. The app itself still has no dependencies: `package.json` is only for the tests.
 
+`npm install` also turns on a check before every commit (`.githooks/pre-commit`): it runs the same basic checks as every pull request (`node .github/scripts/check-site.js`: script errors, missing recordings and broken links) and stops the commit if one fails. It takes a few seconds. The browser tests take minutes, so run them yourself before committing.
+
 ## How the code is organized
 
 The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` (no modules, so opening the file from disk still works). Each file can use anything from the files loaded before it.

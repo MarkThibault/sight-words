@@ -1,0 +1,10 @@
+#!/bin/sh
+# Runs before every commit: the same basic checks as every PR (script errors, missing recordings and broken links),
+# so a problem is caught before it's pushed. The browser tests (npm test) take minutes, so they stay a separate step.
+# Turned on by `npm install` (the "prepare" script sets core.hooksPath to .githooks).
+echo "Checking the site before committing..."
+if ! node .github/scripts/check-site.js; then
+  echo
+  echo "Commit stopped: fix the problems above, then commit again."
+  exit 1
+fi
