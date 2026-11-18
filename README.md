@@ -135,6 +135,11 @@ A turned-on word is on the list when either:
 - **It keeps getting missed in the games.** Each word keeps its last 6 tries in Listen & tap and Build the word: right the first time, or missed (any wrong tap or wrong tile while finding or building it). In Listen & tap a miss also notes the word tapped instead, shown as "mixed up with *saw* 2×". 3 misses among those tries put it on the list, whether it has a star or not, since **I know it!** is the child's own tap.
 - **It's stuck without a star.** It was shown in 8 reading rounds (Let's Read, Missing words or a Timed run) and passed with **Next** while it had no star. Being one of the next words to learn, it comes back every round, so this catches a word that isn't clicking.
 
+Below the list:
+
+- **💡 Try away from the screen** suggests a way to practice the two words that need it most, like pointing them out in a bedtime story or writing them in chalk. It changes once a day. The ideas are `PRACTICE_TIPS` in `js/panel.js`.
+- **▶ Practice these words** closes the corner and starts a reading round of just those words (up to 10, shuffled), for the child to play with a grown-up. To the child it's a round like any other, so **I know it!** still earns a star, and it ends with "You read 3 words!".
+
 Right the first time 3 times in a row takes a word off, and drops its older misses, so it needs fresh misses to come back. A star clears its stuck count. Counting starts from the version that added it, so the list fills up over a few days of play. The numbers are `PRACTICE_TRIES`, `PRACTICE_MISSES`, `PRACTICE_CLEAR`, `PRACTICE_STUCK_ROUNDS` and `PRACTICE_SHOW` in `js/config.js`. It's saved with each word's progress (`tries` and `skipped`, see `js/progress.js`), so **Reset all progress** clears it.
 
 ### Turning words on and off
@@ -184,7 +189,7 @@ Every pull request plays the app in a real browser, at a phone size and a tablet
 | `font.spec.js` | The Andika font loads from the app's own `fonts/` folder, in regular and bold, and the app asks nothing of any other site |
 | `manifest.spec.js` | The manifest keeps the app's identity (its `id` is the start page, as installs had before it was set), says it's English, for education and kids, and lists icons that exist at the sizes it says, with a maskable one |
 | `grownup.spec.js` | The Grown-up corner opens on Progress with the star count and next words, the Words page's buttons show only the matching words, and phones switch pages from ☰ (which a tap outside or back closes) while tablets use the tabs, and Reset all progress asks in a pop-up that Keep everything or back closes without erasing |
-| `practice.spec.js` | Listen & tap notes the word tapped by mistake and Build the word a wrong tile, Next on a word without a star counts a skipped round and a star clears it, Progress lists the words that need practice with why (at most 5, the rest counted), the Words page marks them, and 3 right in a row takes a word off |
+| `practice.spec.js` | Listen & tap notes the word tapped by mistake and Build the word a wrong tile, Next on a word without a star counts a skipped round and a star clears it, Progress lists the words that need practice with why (at most 5, the rest counted), the Words page marks them, 3 right in a row takes a word off, ▶ Practice these words plays just those words, and the tip names the two that need it most |
 | `privacy.spec.js` | The grown-up guide links to the privacy page, which opens in its own tab, in the app's font, with nothing from another site |
 | `storage.spec.js` | Installed, the app asks the browser once to keep its progress; in a browser tab, or once it's kept, it never asks |
 | `order.spec.js` | `words.json` is in the approved learning order, and **Let's Read**, **Missing words**, **Listen & tap** and **Build the word** always include the next 4 words without a star, even ones just shown, skipping turned-off words |

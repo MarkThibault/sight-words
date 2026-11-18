@@ -15,6 +15,17 @@ const WORD_FILTERS = {
 };
 let wordFilter = 'all';
 
+// Ideas for practicing the tricky words away from the screen, a different one each day. {words} is where they go.
+const PRACTICE_TIPS = [
+  'Point out {words} in tonight’s bedtime story.',
+  'Write {words} on sticky notes and hide them around the house to find and read.',
+  'Hunt for {words} on cereal boxes, signs and menus together.',
+  'Write {words} in chalk outside, or with a finger in sand or bath foam.',
+  'Make up a silly sentence together that uses {words}.',
+  'Write {words} on cards and take turns reading them. Let your child catch you getting one wrong!',
+  'Ask your child to find {words} on a page of any book, like a treasure hunt.',
+];
+
 function openPanel() {
   hideGrownupTip();
   wordFilter = 'all';
@@ -78,6 +89,8 @@ function renderPracticeList() {
   const more = needs.length - PRACTICE_SHOW;
   els.practiceMore.hidden = more <= 0;
   els.practiceMore.textContent = `And ${more} more, marked 🧡 on the Words page.`;
+  els.practiceStart.hidden = needs.length === 0;
+  renderPracticeTip(needs.slice(0, 2).map((need) => need.word));
   els.practiceList.replaceChildren(...needs.slice(0, PRACTICE_SHOW).map((need) => {
     const row = document.createElement('li');
     const why = make('span', 'practice-why');
@@ -95,6 +108,22 @@ function renderPracticeList() {
     row.append(make('span', 'practice-word', need.word), why, hear);
     return row;
   }));
+}
+
+// "Try away from the screen", with the two words that need it most. The tip changes each day, not each time it's opened.
+function renderPracticeTip(words) {
+  els.practiceTip.hidden = words.length === 0;
+  if (!words.length) return;
+  const day = Math.floor((Date.now() - new Date().getTimezoneOffset() * 60_000) / 86_400_000);
+  const [before, after] = PRACTICE_TIPS[day % PRACTICE_TIPS.length].split('{words}');
+  const named = words.flatMap((word, i) => [...(i ? [' and '] : []), make('i', '', word)]);
+  els.practiceTip.replaceChildren(make('b', '', '💡 Try away from the screen: '), before, ...named, after);
+}
+
+// ▶ Practice these words: the corner closes and a reading round of just those words starts.
+function startPracticeRound() {
+  els.panel.close();
+  startRound('practice');
 }
 
 function renderWordsPage() {

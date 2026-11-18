@@ -85,7 +85,7 @@ function renderSummary() {
   const n = last.learned.length;
   const main = make('span', 'summary-main');
   if (n > 0) main.textContent = `🎉 You learned ${plural(n, 'new word')}!`;
-  else if (last.capped) main.textContent = `🎉 You read ${plural(last.total, 'word')}!`;
+  else if (last.capped || last.mode === 'practice') main.textContent = `🎉 You read ${plural(last.total, 'word')}!`;
   else if (last.mode === 'missing') main.textContent = '🎉 You practiced all your missing words!';
   else main.textContent = `🎉 You read all ${last.total} words!`;
   const lines = [main];

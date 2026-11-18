@@ -1324,6 +1324,8 @@ h1 {
 .practice-why b { color: var(--accent); }
 .grownup-page .practice-empty { margin-top: 10px; padding: 10px 12px; border-radius: 14px; background: #f8f9fa; color: #666; font-size: 0.95rem; }
 .practice-mark { font-size: 1rem; }
+.grownup-page .practice-tip { margin-top: 12px; padding: 10px 12px; border-radius: 14px; background: #e7f5ff; font-size: 0.95rem; }
+.practice-start { margin-top: 12px; padding: 12px 20px; border: 0; border-radius: 14px; background: var(--green); color: #fff; font-size: 1.1rem; font-weight: 700; }
 .gc-words { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .gc-word { padding: 4px 14px; border-radius: 12px; background: var(--bg); font-size: 1.4rem; font-weight: 700; }
 .gc-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
