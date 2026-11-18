@@ -33,6 +33,7 @@ function startRound(mode, timed = false) {
   els.next.textContent = mode === 'checkup' ? 'Skip ➜' : 'Next ➜';
   els.roundBar.setAttribute('aria-valuemax', String(deck.length));
   showScreen('practice');
+  notePlayedToday(); // for This week in the Grown-up corner, even if the round is left early
   showWord();
   if (timed) {
     updateTimer();
@@ -213,9 +214,10 @@ function goNext() {
     return;
   }
   stopAudio();
-  // for Needs practice in the Grown-up corner
-  if (!stats(readingRound.word).known) noteSkipped(readingRound.word);
-  else if (readingRound.mode === 'checkup') noteForgot(readingRound.word, true);
+  // For Needs practice in the Grown-up corner. A Timed run is a race, so passing a word there isn't being stuck.
+  const known = stats(readingRound.word).known;
+  if (!known && !readingRound.timed) noteSkipped(readingRound.word);
+  else if (known && readingRound.mode === 'checkup') noteForgot(readingRound.word, true);
   showWord();
 }
 

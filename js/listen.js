@@ -19,6 +19,7 @@ function startListen() {
   state.lastRound = null;
   els.listenBar.setAttribute('aria-valuemax', String(maxPoints));
   showScreen('listen');
+  notePlayedToday();
   showListenWord();
 }
 

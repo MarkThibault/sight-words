@@ -53,6 +53,16 @@ test('Next on a word without a star counts a skipped round, and a star clears th
   expect((await savedProgress(page)).words[second].skipped).toBeUndefined();
 });
 
+test('Next in a Timed run does not count a skipped round, since it is a race', async ({ page }) => {
+  await openApp(page, { offWords: WORDS.slice(2) });
+  await page.locator('#timed-btn').click();
+  const first = await page.locator('#word').textContent();
+  await page.locator('#card').click(); // hearing it
+  await page.locator('#next-btn').click();
+  await expect(page.locator('#word')).not.toHaveText(first);
+  expect((await savedProgress(page)).words[first].skipped).toBeUndefined();
+});
+
 test('Progress lists the words that need practice, with why, and the Words page marks them', async ({ page }) => {
   const [was, said, of, almost, off] = ['was', 'said', 'of', 'the', 'my'];
   const words = {
