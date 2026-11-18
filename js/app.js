@@ -75,6 +75,11 @@ async function init() {
   els.panel.querySelectorAll('[data-page]:is(button)').forEach((btn) => btn.addEventListener('click', () => showPanelPage(btn.dataset.page)));
   els.panelMenuBtn.addEventListener('click', togglePanelMenu);
   els.practiceStart.addEventListener('click', startPracticeRound);
+  els.backupSave.addEventListener('click', saveBackup);
+  els.backupLoad.addEventListener('click', () => els.backupFile.click());
+  els.backupFile.addEventListener('change', () => chooseBackup(els.backupFile.files[0]));
+  els.loadYes.addEventListener('click', loadBackup);
+  els.loadCancel.addEventListener('click', () => els.loadConfirm.close());
   els.effectsSwitch.addEventListener('change', () => setSoundEffects(els.effectsSwitch.checked));
   els.calmSwitch.addEventListener('change', () => setCalmAnimations(els.calmSwitch.checked));
   els.weekPrev.addEventListener('click', () => showWeek(1));

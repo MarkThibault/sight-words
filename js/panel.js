@@ -37,6 +37,7 @@ function openPanel() {
   showPanelPage('progress');
   if (canSpeak) renderVoiceOptions();
   renderSettings();
+  els.backupNote.hidden = true;
   els.panel.showModal();
 }
 
