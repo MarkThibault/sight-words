@@ -1521,6 +1521,13 @@ html.calm *, html.calm *::before, html.calm *::after {
 .reset-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 12px; }
 .reset-buttons button { padding: 14px 24px; border: 0; border-radius: 14px; font-size: 1.15rem; }
 .reset-buttons .phone-only { display: none; }
+/* The hand-off before ▶ Practice these words: big and friendly, since the child taps Let's read */
+.panel.handoff-card { width: min(92vw, 440px); padding: 28px; text-align: center; }
+.handoff-card[open] { align-items: center; gap: 14px; }
+.handoff-icon { font-size: 4rem; line-height: 1; }
+.handoff-title { margin: 0; color: var(--accent); font-size: 1.8rem; font-weight: 700; }
+.handoff-card .big-btn { width: 100%; }
+.handoff-cancel { padding: 6px 16px; background: none; border: 0; color: #6b6155; font-size: 1.05rem; text-decoration: underline; }
 /* Save a copy first: a chunky pill like the corner's, quieter than the two answers below it */
 .reset-save {
   padding: 8px 18px;

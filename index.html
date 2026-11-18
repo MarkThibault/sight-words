@@ -342,7 +342,7 @@
             <li>or it has no star yet and was passed with <b>Next</b> in <span data-number="practiceStuck"></span> reading rounds.</li>
             <li>or it has a star and was passed with <b>Skip</b> in a <b>Check-up</b>. It keeps its star and sticker, and comes off the list when your child taps <b>I know it!</b> on it again.</li>
           </ul>
-          <p><b>▶ Practice these words</b> starts a reading round of just those words, for your child to play with you. It's a round like any other: <b>I know it!</b> still earns a star. Below the list, a tip suggests a way to practice them away from the screen, a new one each day.</p>
+          <p><b>▶ Practice these words</b> closes this corner and asks you to hand the device to your child, who taps <b>Let's read!</b> to start a reading round of just those words. It's a round like any other: <b>I know it!</b> still earns a star. Below the list, a tip suggests a way to practice them away from the screen, a new one each day.</p>
           <p>Getting it right the first time <span data-number="practiceClear"></span> times in a row in the games takes it off, and a star clears the reading rounds. It starts counting from this version of the app, so the list fills up over a few days of play. <b>Reset all progress</b> clears it.</p>
           <h4>Turning words on and off</h4>
           <p>Each word on the <b>Words</b> page has a switch. A word that's off is skipped in every round and game, and its sticker is hidden until it's back on. Words stay off even after <b>Reset all progress</b>, and at least one word always stays on.</p>
@@ -372,6 +372,14 @@
       <button id="reset-cancel" class="primary" autofocus>Keep <span class="wide-only">everything</span><span class="phone-only">it all</span></button>
       <button id="reset-yes" class="danger">Yes, erase</button>
     </div>
+  </dialog>
+
+  <!-- Before ▶ Practice these words: the grown-up hands the device over, and the child starts the round -->
+  <dialog id="handoff" class="panel handoff-card" aria-labelledby="handoff-title">
+    <span class="handoff-icon" aria-hidden="true">👋</span>
+    <p id="handoff-title" class="handoff-title">Hand it to your child</p>
+    <button id="handoff-go" class="big-btn go" autofocus>Let's read! ▶</button>
+    <button id="handoff-cancel" class="handoff-cancel">Not now</button>
   </dialog>
 
   <!-- "Are you sure?" for Load a copy, like the one for Reset all progress -->

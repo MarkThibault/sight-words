@@ -161,9 +161,15 @@ function renderPracticeTip(words) {
   els.practiceTip.replaceChildren(make('b', '', '💡 Try away from the screen: '), before, ...named, after);
 }
 
-// ▶ Practice these words: the corner closes and a reading round of just those words starts.
-function startPracticeRound() {
+// ▶ Practice these words: the corner closes, and a pop-up asks the grown-up to hand the device over. The child's
+// tap on Let's read starts a reading round of just those words (and, being a real tap, lets the sound play).
+function showHandoff() {
   els.panel.close();
+  els.handoff.showModal();
+}
+
+function startPracticeRound() {
+  els.handoff.close();
   startRound('practice');
 }
 
