@@ -1,5 +1,6 @@
 // Learning words in order: words.json lists the words in the order to learn them, and every reading round and game
-// includes the next NEXT_WORDS words without a star, so they keep coming back until they're learned.
+// but Check-up includes the next NEXT_WORDS words without a star, so they keep coming back until they're learned.
+// Check-up is only words with a star, the ones not seen for the longest.
 'use strict';
 
 const { test, expect, WORDS, openApp, starred } = require('./helpers');
@@ -29,7 +30,6 @@ test('words.json lists the words in the approved learning order', () => {
 
 for (const [name, button, screen] of [
   ["Let's Read", '#start-btn', 'practice'],
-  ['Missing words', '#missing-btn', 'practice'],
   ['Listen & tap', '#listen-btn', 'listen'],
   ['Build the word', '#build-btn', 'build'],
 ]) {
@@ -50,4 +50,26 @@ test('turned-off words are skipped when choosing the next words', async ({ page 
   const words = await roundWords.practice(page);
   expect(words).toEqual(expect.arrayContaining(next));
   expect(words).not.toContain(off);
+});
+
+test('Check-up waits for the first star', async ({ page }) => {
+  await openApp(page);
+  await expect(page.locator('#checkup-btn')).toBeDisabled();
+});
+
+test('Check-up plays only words with a star, the ones not seen for the longest', async ({ page }) => {
+  // 12 words with a star: the first 10 seen long ago, the last 2 just now
+  const now = Date.now();
+  const words = starred(WORDS.slice(0, 12), (word, i) => ({ seenAt: i < 10 ? now - 86_400_000 * (20 - i) : now }));
+  await openApp(page, { progress: { words, scenes: ['beach', 'space'] } }); // scenes already unlocked, so no celebration
+  await expect(page.locator('#checkup-btn')).toBeEnabled();
+  await page.locator('#checkup-btn').click();
+  const round = await roundWords.practice(page);
+  expect(round.sort()).toEqual(WORDS.slice(0, 10).sort());
+
+  for (let i = 0; i < round.length; i++) {
+    await expect(page.locator('#know-btn')).toBeEnabled();
+    await page.locator('#know-btn').click();
+  }
+  await expect(page.locator('#sticker-hint')).toContainText('You checked 10 words!', { timeout: 15_000 });
 });

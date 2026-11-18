@@ -140,7 +140,7 @@ h1 {
 .mode-btn:active:not(:disabled) { translate: 0 4px; box-shadow: 0 1px 0 var(--mode); }
 .mode-btn:disabled { opacity: 0.6; }
 .mode-btn small { color: var(--ink); font-size: 0.95rem; font-weight: 400; }
-.missing { --mode: var(--green-dark); }
+.checkup { --mode: var(--green-dark); }
 .timed { --mode: var(--blue-dark); }
 .listen { --mode: #0c8599; --mode-dark: #086470; }
 .build { --mode: #c2255c; --mode-dark: #921b45; }
@@ -675,7 +675,8 @@ h1 {
 .build-tile.used { visibility: hidden; } /* keeps its space, so the other tiles don't jump */
 
 @media (max-width: 560px) {
-  .home-center { padding: 10px 12px 14px; }
+  /* the full width, so it never changes size with a button's label, which would move the stickers around it */
+  .home-center { width: 100%; padding: 10px 12px 14px; }
   h1 { margin-bottom: 12px; font-size: clamp(2.6rem, 12vw, 3.4rem); }
   .read-group .big-btn { width: 100%; min-height: 64px; font-size: 1.7rem; }
   .sticker-hint { margin-top: 12px; font-size: 1.1rem; }

@@ -26,11 +26,7 @@ function renderHome() {
   updateCounters();
   renderTrophyMeter();
 
-  const missing = missingWords().length;
-  // Missing words only differs from a full round once some, but not all, words have stars
-  const canPlayMissing = missing > 0 && missing < state.words.length;
-  els.missingBtn.disabled = !canPlayMissing;
-  els.missingBtn.textContent = canPlayMissing ? `🎯 Missing words (${missing})` : '🎯 Missing words';
+  els.checkupBtn.disabled = knownWords().length === 0; // a check-up needs words with a star
   const best = bestTime();
   els.bestTime.textContent = best === null ? 'No best time yet' : `Best: ${formatTime(best)}`;
 
@@ -58,7 +54,7 @@ function setGameWaiting(btn, waiting) {
 
 // A tap on a waiting game wiggles everything that can be played instead, as a hint to pick one of those.
 function hintOtherActivities(game) {
-  const others = [els.start, els.missingBtn, els.timedBtn, game === 'listen' ? els.buildBtn : els.listenBtn];
+  const others = [els.start, els.checkupBtn, els.timedBtn, game === 'listen' ? els.buildBtn : els.listenBtn];
   others.filter((btn) => !btn.disabled && !btn.classList.contains('waiting')).forEach((btn) => playAnim(btn, 'wiggle'));
 }
 
@@ -85,8 +81,8 @@ function renderSummary() {
   const n = last.learned.length;
   const main = make('span', 'summary-main');
   if (n > 0) main.textContent = `🎉 You learned ${plural(n, 'new word')}!`;
+  else if (last.mode === 'checkup') main.textContent = `🎉 You checked ${plural(last.total, 'word')}!`;
   else if (last.capped || last.mode === 'practice') main.textContent = `🎉 You read ${plural(last.total, 'word')}!`;
-  else if (last.mode === 'missing') main.textContent = '🎉 You practiced all your missing words!';
   else main.textContent = `🎉 You read all ${last.total} words!`;
   const lines = [main];
 

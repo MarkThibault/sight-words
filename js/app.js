@@ -21,7 +21,7 @@ async function init() {
   }
 
   els.start.addEventListener('click', () => startRound('all'));
-  els.missingBtn.addEventListener('click', () => startRound('missing'));
+  els.checkupBtn.addEventListener('click', () => startRound('checkup'));
   els.timedBtn.addEventListener('click', () => startRound('all', true));
   els.homeBtn.addEventListener('click', () => {
     stopRound();

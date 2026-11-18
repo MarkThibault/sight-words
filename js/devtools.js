@@ -35,7 +35,7 @@ function startDevTools() {
   $('dev-stickers-waiting').addEventListener('click', () => jumpTo(twoStickersWaiting));
   $('dev-short-round').addEventListener('click', () => {
     state.devRoundWords = 2; // saves nothing, so no backup
-    showDevNote('The next Let\'s Read or Missing words round has 2 words.');
+    showDevNote('The next Let\'s Read or Check-up round has 2 words.');
   });
   $('dev-restore').addEventListener('click', restoreProgress);
   $('dev-restore').hidden = !readStorage(DEV_BACKUP_KEY);
@@ -87,7 +87,7 @@ function oneStarFromSet() {
   }
   if (!set) return 'Every sticker set is full already.';
   if (setStickersEarned(set).length < SET_SIZE - 1) return 'Not enough words without a star. Turn some on, or restore.';
-  return `One more star finishes ${set.name}. 🎯 Missing words shows only the words without one.`;
+  return `One more star finishes ${set.name}. Let\'s Read always includes words without one.`;
 }
 
 // Stars on the first two words without one, as "I know it!" gives them: their stickers fly into the 🐵/🙈 switch
