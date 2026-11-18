@@ -8,6 +8,7 @@ const VOICE_KEY = 'sightWords.voice.v1';
 const STICKER_SPOTS_KEY = 'sightWords.stickerSpots.v1'; // where stickers were dragged to on the home screen
 const STICKER_SEED_KEY = 'sightWords.stickerSeed.v1';   // which random grid the stickers are laid out on (🎲 picks a new one)
 const OFF_WORDS_KEY = 'sightWords.offWords.v1'; // kept apart from progress, so a reset doesn't turn words back on
+const SETTINGS_KEY = 'sightWords.settings.v1'; // the Grown-up corner's switches, kept apart from progress so a reset leaves them
 const GROWNUP_TIP_KEY = 'sightWords.grownupTipSeen.v1'; // the "press and hold ⚙️" tip has been shown, so it doesn't show again
 const SPEECH_RATE = 0.9;     // a little slower than normal speech (much slower sounds robotic)
 const SOUND_RATE = 0.75;     // sounds not recorded yet, said by the device's voice when sounding a word out

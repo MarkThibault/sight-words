@@ -10,6 +10,7 @@ function fitAllWords() {
 
 async function init() {
   state.progress = loadProgress();
+  setCalmAnimations(readSettings().calm === true, false);
 
   if (canSpeak) {
     pickVoice();
@@ -74,6 +75,8 @@ async function init() {
   els.panel.querySelectorAll('[data-page]:is(button)').forEach((btn) => btn.addEventListener('click', () => showPanelPage(btn.dataset.page)));
   els.panelMenuBtn.addEventListener('click', togglePanelMenu);
   els.practiceStart.addEventListener('click', startPracticeRound);
+  els.effectsSwitch.addEventListener('change', () => setSoundEffects(els.effectsSwitch.checked));
+  els.calmSwitch.addEventListener('change', () => setCalmAnimations(els.calmSwitch.checked));
   els.weekPrev.addEventListener('click', () => showWeek(1));
   els.weekNext.addEventListener('click', () => showWeek(0));
   els.panelMenu.addEventListener('close', () => els.panelMenuBtn.setAttribute('aria-expanded', 'false'));

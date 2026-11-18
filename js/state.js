@@ -34,6 +34,7 @@ const els = {
   sceneCelebration: $('scene-celebration'), sceneCelebrationCard: $('scene-celebration-card'), sceneCelebrationTitle: $('scene-celebration-title'),
   sceneCelebrationPreview: $('scene-celebration-preview'), sceneCelebrationDecor: $('scene-celebration-decor'),
   sceneCelebrationName: $('scene-celebration-name'), sceneCelebrationSet: $('scene-celebration-set'), sceneCelebrationBar: $('scene-celebration-bar'),
+  effectsSwitch: $('effects-switch'), calmSwitch: $('calm-switch'), calmTip: $('calm-tip'),
   voiceSection: $('voice-section'), voiceSelect: $('voice-select'), voiceTest: $('voice-test'),
 };
 
