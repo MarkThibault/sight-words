@@ -251,8 +251,12 @@ function chooseVoice(uri) {
 
 // Asks "are you sure?" in a pop-up over the corner. (confirm() is blocked in some browsers, such as embedded previews.)
 function showResetConfirm(show) {
-  if (show) els.resetConfirm.showModal();
-  else els.resetConfirm.close();
+  if (show) {
+    els.resetSaved.hidden = true; // a note from last time would say a copy was just saved
+    els.resetConfirm.showModal();
+  } else {
+    els.resetConfirm.close();
+  }
 }
 
 // The corner's numbers, in the guide and on Progress, come from config.js, so they stay right when they change.

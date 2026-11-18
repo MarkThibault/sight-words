@@ -26,6 +26,12 @@ A sight-word practice app for a 5-year-old, used mostly on a tablet. See `README
 - Keep each PR to one change a parent could describe in a sentence. Before starting, say what's in it and what's left out.
 - When a new request isn't part of that change, say so before building it. Suggest finishing and merging the current PR first, then starting the new work on its own branch. The user can still choose to keep it together.
 - Don't add extras while working, even small ones. Mention anything spotted in passing, such as a bug or cleanup, and leave it for its own PR.
+- This holds when working without stopping too. A test that fails because of the current change is fixed in the current PR. A test that fails for another reason (it also fails on `main`, or the change doesn't touch what it checks) gets its own PR:
+  1. Try to reproduce it and find the cause.
+  2. Finish the step in progress, then commit and push, or stash, the current work.
+  3. Start a new branch from the latest `origin/main`, reproduce it there with a failing test, and fix it in a new PR. Say in the PR which work it interrupted and the order to merge them.
+  4. Once the fix merges, merge the latest `main` into the interrupted branch and carry on there.
+  5. If it can't be reproduced or its cause can't be found, write down what failed, when it was found and everything tried, then stop and wait for the user.
 - If a design is still changing after two rounds of feedback, pause and suggest merging what's settled, or settling the design with a mockup before more code.
 - Commit, push and open a PR only when asked. Add follow-up changes to the branch while its PR is still open, and check whether it has merged before starting from it.
 - Use `gh` for GitHub: `gh pr create --title ... --body-file ... --label ...` to open a PR, `gh pr view` / `gh pr checks` for its status and whether it merged. It's signed in to the user's account; if it isn't, ask the user to run `gh auth login` themselves. Merge (`gh pr merge`) only when the user asks, each time. If a shell can't find `gh`, it was started before the install: use `"C:\Program Files\GitHub CLI\gh.exe"`.
@@ -48,6 +54,8 @@ A sight-word practice app for a 5-year-old, used mostly on a tablet. See `README
 - The recorder button only shows on localhost.
 - Back closes the top thing open, then leaves the app from the home screen (`js/back.js`). A new pop-up must be a `<dialog>` so back closes it, and a new screen needs its place in `openLayers` and `closeTopLayer`.
 - Keep tunable numbers in `js/config.js`.
+- Saved progress must keep loading. Parents keep copies from **Save a copy** in the Grown-up Corner (`js/backup.js`) and may load one much later, so a change to what's saved has to read older saves and older copies, with a test that loads one. When a copy's format changes, raise its `version`; the app turns away copies newer than it knows, so never lower it.
+- Things only a person on a real device can check (sound, touch, the installed app, downloads) go in `docs/manual-checks.md`, added by the PR that brings them.
 - The look stays kid-friendly: the Andika font, chunky rounded buttons and emoji icons. Check phone and tablet sizes, because the home screen can run out of room for stickers. The star pill, trophy pill and update statuses share the bottom row on short screens, so check them with the Update button and "Downloading new version" showing. The two pills keep the same width.
 
 ## Testing in the browser

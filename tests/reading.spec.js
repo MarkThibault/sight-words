@@ -81,6 +81,27 @@ test('Next waits until the word has been heard', async ({ page }) => {
   expect((await savedProgress(page)).words[first]).toMatchObject({ heard: 1, known: false });
 });
 
+test('"I know it!" turns off for a word once it has been heard or sounded out, so a star means reading it alone', async ({ page }) => {
+  await openApp(page);
+  await page.locator('#start-btn').click();
+  await expect(page.locator('#know-btn')).toBeEnabled();
+
+  // Hearing the word: only Next moves on, with no star
+  const heardWord = await page.evaluate(() => readingRound.word);
+  await page.locator('#card').click();
+  await expect(page.locator('#know-btn')).toBeDisabled();
+  await page.locator('#next-btn').click();
+  await expect(page.locator('#word')).not.toHaveText(heardWord);
+  expect((await savedProgress(page)).words[heardWord].known).toBe(false);
+
+  // The next word starts with it on again, and sounding it out turns it off too
+  await expect(page.locator('#know-btn')).toBeEnabled();
+  await page.locator('#sound-out-btn').click();
+  await expect(page.locator('#know-btn')).toBeDisabled();
+  await page.locator('#next-btn').click();
+  await expect(page.locator('#know-btn')).toBeEnabled();
+});
+
 test('a Timed run keeps the best time, which only counts for the same number of words', async ({ page }) => {
   // Two words on, so each run is short
   await openApp(page, { offWords: WORDS.slice(2) });

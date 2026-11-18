@@ -18,12 +18,12 @@
       }
     } catch (e) { /* no flash protection, but nothing breaks */ }
   </script>
-  <link rel="icon" href="icons/favicon-32.png?v=1.39.1" type="image/png" sizes="32x32">
-  <link rel="icon" href="icons/favicon-64.png?v=1.39.1" type="image/png" sizes="64x64">
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1.39.1">
-  <link rel="manifest" href="manifest.webmanifest?v=1.39.1">
-  <link rel="stylesheet" href="fonts/andika.css?v=1.39.1">
-  <link rel="stylesheet" href="style.css?v=1.39.1">
+  <link rel="icon" href="icons/favicon-32.png?v=1.41.0" type="image/png" sizes="32x32">
+  <link rel="icon" href="icons/favicon-64.png?v=1.41.0" type="image/png" sizes="64x64">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1.41.0">
+  <link rel="manifest" href="manifest.webmanifest?v=1.41.0">
+  <link rel="stylesheet" href="fonts/andika.css?v=1.41.0">
+  <link rel="stylesheet" href="style.css?v=1.41.0">
 </head>
 <body>
   <!-- Home: earned stickers are scattered across the background, which is the dots or a scene the child unlocked -->
@@ -315,7 +315,7 @@
         <section id="page-guide" class="gc-page guide-body" role="tabpanel" data-page="guide" hidden>
           <h4>The games</h4>
           <ul>
-            <li><b>Let's Read! ▶</b> shows up to <span data-number="roundMax"></span> words, one at a time. Tap the word to hear it, or <b>🧩 Sound it out</b> to hear it one sound at a time. When your child can read it, tap <b>I know it! ⭐</b>. Otherwise tap <b>Next ➜</b>.</li>
+            <li><b>Let's Read! ▶</b> shows up to <span data-number="roundMax"></span> words, one at a time. Tap the word to hear it, or <b>🧩 Sound it out</b> to hear it one sound at a time. When your child can read it, tap <b>I know it! ⭐</b>. Otherwise tap <b>Next ➜</b>. Once a word has been heard or sounded out, <b>I know it!</b> turns off for that word, so a star always means your child read it alone.</li>
             <li><b>🔁 Check-up</b> is the same, with only words that already have a star: the ones not seen for the longest, so learned words don't fade. It opens once your child has a star. Here <b>Next</b> says <b>Skip ➜</b>: a word skipped in a Check-up keeps its star and sticker, and goes on <b>🧡 Needs practice</b> for you.</li>
             <li><b>⏱️ Timed run</b> goes through every word against the clock and saves the best time.</li>
             <li><b>👂 Listen &amp; tap</b>: hear a word, then find it among <span data-number="listenChoices"></span>.</li>
@@ -361,13 +361,15 @@
   </dialog>
 
   <!-- "Are you sure?" for Reset all progress: a pop-up over the Grown-up Corner. Keep everything comes first, so it's
-       the one already chosen. -->
+       the one already chosen. Save a copy first keeps it open, so the grown-up can still choose. -->
   <dialog id="reset-confirm" class="panel reset-confirm" role="alertdialog" aria-labelledby="reset-question" aria-describedby="reset-detail">
     <span class="reset-icon" aria-hidden="true">⚠️</span>
     <p id="reset-question" class="reset-question">Erase all progress?</p>
     <p id="reset-detail">This erases all stars, stickers, best times, medals and trophies on this device. Turned-off words stay off.</p>
+    <button id="reset-save" class="chip reset-save">⬇ Save a copy first</button>
+    <p id="reset-saved" class="panel-tip" role="status" hidden></p>
     <div class="reset-buttons">
-      <button id="reset-cancel" class="primary">Keep <span class="wide-only">everything</span><span class="phone-only">it all</span></button>
+      <button id="reset-cancel" class="primary" autofocus>Keep <span class="wide-only">everything</span><span class="phone-only">it all</span></button>
       <button id="reset-yes" class="danger">Yes, erase</button>
     </div>
   </dialog>
@@ -385,28 +387,28 @@
 
   <!-- Plain scripts (not modules) so the app still works when index.html is opened straight from disk.
        Order matters: each file can use anything from the files above it. -->
-  <script src="js/utils.js?v=1.39.1"></script>
-  <script src="js/config.js?v=1.39.1"></script>
-  <script src="js/state.js?v=1.39.1"></script>
-  <script src="js/words.js?v=1.39.1"></script>
-  <script src="js/progress.js?v=1.39.1"></script>
-  <script src="js/speech.js?v=1.39.1"></script>
-  <script src="js/phonics.js?v=1.39.1"></script>
-  <script src="js/audio.js?v=1.39.1"></script>
-  <script src="js/sound-effects.js?v=1.39.1"></script>
-  <script src="js/effects.js?v=1.39.1"></script>
-  <script src="js/stickers.js?v=1.39.1"></script>
-  <script src="js/scenes.js?v=1.39.1"></script>
-  <script src="js/home.js?v=1.39.1"></script>
-  <script src="js/practice.js?v=1.39.1"></script>
-  <script src="js/listen.js?v=1.39.1"></script>
-  <script src="js/build.js?v=1.39.1"></script>
-  <script src="js/trophies.js?v=1.39.1"></script>
-  <script src="js/panel.js?v=1.39.1"></script>
-  <script src="js/backup.js?v=1.39.1"></script>
-  <script src="js/offline.js?v=1.39.1"></script>
-  <script src="js/back.js?v=1.39.1"></script>
-  <script src="js/devtools.js?v=1.39.1"></script>
-  <script src="js/app.js?v=1.39.1"></script>
+  <script src="js/utils.js?v=1.41.0"></script>
+  <script src="js/config.js?v=1.41.0"></script>
+  <script src="js/state.js?v=1.41.0"></script>
+  <script src="js/words.js?v=1.41.0"></script>
+  <script src="js/progress.js?v=1.41.0"></script>
+  <script src="js/speech.js?v=1.41.0"></script>
+  <script src="js/phonics.js?v=1.41.0"></script>
+  <script src="js/audio.js?v=1.41.0"></script>
+  <script src="js/sound-effects.js?v=1.41.0"></script>
+  <script src="js/effects.js?v=1.41.0"></script>
+  <script src="js/stickers.js?v=1.41.0"></script>
+  <script src="js/scenes.js?v=1.41.0"></script>
+  <script src="js/home.js?v=1.41.0"></script>
+  <script src="js/practice.js?v=1.41.0"></script>
+  <script src="js/listen.js?v=1.41.0"></script>
+  <script src="js/build.js?v=1.41.0"></script>
+  <script src="js/trophies.js?v=1.41.0"></script>
+  <script src="js/panel.js?v=1.41.0"></script>
+  <script src="js/backup.js?v=1.41.0"></script>
+  <script src="js/offline.js?v=1.41.0"></script>
+  <script src="js/back.js?v=1.41.0"></script>
+  <script src="js/devtools.js?v=1.41.0"></script>
+  <script src="js/app.js?v=1.41.0"></script>
 </body>
 </html>

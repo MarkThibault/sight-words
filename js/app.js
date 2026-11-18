@@ -75,7 +75,8 @@ async function init() {
   els.panel.querySelectorAll('[data-page]:is(button)').forEach((btn) => btn.addEventListener('click', () => showPanelPage(btn.dataset.page)));
   els.panelMenuBtn.addEventListener('click', togglePanelMenu);
   els.practiceStart.addEventListener('click', startPracticeRound);
-  els.backupSave.addEventListener('click', saveBackup);
+  els.backupSave.addEventListener('click', () => saveBackup());
+  els.resetSave.addEventListener('click', () => saveBackup(els.resetSaved));
   els.backupLoad.addEventListener('click', () => els.backupFile.click());
   els.backupFile.addEventListener('change', () => chooseBackup(els.backupFile.files[0]));
   els.loadYes.addEventListener('click', loadBackup);
