@@ -29,6 +29,7 @@ const els = {
   weekTitle: $('week-title'), weekPrev: $('week-prev'), weekNext: $('week-next'), weekPlayed: $('week-played'),
   weekDays: $('week-days'), weekStars: $('week-stars'),
   resetConfirm: $('reset-confirm'), resetYes: $('reset-yes'), resetCancel: $('reset-cancel'),
+  resetSave: $('reset-save'), resetSaved: $('reset-saved'),
   grownupTip: $('grownup-tip'), grownupTipOk: $('grownup-tip-ok'),
   sceneTray: $('scene-tray'), sceneList: $('scene-list'), sceneHint: $('scene-hint'),
   sceneCelebration: $('scene-celebration'), sceneCelebrationCard: $('scene-celebration-card'), sceneCelebrationTitle: $('scene-celebration-title'),

@@ -1521,6 +1521,18 @@ html.calm *, html.calm *::before, html.calm *::after {
 .reset-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 12px; }
 .reset-buttons button { padding: 14px 24px; border: 0; border-radius: 14px; font-size: 1.15rem; }
 .reset-buttons .phone-only { display: none; }
+/* Save a copy first: a chunky pill like the corner's, quieter than the two answers below it */
+.reset-save {
+  padding: 8px 18px;
+  background: #fff;
+  border: 3px solid var(--yellow-dark);
+  border-radius: 999px;
+  box-shadow: 0 3px 0 var(--yellow-dark);
+  color: var(--ink);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.reset-save:active { translate: 0 2px; box-shadow: 0 1px 0 var(--yellow-dark); }
 /* sideways phones: no room for the big icon */
 @media (max-height: 500px) {
   .reset-confirm[open] { gap: 6px; }

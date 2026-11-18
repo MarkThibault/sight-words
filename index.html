@@ -360,13 +360,15 @@
   </dialog>
 
   <!-- "Are you sure?" for Reset all progress: a pop-up over the Grown-up Corner. Keep everything comes first, so it's
-       the one already chosen. -->
+       the one already chosen. Save a copy first keeps it open, so the grown-up can still choose. -->
   <dialog id="reset-confirm" class="panel reset-confirm" role="alertdialog" aria-labelledby="reset-question" aria-describedby="reset-detail">
     <span class="reset-icon" aria-hidden="true">⚠️</span>
     <p id="reset-question" class="reset-question">Erase all progress?</p>
     <p id="reset-detail">This erases all stars, stickers, best times, medals and trophies on this device. Turned-off words stay off.</p>
+    <button id="reset-save" class="chip reset-save">⬇ Save a copy first</button>
+    <p id="reset-saved" class="panel-tip" role="status" hidden></p>
     <div class="reset-buttons">
-      <button id="reset-cancel" class="primary">Keep <span class="wide-only">everything</span><span class="phone-only">it all</span></button>
+      <button id="reset-cancel" class="primary" autofocus>Keep <span class="wide-only">everything</span><span class="phone-only">it all</span></button>
       <button id="reset-yes" class="danger">Yes, erase</button>
     </div>
   </dialog>
