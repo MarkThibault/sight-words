@@ -103,3 +103,38 @@ test(`Progress shows at most ${PRACTICE.SHOW} words, and says how many more the 
   await expect(page.locator('#practice-list li')).toHaveCount(PRACTICE.SHOW);
   await expect(page.locator('#practice-more')).toHaveText('And 2 more, marked 🧡 on the Words page.');
 });
+
+test('▶ Practice these words plays a reading round of just those words, and a tip names them for practice away from the screen', async ({ page }) => {
+  const words = {
+    was: { heard: 1, known: false, tries: ['saw', 'saw', 'saw', 0] },
+    said: { heard: 1, known: false, tries: [0, 0, 0] },
+    of: { heard: 1, known: false, skipped: PRACTICE.STUCK },
+  };
+  await openApp(page, { progress: { words } });
+  await openGrownupCorner(page);
+  await expect(page.locator('#practice-tip')).toContainText('Try away from the screen');
+  await expect(page.locator('#practice-tip i')).toHaveText(['was', 'said']); // the two that need it most
+
+  await page.locator('#practice-start').click();
+  await expect(page.locator('#parent-panel')).toBeHidden();
+  await expect(page.locator('#practice')).toBeVisible();
+  const shown = [];
+  for (let i = 0; i < 3; i++) {
+    const word = await page.locator('#word').textContent();
+    shown.push(word);
+    await page.locator('#card').click(); // hearing it
+    await page.locator('#next-btn').click();
+    if (i < 2) await expect(page.locator('#word')).not.toHaveText(word);
+  }
+  expect(shown.sort()).toEqual(['of', 'said', 'was']);
+  await expect(page.locator('#home')).toBeVisible();
+  await expect(page.locator('#sticker-hint')).toContainText('You read 3 words!');
+});
+
+test('with nothing to practice, there is no tip and no button to practice', async ({ page }) => {
+  await openApp(page);
+  await openGrownupCorner(page);
+  await expect(page.locator('#practice-empty')).toBeVisible();
+  await expect(page.locator('#practice-tip')).toBeHidden();
+  await expect(page.locator('#practice-start')).toBeHidden();
+});

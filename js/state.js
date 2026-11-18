@@ -25,6 +25,7 @@ const els = {
   panelMenu: $('gc-menu'), panelMenuBtn: $('gc-menu-btn'), panelPageTitle: $('gc-page-title'),
   progressTiles: $('progress-tiles'), nextWords: $('next-words'),
   practiceList: $('practice-list'), practiceEmpty: $('practice-empty'), practiceMore: $('practice-more'),
+  practiceTip: $('practice-tip'), practiceStart: $('practice-start'),
   resetConfirm: $('reset-confirm'), resetYes: $('reset-yes'), resetCancel: $('reset-cancel'),
   grownupTip: $('grownup-tip'), grownupTipOk: $('grownup-tip-ok'),
   sceneTray: $('scene-tray'), sceneList: $('scene-list'), sceneHint: $('scene-hint'),

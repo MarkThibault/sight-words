@@ -67,12 +67,13 @@ async function init() {
   els.prizeCard.addEventListener('close', renderHome); // the new stickers pop onto the board, and the pill glows if one is saved
   els.updateBtn.addEventListener('click', installUpdate);
   els.panelClose.addEventListener('click', () => els.panel.close());
-  els.panel.addEventListener('close', () => showScreen('home'));
+  els.panel.addEventListener('close', () => { if (!readingRound) showScreen('home'); }); // not when it closed to start a round
   els.reset.addEventListener('click', () => showResetConfirm(true));
   els.resetCancel.addEventListener('click', () => showResetConfirm(false));
   els.resetYes.addEventListener('click', confirmReset);
   els.panel.querySelectorAll('[data-page]:is(button)').forEach((btn) => btn.addEventListener('click', () => showPanelPage(btn.dataset.page)));
   els.panelMenuBtn.addEventListener('click', togglePanelMenu);
+  els.practiceStart.addEventListener('click', startPracticeRound);
   els.panelMenu.addEventListener('close', () => els.panelMenuBtn.setAttribute('aria-expanded', 'false'));
   // a tap anywhere outside the ☰ menu closes it, and the menu goes when a phone turns wide enough for the tabs
   els.panel.addEventListener('click', (e) => {

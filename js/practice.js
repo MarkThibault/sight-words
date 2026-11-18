@@ -2,7 +2,7 @@
 
 // Practice screen: rounds, the word card, and the "I know it!" / "Next" buttons.
 
-let readingRound = null;     // the round being played: { mode: 'all' | 'missing', timed, total, capped, learned, startedAt,
+let readingRound = null;     // the round being played: { mode: 'all' | 'missing' | 'practice', timed, total, capped, learned, startedAt,
                              // deck, word, heard, busy } (deck: words still to come; word: the one on the card; heard: since it
                              // was shown; busy: while the "I know it!" animation plays)
 let readingTimer = null;     // the Timed run's clock
@@ -12,10 +12,12 @@ let soundRun = 0;            // counts sound-outs, so a stopped one knows to sto
 // ---------- Rounds ----------
 
 // A round shows up to ROUND_MAX_WORDS, once each, then returns home. A Timed run shows every word, so its times compare.
+// A 'practice' round, started from the Grown-up corner, is only the words that need practice; to the child it's a
+// round like any other.
 function startRound(mode, timed = false) {
-  const list = mode === 'missing' ? missingWords() : state.words;
+  const list = mode === 'missing' ? missingWords() : mode === 'practice' ? wordsToPractice().map((need) => need.word) : state.words;
   if (list.length === 0) return;
-  let deck = timed ? shuffle(list) : pickWords(list, ROUND_MAX_WORDS, 'seenAt');
+  let deck = timed ? shuffle(list) : mode === 'practice' ? shuffle(list).slice(0, ROUND_MAX_WORDS) : pickWords(list, ROUND_MAX_WORDS, 'seenAt');
   if (state.devRoundWords) { // 🛠️ on localhost only: a short round for testing
     deck = deck.slice(0, state.devRoundWords);
     state.devRoundWords = 0;
