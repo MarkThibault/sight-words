@@ -1406,6 +1406,112 @@ html.calm *, html.calm *::before, html.calm *::after {
   .gc-tab { padding: 6px 14px; }
 }
 
+/* ---- The Grown-up Corner's look: the same as the app and its recorder and sound effects pages ----
+   The cream dotted background, the orange title, white cards with a thick yellow edge, and chunky pill buttons. */
+.panel.grownup-page {
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--dots) 2px, transparent 2.5px);
+  background-size: 28px 28px;
+}
+.gc-head, .gc-tabs, .gc-page-title { background: transparent; }
+.gc-head { padding-bottom: 4px; }
+.grownup-page h2 { order: 0; color: var(--accent); font-size: clamp(1.9rem, 5vw, 2.8rem); line-height: 1.1; text-shadow: 0 4px 0 #ffd8a8; }
+.grownup-page .gc-back {
+  order: 1;
+  padding: 8px 20px;
+  background: #fff;
+  border: 3px solid var(--yellow);
+  border-radius: 999px;
+  box-shadow: 0 4px 0 var(--yellow-dark);
+  color: var(--ink) !important;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+.gc-menu-btn { order: 2; }
+.grownup-page :is(.gc-back, .gc-menu-btn, .gc-tab, .chip, .practice-start, .gc-start-over button, .gc-menu-item) {
+  transition: translate 0.08s, box-shadow 0.08s;
+}
+
+/* Tabs: chunky pills, like the recorder's Words and Sounds, with the page shown filled yellow */
+.gc-tabs { gap: 10px; padding: 12px max(22px, env(safe-area-inset-left)) 8px; }
+.gc-tab {
+  padding: 8px 20px;
+  background: #fff;
+  border: 3px solid var(--yellow-dark);
+  border-radius: 999px;
+  box-shadow: 0 4px 0 var(--yellow-dark);
+  color: var(--ink);
+  font-size: 1.1rem;
+}
+.gc-tab[aria-selected="true"] { background: var(--yellow); }
+.gc-body { padding-top: 12px; }
+
+/* White cards with a yellow edge, like the word card. Words, Settings and the Guide are each one big card. */
+.gc-tile, .gc-card, #page-words, #page-settings, #page-guide {
+  background: #fff;
+  border: 4px solid var(--yellow);
+  border-radius: 24px;
+  box-shadow: 0 5px 0 var(--yellow-dark);
+}
+.gc-tile { padding: 12px 16px; }
+.gc-tile b { color: var(--ink); }
+.gc-tile span { color: #6b6155; }
+.gc-card { padding: 14px 18px; }
+#page-words, #page-settings, #page-guide { padding: 16px 20px 20px; }
+#page-settings { max-width: 760px; }
+#page-guide { max-width: 860px; }
+.grownup-page .panel-tip { color: #6b6155; }
+.panel-list li { background: var(--bg); }
+.voice-section, .setting-row, .setting-block { border-bottom: 2px dashed var(--dots); }
+
+/* Chunky pill buttons, like the app's: a colored edge that presses down */
+.grownup-page .chip {
+  --mode: var(--yellow-dark);
+  padding: 6px 16px;
+  background: #fff;
+  border: 3px solid var(--mode);
+  box-shadow: 0 3px 0 var(--mode);
+  color: var(--ink);
+  font-weight: 700;
+}
+.grownup-page .chip.on { background: var(--yellow); }
+.grownup-page .chip:disabled { opacity: 0.4; box-shadow: none; }
+.grownup-page .week-arrow:disabled { box-shadow: none; }
+.grownup-page .practice-start {
+  border-radius: 999px;
+  box-shadow: 0 4px 0 var(--green-dark);
+}
+.grownup-page .gc-start-over { border: 3px dashed #ffc9c9; }
+.grownup-page .gc-start-over button {
+  border: 3px solid #e03131;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 4px 0 #c92a2a;
+  font-weight: 700;
+}
+.grownup-page :is(.gc-back, .gc-tab, .chip, .practice-start, .gc-start-over button):active:not(:disabled) {
+  translate: 0 3px;
+  box-shadow: 0 1px 0 var(--mode, var(--yellow-dark));
+}
+
+/* ☰ and its menu: round and yellow-edged, like ⚙️ */
+.grownup-page .gc-menu-btn { border: 3px solid var(--yellow); border-radius: 50%; box-shadow: 0 3px 0 var(--yellow-dark); }
+.gc-menu { border: 4px solid var(--yellow); box-shadow: 0 5px 0 var(--yellow-dark), 0 12px 28px rgba(43, 45, 66, 0.2); }
+.gc-menu-item.on { background: var(--yellow); }
+.grownup-page .voice-row select { border: 3px solid var(--yellow-dark); }
+
+@media (max-width: 600px) {
+  .grownup-page h2 { font-size: 1.6rem; }
+  .grownup-page .gc-back { order: 0; width: 46px; height: 46px; padding: 0; border-radius: 50%; font-size: 1.3rem; }
+  .grownup-page h2 { order: 1; }
+  .grownup-page .gc-page-title { border-bottom: 0; padding-bottom: 2px; }
+  .gc-body { padding-top: 8px; }
+  #page-words, #page-settings, #page-guide { padding: 12px 14px 16px; }
+}
+@media (max-width: 360px) {
+  .panel.grownup-page h2 { font-size: 1.25rem; }
+}
+
 /* "are you sure?" for Reset all progress: a pop-up over the corner */
 .panel.reset-confirm { width: min(92vw, 480px); padding: 28px; overflow: auto; background: #fff5f5; text-align: center; }
 .reset-confirm[open] { align-items: center; gap: 12px; }
