@@ -294,6 +294,16 @@
               <span id="calm-tip" class="panel-tip">Stickers and medals appear without flying, and there's no confetti.</span></span>
             <input id="calm-switch" type="checkbox" class="word-switch" role="switch">
           </label>
+          <div class="setting-block">
+            <b>Save or move progress</b>
+            <span class="panel-tip">Save a copy to keep it safe, or to move it to another device and load it there. The copy stays wherever you save it: the app never sends it anywhere.</span>
+            <div class="setting-buttons">
+              <button id="backup-save" class="chip">⬇ Save a copy</button>
+              <button id="backup-load" class="chip">⬆ Load a copy</button>
+              <input id="backup-file" type="file" accept=".json,application/json" hidden>
+            </div>
+            <p id="backup-note" class="panel-tip" role="status" hidden></p>
+          </div>
           <div class="gc-start-over">
             <h3>Start over</h3>
             <p class="panel-tip">Erases all stars, stickers, best times, medals and trophies on this device. Turned-off words stay off.</p>
@@ -321,6 +331,8 @@
           <p>Each medal fills the trophy pill at the bottom of the home screen: 1 for bronze, 2 for silver and 3 for gold. Every <span data-number="medalsPerTrophy"></span> earns a trophy, and each trophy lets your child pick a prize sticker for the board, with a 🏆 tag instead of a word. Tap the trophy pill (or <b>🏆</b> in the sticker corner) to see them all, or to pick a prize saved for later.</p>
           <h4>⚙️ Settings</h4>
           <p>The <b>Settings</b> page chooses the voice, turns the little sound effects off (words are still spoken), and turns on <b>Calmer animations</b>, so stickers and medals appear without flying and there's no confetti. Calmer animations is always on when the device itself is set to reduce motion. These stay as they are after <b>Reset all progress</b>.</p>
+          <h4>⬇️ Saving or moving progress</h4>
+          <p>Progress is saved only on this device, and removing the app erases it. On the <b>Settings</b> page, <b>Save a copy</b> saves it to a small file, usually in Downloads. Keep it somewhere safe, or open it on another device with <b>Load a copy</b>, which asks before replacing that device's progress. The voice choice isn't in the copy, since each device has its own voices.</p>
           <h4>📅 This week</h4>
           <p>On the <b>Progress</b> page, <b>This week</b> shows the days your child finished a round or a game, Monday to Sunday, and the words that got their star that week. The <b>‹</b> arrow shows last week. It starts counting days from this version of the app.</p>
           <h4>🧡 Needs practice</h4>
@@ -341,7 +353,7 @@
           <p>Open it once while online so everything is saved. When a new version is ready, an <b>Update</b> button shows at the bottom of the home screen.</p>
           <p>Progress is saved on each device. On iPad and iPhone, the home-screen app keeps its own progress apart from Safari, so it starts fresh.</p>
           <h4>Privacy</h4>
-          <p>Sight Words collects nothing: progress stays on this device and the app sends nothing anywhere. <a href="privacy.html" target="_blank" rel="noopener">Read the privacy page</a>.</p>
+          <p>Sight Words collects nothing: progress stays on this device and the app sends nothing anywhere. A copy you save goes only where you put it. <a href="privacy.html" target="_blank" rel="noopener">Read the privacy page</a>.</p>
         </section>
       </div>
     </div>
@@ -356,6 +368,17 @@
     <div class="reset-buttons">
       <button id="reset-cancel" class="primary">Keep <span class="wide-only">everything</span><span class="phone-only">it all</span></button>
       <button id="reset-yes" class="danger">Yes, erase</button>
+    </div>
+  </dialog>
+
+  <!-- "Are you sure?" for Load a copy, like the one for Reset all progress -->
+  <dialog id="load-confirm" class="panel reset-confirm" role="alertdialog" aria-labelledby="load-question" aria-describedby="load-detail">
+    <span class="reset-icon" aria-hidden="true">⬆️</span>
+    <p id="load-question" class="reset-question">Load this copy?</p>
+    <p id="load-detail"></p>
+    <div class="reset-buttons">
+      <button id="load-cancel" class="primary">Keep <span class="wide-only">this device's</span><span class="phone-only">this one</span></button>
+      <button id="load-yes" class="danger">Yes, load it</button>
     </div>
   </dialog>
 
@@ -379,6 +402,7 @@
   <script src="js/build.js?v=1.32.3"></script>
   <script src="js/trophies.js?v=1.32.3"></script>
   <script src="js/panel.js?v=1.32.3"></script>
+  <script src="js/backup.js?v=1.32.3"></script>
   <script src="js/offline.js?v=1.32.3"></script>
   <script src="js/back.js?v=1.32.3"></script>
   <script src="js/devtools.js?v=1.32.3"></script>

@@ -34,6 +34,8 @@ const els = {
   sceneCelebration: $('scene-celebration'), sceneCelebrationCard: $('scene-celebration-card'), sceneCelebrationTitle: $('scene-celebration-title'),
   sceneCelebrationPreview: $('scene-celebration-preview'), sceneCelebrationDecor: $('scene-celebration-decor'),
   sceneCelebrationName: $('scene-celebration-name'), sceneCelebrationSet: $('scene-celebration-set'), sceneCelebrationBar: $('scene-celebration-bar'),
+  backupSave: $('backup-save'), backupLoad: $('backup-load'), backupFile: $('backup-file'), backupNote: $('backup-note'),
+  loadConfirm: $('load-confirm'), loadDetail: $('load-detail'), loadYes: $('load-yes'), loadCancel: $('load-cancel'),
   effectsSwitch: $('effects-switch'), calmSwitch: $('calm-switch'), calmTip: $('calm-tip'),
   voiceSection: $('voice-section'), voiceSelect: $('voice-select'), voiceTest: $('voice-test'),
 };

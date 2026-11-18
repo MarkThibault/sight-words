@@ -1351,6 +1351,9 @@ html.calm *, html.calm *::before, html.calm *::after {
 .voice-section { margin-top: 0; }
 .setting-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 2px solid #f1f3f5; cursor: pointer; }
 .setting-row .panel-tip { display: block; }
+.setting-block { padding: 12px 0; border-bottom: 2px solid #f1f3f5; }
+.setting-block .panel-tip { display: block; }
+.setting-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .gc-start-over { margin-top: 20px; padding: 16px; border-radius: 18px; background: #fff5f5; }
 .gc-start-over p { margin-bottom: 12px; }
 .gc-start-over button { padding: 12px 22px; border: 0; border-radius: 14px; font-size: 1.1rem; }
