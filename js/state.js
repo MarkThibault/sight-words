@@ -26,6 +26,7 @@ const els = {
   progressTiles: $('progress-tiles'), nextWords: $('next-words'),
   practiceList: $('practice-list'), practiceEmpty: $('practice-empty'), practiceMore: $('practice-more'),
   practiceTip: $('practice-tip'), practiceStart: $('practice-start'),
+  handoff: $('handoff'), handoffGo: $('handoff-go'), handoffCancel: $('handoff-cancel'),
   weekTitle: $('week-title'), weekPrev: $('week-prev'), weekNext: $('week-next'), weekPlayed: $('week-played'),
   weekDays: $('week-days'), weekStars: $('week-stars'),
   resetConfirm: $('reset-confirm'), resetYes: $('reset-yes'), resetCancel: $('reset-cancel'),

@@ -53,6 +53,16 @@ test('Next on a word without a star counts a skipped round, and a star clears th
   expect((await savedProgress(page)).words[second].skipped).toBeUndefined();
 });
 
+test('Next in a Timed run does not count a skipped round, since it is a race', async ({ page }) => {
+  await openApp(page, { offWords: WORDS.slice(2) });
+  await page.locator('#timed-btn').click();
+  const first = await page.locator('#word').textContent();
+  await page.locator('#card').click(); // hearing it
+  await page.locator('#next-btn').click();
+  await expect(page.locator('#word')).not.toHaveText(first);
+  expect((await savedProgress(page)).words[first].skipped).toBeUndefined();
+});
+
 test('Progress lists the words that need practice, with why, and the Words page marks them', async ({ page }) => {
   const [was, said, of, almost, off] = ['was', 'said', 'of', 'the', 'my'];
   const words = {
@@ -115,8 +125,14 @@ test('▶ Practice these words plays a reading round of just those words, and a 
   await expect(page.locator('#practice-tip')).toContainText('Try away from the screen');
   await expect(page.locator('#practice-tip i')).toHaveText(['was', 'said']); // the two that need it most
 
+  // The corner closes, and the round waits for the child to tap Let's read, after the hand-off
   await page.locator('#practice-start').click();
   await expect(page.locator('#parent-panel')).toBeHidden();
+  await expect(page.locator('#handoff')).toBeVisible();
+  await expect(page.locator('#handoff')).toContainText('Hand it to your child');
+  await expect(page.locator('#practice')).toBeHidden();
+  await page.locator('#handoff-go').click();
+  await expect(page.locator('#handoff')).toBeHidden();
   await expect(page.locator('#practice')).toBeVisible();
   const shown = [];
   for (let i = 0; i < 3; i++) {
@@ -129,6 +145,23 @@ test('▶ Practice these words plays a reading round of just those words, and a 
   expect(shown.sort()).toEqual(['of', 'said', 'was']);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#sticker-hint')).toContainText('You read 3 words!');
+});
+
+test('the hand-off before practice closes with Not now or back, and no round starts', async ({ page }) => {
+  await openApp(page, { progress: { words: { said: { heard: 1, known: false, tries: [0, 0, 0] } } } });
+  await openGrownupCorner(page);
+  await page.locator('#practice-start').click();
+  await expect(page.locator('#handoff-go')).toBeFocused(); // ready for the child's tap
+  await page.locator('#handoff-cancel').click();
+  await expect(page.locator('#handoff')).toBeHidden();
+  await expect(page.locator('#home')).toBeVisible();
+
+  await openGrownupCorner(page);
+  await page.locator('#practice-start').click();
+  await page.goBack({ waitUntil: 'commit' });
+  await expect(page.locator('#handoff')).toBeHidden();
+  await expect(page.locator('#home')).toBeVisible();
+  await expect(page.locator('#practice')).toBeHidden();
 });
 
 test('with nothing to practice, there is no tip and no button to practice', async ({ page }) => {

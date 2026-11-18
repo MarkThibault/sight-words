@@ -15,7 +15,7 @@ const WORD_FILTERS = {
 };
 let wordFilter = 'all';
 let weeksAgo = 0; // This week (0) or last week (1)
-const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 // Ideas for practicing the tricky words away from the screen, a different one each day. {words} is where they go.
 const PRACTICE_TIPS = [
@@ -127,7 +127,7 @@ function renderWeek() {
     cell.setAttribute('aria-label', cell.title);
     return cell;
   }));
-  els.weekPlayed.textContent = count ? `Played on ${plural(count, 'day')}` : 'No rounds or games finished yet';
+  els.weekPlayed.textContent = count ? `Played on ${plural(count, 'day')}` : 'No rounds or games played yet';
   const stars = starsInWeek(weeksAgo);
   els.weekStars.replaceChildren(...(stars.length
     ? stars.map((word) => make('span', 'gc-word new-star', word))
@@ -178,9 +178,15 @@ function renderPracticeTip(words) {
   els.practiceTip.replaceChildren(make('b', '', '💡 Try away from the screen: '), before, ...named, after);
 }
 
-// ▶ Practice these words: the corner closes and a reading round of just those words starts.
-function startPracticeRound() {
+// ▶ Practice these words: the corner closes, and a pop-up asks the grown-up to hand the device over. The child's
+// tap on Let's read starts a reading round of just those words (and, being a real tap, lets the sound play).
+function showHandoff() {
   els.panel.close();
+  els.handoff.showModal();
+}
+
+function startPracticeRound() {
+  els.handoff.close();
   startRound('practice');
 }
 
@@ -220,7 +226,7 @@ function renderWordsPage() {
     const chip = make('button', `chip${s.known ? ' on' : ''}`, s.known ? `${stickerFor(word)} Sticker` : 'No sticker');
     chip.disabled = !isOn;
     chip.addEventListener('click', () => {
-      setKnown(word, !s.known);
+      setKnown(word, !s.known, true);
       renderPanel();
     });
     row.append(name, heard, chip);
