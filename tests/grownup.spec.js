@@ -2,7 +2,7 @@
 // the ☰ menu, which shows the page's name in place of the tabs.
 'use strict';
 
-const { test, expect, WORDS, NEXT_WORDS, openApp, savedProgress, starred, exactly, openGrownupCorner, openCornerPage } = require('./helpers');
+const { test, expect, WORDS, NEXT_WORDS, openApp, savedProgress, starred, exactly, panelRow, openGrownupCorner, openCornerPage } = require('./helpers');
 
 const isPhone = (page) => page.viewportSize().width <= 600;
 
@@ -45,6 +45,37 @@ test('the Words page numbers the words in learning order, with each switch at th
   const fits = await rows.evaluateAll((items) => items.every((li) => li.scrollWidth <= li.clientWidth
     && [...li.children].every((el) => Math.abs(el.getBoundingClientRect().top + el.offsetHeight / 2 - (li.getBoundingClientRect().top + li.offsetHeight / 2)) < 6)));
   expect(fits).toBe(true);
+});
+
+test('the tabs work as tabs: linked to their pages, and the arrow keys move between them', async ({ page }) => {
+  test.skip(isPhone(page), 'phones use the ☰ menu instead of tabs');
+  await openApp(page);
+  await openGrownupCorner(page);
+
+  // Each tab names the page it shows, and each page is named by its tab
+  for (const name of ['progress', 'words', 'settings', 'guide']) {
+    const tab = page.locator(`.gc-tab[data-page="${name}"]`);
+    await expect(tab).toHaveAttribute('aria-controls', `page-${name}`);
+    await expect(page.locator(`#page-${name}`)).toHaveAttribute('aria-labelledby', await tab.getAttribute('id'));
+  }
+  // Only the page shown is in the Tab key's order; the arrows move between them
+  const selected = page.locator('.gc-tab[aria-selected="true"]');
+  await expect(selected).toHaveAttribute('data-page', 'progress');
+  await expect(page.locator('.gc-tab[tabindex="0"]')).toHaveCount(1);
+  await selected.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(selected).toHaveAttribute('data-page', 'words');
+  await expect(selected).toBeFocused();
+  await expect(page.locator('#page-words')).toBeVisible();
+  await page.keyboard.press('ArrowLeft');
+  await page.keyboard.press('ArrowLeft'); // past the first, round to the last
+  await expect(selected).toHaveAttribute('data-page', 'guide');
+  await expect(page.locator('#page-guide')).toBeVisible();
+  await page.keyboard.press('Home');
+  await expect(selected).toHaveAttribute('data-page', 'progress');
+  await page.keyboard.press('End');
+  await expect(selected).toHaveAttribute('data-page', 'guide');
+  await expect(page.locator('.gc-tab[tabindex="0"]')).toHaveAttribute('data-page', 'guide');
 });
 
 test('phones switch pages from ☰ and show the page name; tablets use the tabs', async ({ page }) => {
@@ -111,21 +142,21 @@ test('Reset all progress asks in a pop-up over the Settings page, which Keep eve
   expect(await withStars()).toBe(0);
 });
 
-// Midnight on the Monday `weeksAgo` weeks back, as the app counts weeks, and a date as the app saves it.
-function monday(weeksAgo) {
+// Midnight on the Sunday `weeksAgo` weeks back, as the app counts weeks, and a date as the app saves it.
+function sunday(weeksAgo) {
   const day = new Date();
   day.setHours(0, 0, 0, 0);
-  day.setDate(day.getDate() - ((day.getDay() + 6) % 7) - 7 * weeksAgo);
+  day.setDate(day.getDate() - day.getDay() - 7 * weeksAgo);
   return day;
 }
 const dateOf = (day) => day.toLocaleDateString('en-CA');
 
 test('This week shows the days played and the new stars, and ‹ shows last week', async ({ page }) => {
-  const lastMonday = monday(1);
+  const lastSunday = sunday(1);
   const words = starred([WORDS[0], WORDS[1], WORDS[2]], (word, i) => ({
-    knownAt: [monday(3).getTime(), lastMonday.getTime() + 3_600_000, Date.now()][i], // weeks ago, last week, now
+    knownAt: [sunday(3).getTime(), lastSunday.getTime() + 3_600_000, Date.now()][i], // weeks ago, last week, now
   }));
-  await openApp(page, { progress: { words, daysPlayed: [dateOf(lastMonday), dateOf(new Date())] } });
+  await openApp(page, { progress: { words, daysPlayed: [dateOf(lastSunday), dateOf(new Date())] } });
   await openGrownupCorner(page);
 
   await expect(page.locator('#week-title')).toHaveText('📅 This week');
@@ -139,21 +170,31 @@ test('This week shows the days played and the new stars, and ‹ shows last week
   await page.locator('#week-prev').click();
   await expect(page.locator('#week-title')).toHaveText('📅 Last week');
   await expect(page.locator('#week-days .played')).toHaveCount(1);
-  await expect(page.locator('#week-days .week-day').first()).toHaveClass(/played/); // Monday
+  await expect(page.locator('#week-days .week-day').first()).toHaveClass(/played/);
+  await expect(page.locator('#week-days .week-day').first()).toHaveAttribute('title', 'Sunday: played'); // weeks start on Sunday
   await expect(page.locator('#week-stars .gc-word')).toHaveText([WORDS[1]]);
   await expect(page.locator('#week-prev')).toBeDisabled();
   await page.locator('#week-next').click();
   await expect(page.locator('#week-title')).toHaveText('📅 This week');
+
+  // A star given on the Words page is the grown-up's, so it isn't a new star for the child
+  await openCornerPage(page, 'words');
+  await panelRow(page, WORDS[3]).locator('.chip').click();
+  await openCornerPage(page, 'progress');
+  await expect(page.locator('#week-stars .gc-word')).toHaveText([WORDS[2]]);
 });
 
-test('finishing a round saves today as a day played, keeping only this week and last', async ({ page }) => {
-  const old = dateOf(monday(2));
-  const lastWeek = dateOf(monday(1));
+test('starting a round or game saves today as a day played, even when it is left early, keeping only this week and last', async ({ page }) => {
+  const old = dateOf(sunday(2));
+  const lastWeek = dateOf(sunday(1));
   await openApp(page, { progress: { words: {}, daysPlayed: [old, lastWeek] } });
-  await page.evaluate(() => { state.devRoundWords = 1; }); // a one-word round
   await page.locator('#start-btn').click();
-  await page.locator('#card').click(); // hearing it
-  await page.locator('#next-btn').click();
-  await expect(page.locator('#home')).toBeVisible();
+  await page.locator('#home-btn').click(); // left before the end
   expect((await savedProgress(page)).daysPlayed).toEqual([lastWeek, dateOf(new Date())]);
+
+  // A game started on a new day counts too
+  await page.evaluate(() => { state.progress.daysPlayed = []; });
+  await page.locator('#listen-btn').click();
+  await expect(page.locator('#listen')).toBeVisible();
+  expect((await savedProgress(page)).daysPlayed).toEqual([dateOf(new Date())]);
 });

@@ -15,7 +15,7 @@ const WORD_FILTERS = {
 };
 let wordFilter = 'all';
 let weeksAgo = 0; // This week (0) or last week (1)
-const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 // Ideas for practicing the tricky words away from the screen, a different one each day. {words} is where they go.
 const PRACTICE_TIPS = [
@@ -43,11 +43,28 @@ function openPanel() {
 
 function showPanelPage(page) {
   els.panel.querySelectorAll('.gc-page').forEach((section) => { section.hidden = section.dataset.page !== page; });
-  els.panel.querySelectorAll('.gc-tab').forEach((tab) => tab.setAttribute('aria-selected', String(tab.dataset.page === page)));
+  els.panel.querySelectorAll('.gc-tab').forEach((tab) => {
+    const shown = tab.dataset.page === page;
+    tab.setAttribute('aria-selected', String(shown));
+    tab.tabIndex = shown ? 0 : -1; // the Tab key goes to the page shown; the arrow keys move between tabs
+  });
   els.panel.querySelectorAll('.gc-menu-item').forEach((item) => item.classList.toggle('on', item.dataset.page === page));
   els.panelPageTitle.textContent = PANEL_PAGES[page];
   els.panelBody.scrollTop = 0;
   els.panelMenu.close();
+}
+
+// The arrow keys move along the tabs, round from the last to the first, and Home and End jump to the ends. As on
+// a tap, the page changes with the tab.
+function moveTab(e) {
+  const tabs = [...els.panel.querySelectorAll('.gc-tab')];
+  const at = tabs.indexOf(e.target);
+  const to = { ArrowRight: at + 1, ArrowLeft: at - 1, Home: 0, End: tabs.length - 1 }[e.key];
+  if (at < 0 || to === undefined) return;
+  e.preventDefault();
+  const tab = tabs[(to + tabs.length) % tabs.length];
+  showPanelPage(tab.dataset.page);
+  tab.focus();
 }
 
 function togglePanelMenu() {
@@ -110,7 +127,7 @@ function renderWeek() {
     cell.setAttribute('aria-label', cell.title);
     return cell;
   }));
-  els.weekPlayed.textContent = count ? `Played on ${plural(count, 'day')}` : 'No rounds or games finished yet';
+  els.weekPlayed.textContent = count ? `Played on ${plural(count, 'day')}` : 'No rounds or games played yet';
   const stars = starsInWeek(weeksAgo);
   els.weekStars.replaceChildren(...(stars.length
     ? stars.map((word) => make('span', 'gc-word new-star', word))
@@ -161,9 +178,15 @@ function renderPracticeTip(words) {
   els.practiceTip.replaceChildren(make('b', '', '💡 Try away from the screen: '), before, ...named, after);
 }
 
-// ▶ Practice these words: the corner closes and a reading round of just those words starts.
-function startPracticeRound() {
+// ▶ Practice these words: the corner closes, and a pop-up asks the grown-up to hand the device over. The child's
+// tap on Let's read starts a reading round of just those words (and, being a real tap, lets the sound play).
+function showHandoff() {
   els.panel.close();
+  els.handoff.showModal();
+}
+
+function startPracticeRound() {
+  els.handoff.close();
   startRound('practice');
 }
 
@@ -208,7 +231,7 @@ function renderWordsPage() {
     const chip = make('button', `chip${s.known ? ' on' : ''}`, s.known ? `${stickerFor(word)} Sticker` : 'No sticker');
     chip.disabled = !isOn;
     chip.addEventListener('click', () => {
-      setKnown(word, !s.known);
+      setKnown(word, !s.known, true);
       renderPanel();
     });
     row.append(number, name, heard, chip, toggle);
