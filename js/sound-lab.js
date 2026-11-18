@@ -4,6 +4,8 @@
 // and keeps the ideas tried along the way, so new sounds can be compared before one goes in.
 // To try a new idea, add it to SOUND_IDEAS using the building blocks in js/sound-effects.js.
 
+soundEffectsOn = true; // even when the Grown-up corner turned them off in the app
+
 const SOUND_IDEAS = {
   harpSweep: {
     label: 'Harp sweep',

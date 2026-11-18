@@ -11,7 +11,10 @@ function make(tag, className = '', text = '') {
   if (text !== '') el.textContent = text;
   return el;
 }
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Calmer motion: things land without flying and there's no confetti. On when the device asks for reduced motion, or
+// when Calmer animations is on in the Grown-up corner (setCalmAnimations).
+const deviceReducesMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let reduceMotion = deviceReducesMotion;
 
 // ---------- Text and time ----------
 
@@ -60,6 +63,19 @@ function mulberry32(seed) {
 
 function readStorage(key) {
   try { return localStorage.getItem(key); } catch (e) { return null; }
+}
+
+// The Grown-up corner's settings: { soundEffects: false, calm: true }. A setting never changed isn't saved.
+function readSettings() {
+  try {
+    return JSON.parse(readStorage(SETTINGS_KEY)) || {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveSetting(name, value) {
+  writeStorage(SETTINGS_KEY, JSON.stringify({ ...readSettings(), [name]: value }));
 }
 
 // Passing null removes the key.

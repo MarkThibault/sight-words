@@ -36,6 +36,7 @@ function openPanel() {
   renderPanel();
   showPanelPage('progress');
   if (canSpeak) renderVoiceOptions();
+  renderSettings();
   els.panel.showModal();
 }
 
@@ -206,6 +207,28 @@ function renderWordsPage() {
     row.append(name, heard, chip);
     return row;
   }));
+}
+
+// The sound effects and Calmer animations switches. On a device set to reduce motion, calmer is always on.
+function renderSettings() {
+  els.effectsSwitch.checked = soundEffectsOn;
+  els.calmSwitch.checked = reduceMotion;
+  els.calmSwitch.disabled = deviceReducesMotion;
+  els.calmTip.textContent = deviceReducesMotion
+    ? 'Always on, because this device is set to reduce motion.'
+    : "Stickers and medals appear without flying, and there's no confetti.";
+}
+
+function setSoundEffects(on) {
+  soundEffectsOn = on;
+  saveSetting('soundEffects', on);
+}
+
+// Also run as the app opens, with the saved setting.
+function setCalmAnimations(on, save = true) {
+  reduceMotion = deviceReducesMotion || on;
+  document.documentElement.classList.toggle('calm', on);
+  if (save) saveSetting('calm', on);
 }
 
 function renderVoiceOptions() {

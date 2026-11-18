@@ -188,10 +188,14 @@ const SOUND_EFFECTS = {
 
 // Plays an effect over whatever else is playing. With `then`, other sounds stop first and `then` runs
 // once it has finished, the way a word's recording does.
+// Sound effects can be turned off in the Grown-up corner. Words still play, and anything waiting on an effect goes
+// straight on. The sound effects page (sounds.html) plays them anyway.
+let soundEffectsOn = readSettings().soundEffects !== false;
+
 function playEffect(name, then) {
   unlockAudio();
   if (then) stopAudio();
-  if (!audioCtx) {
+  if (!audioCtx || !soundEffectsOn) {
     if (then) then();
     return;
   }
