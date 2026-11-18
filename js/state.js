@@ -5,7 +5,7 @@
 
 const els = {
   home: $('home'), practice: $('practice'), board: $('sticker-board'), homeCenter: $('home-center'),
-  start: $('start-btn'), missingBtn: $('missing-btn'), timedBtn: $('timed-btn'), bestTime: $('best-time'),
+  start: $('start-btn'), checkupBtn: $('checkup-btn'), timedBtn: $('timed-btn'), bestTime: $('best-time'),
   stickerHint: $('sticker-hint'), starCount: $('star-count'), trophyMeter: $('trophy-meter'), homeMedal: $('home-medal'), trophyCount: $('trophy-count'), starSet: $('star-set'), starScene: $('star-scene'), settingsBtn: $('settings-btn'), playToggle: $('play-toggle'), playKnob: $('play-knob'), playBadge: $('play-badge'), recorderBtn: $('recorder-btn'), shuffleBtn: $('shuffle-btn'), shuffleDie: $('shuffle-die'), shuffleShadow: $('shuffle-shadow'), scenesBtn: $('scenes-btn'), scenesBadge: $('scenes-badge'), sceneDecor: $('scene-decor'), appVersion: $('app-version'), updateBtn: $('update-btn'), devBtn: $('dev-btn'), devPanel: $('dev-panel'),
   homeBtn: $('home-btn'), timer: $('timer'), mini: $('progress-mini'),
   roundBar: $('round-bar'), roundFill: $('round-fill'), card: $('card'), word: $('word'), star: $('card-star'),

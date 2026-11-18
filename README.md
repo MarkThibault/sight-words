@@ -14,7 +14,7 @@ A simple sight-word practice app for young readers. Plain HTML, CSS and JavaScri
 The reading game and its kinds of round come first:
 
 - **Let's Read! ▶** — a round of up to 10 words. It always includes the next 4 words to learn (see [Learning order](#learning-order)), and the rest are the words not shown for the longest, so every word gets its turn over a few rounds.
-- **🎯 Missing words** — a round of up to 10 words without a star yet, picked the same way. The button shows how many are missing in total. (Greyed out until some, but not all, words have stars.)
+- **🔁 Check-up** — a round of up to 10 words that already have a star: the ones not seen for the longest (in any reading round), shuffled, so learned words don't fade. It doesn't add the next words to learn. Greyed out until the first star. It ends with "You checked 10 words!". **I know it!** on a word that has a star gives a short cheer, as in any round. (It replaced **🎯 Missing words**, a round of only words without a star, since every round now includes the next words to learn.)
 - **⏱️ Timed run** — a round of all the words against the clock. The best time is saved; adding or removing words starts a fresh record.
 
 Below a dotted line are the separate games:
@@ -26,7 +26,7 @@ Below a dotted line are the separate games:
 
 ## Learning order
 
-`words.json` lists the words in the order to learn them, and the Grown-up corner's Words page shows them in that order, with the next ones under **Learning next** on its Progress page. Every round and game (all but the **Timed run**, which uses every word) includes the next 4 words without a star, so they keep coming back until **I know it!** gives them one. The rest of the round is picked as before, the words not shown for the longest first, which mixes in known and new words. Turned-off words are skipped. To change how many, edit `NEXT_WORDS` in `js/config.js`.
+`words.json` lists the words in the order to learn them, and the Grown-up corner's Words page shows them in that order, with the next ones under **Learning next** on its Progress page. Every round and game (all but the **Timed run**, which uses every word, and **Check-up**, which only reviews starred words) includes the next 4 words without a star, so they keep coming back until **I know it!** gives them one. The rest of the round is picked as before, the words not shown for the longest first, which mixes in known and new words. Turned-off words are skipped. To change how many, edit `NEXT_WORDS` in `js/config.js`.
 
 The order starts with short, common words that make little sentences ("I can see the…"), spreads out tricky ones like *said* and *of*, and never puts look-alikes like *to* / *do* or *on* / *no* close together. New words go at the end in the order they should be learned.
 
@@ -38,7 +38,7 @@ Each game of **👂 Listen & tap** or **🧱 Build the word** has three medals, 
 
 Each medal adds one to the trophy pill, so a game adds one for bronze, two for silver or three for gold. Every 10 earns a trophy, and extras carry over (change this with `MEDALS_PER_TROPHY`). That's at most 10 games for a trophy, or 4 with all gold. A game left partway through earns no medals, even if the bar had reached one.
 
-To keep medals coming from a mix of play rather than one game on repeat, a game can be finished twice in a row (`GAME_REPEAT_LIMIT` in `js/config.js`). Then its button greys out with "🔄 Play something else first" until the other game or a reading round (**Let's Read**, **Missing words** or **Timed run**) is finished. Tapping it then wiggles the buttons that can be played instead. A game left partway doesn't count. This is saved with progress, so it holds after the app is closed, and **Reset all progress** clears it. Medals never change stars or word stickers. Each best score saved by an older version counts as one starting medal.
+To keep medals coming from a mix of play rather than one game on repeat, a game can be finished twice in a row (`GAME_REPEAT_LIMIT` in `js/config.js`). Then its button greys out with "🔄 Play something else first" until the other game or a reading round (**Let's Read**, **Check-up** or **Timed run**) is finished. Tapping it then wiggles the buttons that can be played instead. A game left partway doesn't count. This is saved with progress, so it holds after the app is closed, and **Reset all progress** clears it. Medals never change stars or word stickers. Each best score saved by an older version counts as one starting medal.
 
 A new best time, medal or trophy shows on the home screen after the round, flying into the trophy pill. All of this is saved with progress, so **Reset all progress** clears it too.
 
@@ -133,7 +133,7 @@ The Progress page lists the words a child finds hard, so a grown-up knows what t
 A turned-on word is on the list when either:
 
 - **It keeps getting missed in the games.** Each word keeps its last 6 tries in Listen & tap and Build the word: right the first time, or missed (any wrong tap or wrong tile while finding or building it). In Listen & tap a miss also notes the word tapped instead, shown as "mixed up with *saw* 2×". 3 misses among those tries put it on the list, whether it has a star or not, since **I know it!** is the child's own tap.
-- **It's stuck without a star.** It was shown in 8 reading rounds (Let's Read, Missing words or a Timed run) and passed with **Next** while it had no star. Being one of the next words to learn, it comes back every round, so this catches a word that isn't clicking.
+- **It's stuck without a star.** It was shown in 8 reading rounds (Let's Read, a Timed run or one started with ▶ Practice these words) and passed with **Next** while it had no star. Being one of the next words to learn, it comes back every round, so this catches a word that isn't clicking.
 
 Below the list:
 
@@ -194,7 +194,7 @@ Every pull request plays the app in a real browser, at a phone size and a tablet
 | `backup.spec.js` | Save a copy downloads progress, turned-off words and switches but not the voice, Load a copy asks first (Keep and back change nothing) then replaces everything and reloads, and a file that isn't a copy is turned away |
 | `privacy.spec.js` | The grown-up guide links to the privacy page, which opens in its own tab, in the app's font, with nothing from another site |
 | `storage.spec.js` | Installed, the app asks the browser once to keep its progress; in a browser tab, or once it's kept, it never asks |
-| `order.spec.js` | `words.json` is in the approved learning order, and **Let's Read**, **Missing words**, **Listen & tap** and **Build the word** always include the next 4 words without a star, even ones just shown, skipping turned-off words |
+| `order.spec.js` | `words.json` is in the approved learning order, and **Let's Read**, **Listen & tap** and **Build the word** always include the next 4 words without a star, even ones just shown, skipping turned-off words, while **Check-up** waits for a star and plays only starred words, the ones not seen for the longest |
 | `busy.spec.js` | A downloaded update installs on reopening only when nothing is in the way (sticker play, a pop-up, another screen or a "set complete!" celebration), and new stickers wait to fly in while My Trophies is open |
 | `updates.spec.js` | With a real service worker: the installed app opens in its font and plays its recordings with no connection, a new version downloads in the background and the **Update** button installs it with progress kept and only the new saved copy left, and a downloaded version installs by itself when the app is next opened. Each test runs its own server at `127.0.0.1` (offline play is off on `localhost`) that switches to the next version the way the version bump does |
 | `devtools.spec.js` | The 🛠️ panel's jumps lead to the real trophy, prize and "set complete!" moments, **2 stickers waiting** sends two stickers into the switch, **Next round: 2 words** shortens only the next round, and **Restore my progress** puts saved progress back exactly |
@@ -283,9 +283,9 @@ When the app runs at `http://localhost:8000`, a **🛠️** button appears on th
 **Jump to** sets up the moment just before a reward, so you can watch the real one without playing up to it:
 
 - **🏆 Next game earns a trophy** puts the medals one short of the next trophy. Any medal from the next game of **Listen & tap** or **Build the word** then plays the medal flight, the trophy fanfare and **Pick your prize!**
-- **⭐ One star from a set** gives stars, with their stickers, to words without one until the set being collected needs one more. The next **I know it!** on a new word (**🎯 Missing words** shows only those) finishes the set with its celebration.
+- **⭐ One star from a set** gives stars, with their stickers, to words without one until the set being collected needs one more. The next **I know it!** on a new word (**Let's Read** always includes some) finishes the set with its celebration.
 - **🐵 2 stickers waiting** gives stars to the first two words without one, as **I know it!** would. Their stickers fly into the 🐵 / 🙈 switch, and pop out onto the board when it's opened.
-- **⚡ Next round: 2 words** makes only the next **Let's Read** or **🎯 Missing words** round 2 words long, to reach the end of a round quickly. It saves nothing.
+- **⚡ Next round: 2 words** makes only the next **Let's Read** or **🔁 Check-up** round 2 words long, to reach the end of a round quickly. It saves nothing.
 
 The jumps go through the same code as real play, so what you see is what a child would see. All but the short round change this browser's saved progress, so the first of those keeps a backup, and **↩️ Restore my progress** puts it back exactly and restarts the app.
 

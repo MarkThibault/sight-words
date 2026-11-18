@@ -89,8 +89,8 @@ test('Build the word: a wrong tile gets the soft boop, stays in the tray, and th
 });
 
 test('after two games of one kind in a row, it waits until something else is finished', async ({ page }) => {
-  // Every word has a star but one, so Missing words is a one-word reading round. Their scenes are already unlocked,
-  // or "set complete!" would play over the home screen and catch the taps.
+  // Every word has a star but one. Their scenes are already unlocked, or "set complete!" would play over the home
+  // screen and catch the taps.
   const scenes = STICKER_SETS.map((set) => set.id);
   await openApp(page, { progress: { words: starred(WORDS.slice(1)), scenes, lastGame: { game: 'listen', inARow: 2 } } });
   const listen = page.locator('#listen-btn');
@@ -102,11 +102,12 @@ test('after two games of one kind in a row, it waits until something else is fin
   // The waiting button stays tappable on purpose (aria-disabled, not disabled), so this tap is forced.
   await listen.click({ force: true });
   await expect(page.locator('#home')).toBeVisible();
-  for (const id of ['#start-btn', '#missing-btn', '#timed-btn', '#build-btn']) await expect(page.locator(id)).toHaveClass(/wiggle/);
+  for (const id of ['#start-btn', '#checkup-btn', '#timed-btn', '#build-btn']) await expect(page.locator(id)).toHaveClass(/wiggle/);
   await expect(listen).not.toHaveClass(/wiggle/);
 
   // Finishing a reading round opens it again
-  await page.locator('#missing-btn').click();
+  await page.evaluate(() => { state.devRoundWords = 1; }); // a one-word round
+  await page.locator('#start-btn').click();
   await page.locator('#know-btn').click();
   await expect(page.locator('#home')).toBeVisible();
   await expect(listen).not.toHaveClass(/waiting/);

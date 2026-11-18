@@ -2,7 +2,7 @@
 // "Restore my progress" puts back exactly what was saved before the first jump.
 'use strict';
 
-const { test, expect, WORDS, STICKER_SETS, SET_SIZE, SHORT_GAME, openApp, savedProgress, starred, exactly } = require('./helpers');
+const { test, expect, WORDS, STICKER_SETS, SET_SIZE, SHORT_GAME, openApp, savedProgress, starred, exactly, readUntilNewWord } = require('./helpers');
 
 const savedNow = (page) => page.evaluate(() =>
   Object.fromEntries(Object.keys(localStorage).filter((k) => k.startsWith('sightWords.')).sort().map((k) => [k, localStorage.getItem(k)])));
@@ -49,9 +49,10 @@ test('"One star from a set", then I know it!, finishes the set with its celebrat
   const beachStickers = Object.values(progress.words).filter((s) => s.known && s.set === 'beach').map((s) => s.sticker);
   expect(beachStickers).toEqual(beach.stickers.slice(0, SET_SIZE - 1));
 
-  // A real star from Missing words finishes the set
+  // A real star finishes the set
   await page.locator('#dev-btn').click();
-  await page.locator('#missing-btn').click();
+  await page.locator('#start-btn').click();
+  await readUntilNewWord(page);
   await page.locator('#know-btn').click();
   await page.locator('#home-btn').click();
   await expect(page.locator('#scene-celebration-title')).toHaveText('🎉 Beach set complete!', { timeout: 10_000 });

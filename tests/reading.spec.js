@@ -1,7 +1,7 @@
 // Let's Read, stars and stickers: only "I know it!" earns them, and they fill the sticker sets in order.
 'use strict';
 
-const { test, expect, WORDS, STICKER_SETS, SET_SIZE, openApp, savedProgress, starred, panelRow, openGrownupCorner } = require('./helpers');
+const { test, expect, WORDS, STICKER_SETS, SET_SIZE, openApp, savedProgress, starred, panelRow, openGrownupCorner, readUntilNewWord } = require('./helpers');
 
 const [beach, space] = STICKER_SETS;
 const knownInOrder = (progress) => Object.entries(progress.words)
@@ -57,7 +57,8 @@ test('a sticker taken away leaves a gap that the next star fills, and the scene 
   expect(progress.scenes).toEqual(['beach']);
 
   // The next star fills the gap before the next set is started
-  await page.locator('#missing-btn').click();
+  await page.locator('#start-btn').click();
+  await readUntilNewWord(page);
   const word = await page.evaluate(() => readingRound.word);
   await page.locator('#know-btn').click();
   await page.locator('#home-btn').click();

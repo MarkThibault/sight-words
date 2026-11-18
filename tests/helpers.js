@@ -62,6 +62,17 @@ function starred(words, more = () => ({})) {
 // Matches an element's whole text, so a short word like "a" doesn't also match "can".
 const exactly = (text) => new RegExp(`^${text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`);
 
+// In a reading round, hears and passes the words that already have a star, until one without a star is on the card.
+// Let's Read always includes the next words to learn, so one comes up.
+async function readUntilNewWord(page) {
+  while (await page.evaluate(() => stats(readingRound.word).known)) {
+    const word = await page.locator('#word').textContent();
+    await page.locator('#card').click(); // hearing it
+    await page.locator('#next-btn').click();
+    await base.expect(page.locator('#word')).not.toHaveText(word);
+  }
+}
+
 // The Grown-up corner's row for a word.
 const panelRow = (page, word) => page.locator('#panel-list li').filter({ has: page.locator('.panel-word', { hasText: exactly(word) }) });
 
@@ -88,4 +99,4 @@ async function openCornerPage(page, pageName) {
   await base.expect(page.locator(`#page-${pageName}`)).toBeVisible();
 }
 
-module.exports = { test, expect: base.expect, WORDS, STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS, NEXT_WORDS, PRACTICE, SHORT_GAME, openApp, savedProgress, savedItem, starred, exactly, panelRow, openGrownupCorner, openCornerPage };
+module.exports = { test, expect: base.expect, WORDS, STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS, NEXT_WORDS, PRACTICE, SHORT_GAME, openApp, savedProgress, savedItem, starred, exactly, panelRow, readUntilNewWord, openGrownupCorner, openCornerPage };
