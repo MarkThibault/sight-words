@@ -8,7 +8,7 @@ Devices: **T** = the tablet, **P** = a phone, **I** = the installed app (from th
 
 ## Grown-up Corner (#84–#91)
 
-- [ ] T: open the Corner in portrait and landscape. The tabs, cards and Back button fit, and nothing is cut off.
+- [ ] T: open the Corner in portrait and landscape. The rounded tab track, cards and Back button fit, and nothing is cut off.
 - [ ] P: the ☰ menu opens, lists the four pages, and closes on a tap outside it and on Back.
 - [ ] T/P: Back (the device's back gesture) closes the Corner, the ☰ menu, and each pop-up, one at a time.
 - [ ] T: **Reset all progress** asks first, and "Keep it all" leaves everything as it was.

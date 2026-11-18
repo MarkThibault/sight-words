@@ -219,10 +219,10 @@
         <button id="gc-menu-btn" class="gc-menu-btn" aria-label="Pages" aria-haspopup="menu" aria-expanded="false" aria-controls="gc-menu">☰</button>
       </header>
       <nav class="gc-tabs" role="tablist" aria-label="Grown-up Corner pages">
-        <button class="gc-tab" role="tab" data-page="progress">📊 Progress</button>
-        <button class="gc-tab" role="tab" data-page="words">📝 Words</button>
-        <button class="gc-tab" role="tab" data-page="settings">⚙️ Settings</button>
-        <button class="gc-tab" role="tab" data-page="guide">📖 Guide</button>
+        <button id="tab-progress" class="gc-tab" role="tab" data-page="progress" aria-controls="page-progress">📊 Progress</button>
+        <button id="tab-words" class="gc-tab" role="tab" data-page="words" aria-controls="page-words">📝 Words</button>
+        <button id="tab-settings" class="gc-tab" role="tab" data-page="settings" aria-controls="page-settings">⚙️ Settings</button>
+        <button id="tab-guide" class="gc-tab" role="tab" data-page="guide" aria-controls="page-guide">📖 Guide</button>
       </nav>
       <p id="gc-page-title" class="gc-page-title" aria-hidden="true"></p>
       <!-- Phones only: the pages, below ☰. A <dialog>, so back closes it first. -->
@@ -234,7 +234,7 @@
       </dialog>
 
       <div id="gc-body" class="gc-body">
-        <section id="page-progress" class="gc-page" role="tabpanel" data-page="progress">
+        <section id="page-progress" aria-labelledby="tab-progress" class="gc-page" role="tabpanel" data-page="progress">
           <div id="progress-tiles" class="gc-tiles"></div>
           <div class="gc-cards">
             <div class="gc-card">
@@ -268,14 +268,14 @@
           </div>
         </section>
 
-        <section id="page-words" class="gc-page" role="tabpanel" data-page="words" hidden>
+        <section id="page-words" aria-labelledby="tab-words" class="gc-page" role="tabpanel" data-page="words" hidden>
           <p class="panel-tip">In learning order. Tap a sticker button to give or take away a sticker. Turn a word off to skip it in practice; it stays off even after a reset.</p>
           <div id="word-filters" class="gc-filters" role="group" aria-label="Show"></div>
           <ul id="panel-list" class="panel-list"></ul>
           <p id="panel-list-empty" class="panel-tip" hidden>No words here.</p>
         </section>
 
-        <section id="page-settings" class="gc-page" role="tabpanel" data-page="settings" hidden>
+        <section id="page-settings" aria-labelledby="tab-settings" class="gc-page" role="tabpanel" data-page="settings" hidden>
           <div id="voice-section" class="voice-section">
             <div class="voice-row">
               <label for="voice-select">Voice</label>
@@ -312,7 +312,7 @@
         </section>
 
         <!-- A guide for grown-ups. The numbers in it come from js/config.js. -->
-        <section id="page-guide" class="gc-page guide-body" role="tabpanel" data-page="guide" hidden>
+        <section id="page-guide" aria-labelledby="tab-guide" class="gc-page guide-body" role="tabpanel" data-page="guide" hidden>
           <h4>The games</h4>
           <ul>
             <li><b>Let's Read! ▶</b> shows up to <span data-number="roundMax"></span> words, one at a time. Tap the word to hear it, or <b>🧩 Sound it out</b> to hear it one sound at a time. When your child can read it, tap <b>I know it! ⭐</b>. Otherwise tap <b>Next ➜</b>. Once a word has been heard or sounded out, <b>I know it!</b> turns off for that word, so a star always means your child read it alone.</li>
