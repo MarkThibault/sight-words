@@ -73,6 +73,7 @@ async function init() {
   els.resetCancel.addEventListener('click', () => showResetConfirm(false));
   els.resetYes.addEventListener('click', confirmReset);
   els.panel.querySelectorAll('[data-page]:is(button)').forEach((btn) => btn.addEventListener('click', () => showPanelPage(btn.dataset.page)));
+  els.panel.querySelector('.gc-tabs').addEventListener('keydown', moveTab);
   els.panelMenuBtn.addEventListener('click', togglePanelMenu);
   els.practiceStart.addEventListener('click', startPracticeRound);
   els.backupSave.addEventListener('click', () => saveBackup());

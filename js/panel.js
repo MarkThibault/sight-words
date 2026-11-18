@@ -43,11 +43,28 @@ function openPanel() {
 
 function showPanelPage(page) {
   els.panel.querySelectorAll('.gc-page').forEach((section) => { section.hidden = section.dataset.page !== page; });
-  els.panel.querySelectorAll('.gc-tab').forEach((tab) => tab.setAttribute('aria-selected', String(tab.dataset.page === page)));
+  els.panel.querySelectorAll('.gc-tab').forEach((tab) => {
+    const shown = tab.dataset.page === page;
+    tab.setAttribute('aria-selected', String(shown));
+    tab.tabIndex = shown ? 0 : -1; // the Tab key goes to the page shown; the arrow keys move between tabs
+  });
   els.panel.querySelectorAll('.gc-menu-item').forEach((item) => item.classList.toggle('on', item.dataset.page === page));
   els.panelPageTitle.textContent = PANEL_PAGES[page];
   els.panelBody.scrollTop = 0;
   els.panelMenu.close();
+}
+
+// The arrow keys move along the tabs, round from the last to the first, and Home and End jump to the ends. As on
+// a tap, the page changes with the tab.
+function moveTab(e) {
+  const tabs = [...els.panel.querySelectorAll('.gc-tab')];
+  const at = tabs.indexOf(e.target);
+  const to = { ArrowRight: at + 1, ArrowLeft: at - 1, Home: 0, End: tabs.length - 1 }[e.key];
+  if (at < 0 || to === undefined) return;
+  e.preventDefault();
+  const tab = tabs[(to + tabs.length) % tabs.length];
+  showPanelPage(tab.dataset.page);
+  tab.focus();
 }
 
 function togglePanelMenu() {

@@ -32,6 +32,37 @@ test('the Words page lists every word, and its buttons show only the words with 
   await expect(rows.locator('.panel-word')).toHaveText([exactly(off)]);
 });
 
+test('the tabs work as tabs: linked to their pages, and the arrow keys move between them', async ({ page }) => {
+  test.skip(isPhone(page), 'phones use the ☰ menu instead of tabs');
+  await openApp(page);
+  await openGrownupCorner(page);
+
+  // Each tab names the page it shows, and each page is named by its tab
+  for (const name of ['progress', 'words', 'settings', 'guide']) {
+    const tab = page.locator(`.gc-tab[data-page="${name}"]`);
+    await expect(tab).toHaveAttribute('aria-controls', `page-${name}`);
+    await expect(page.locator(`#page-${name}`)).toHaveAttribute('aria-labelledby', await tab.getAttribute('id'));
+  }
+  // Only the page shown is in the Tab key's order; the arrows move between them
+  const selected = page.locator('.gc-tab[aria-selected="true"]');
+  await expect(selected).toHaveAttribute('data-page', 'progress');
+  await expect(page.locator('.gc-tab[tabindex="0"]')).toHaveCount(1);
+  await selected.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(selected).toHaveAttribute('data-page', 'words');
+  await expect(selected).toBeFocused();
+  await expect(page.locator('#page-words')).toBeVisible();
+  await page.keyboard.press('ArrowLeft');
+  await page.keyboard.press('ArrowLeft'); // past the first, round to the last
+  await expect(selected).toHaveAttribute('data-page', 'guide');
+  await expect(page.locator('#page-guide')).toBeVisible();
+  await page.keyboard.press('Home');
+  await expect(selected).toHaveAttribute('data-page', 'progress');
+  await page.keyboard.press('End');
+  await expect(selected).toHaveAttribute('data-page', 'guide');
+  await expect(page.locator('.gc-tab[tabindex="0"]')).toHaveAttribute('data-page', 'guide');
+});
+
 test('phones switch pages from ☰ and show the page name; tablets use the tabs', async ({ page }) => {
   await openApp(page);
   await openGrownupCorner(page);
