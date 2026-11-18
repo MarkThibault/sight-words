@@ -44,8 +44,8 @@ const savedItem = (page, key) => page.evaluate((k) => localStorage.getItem(k), k
 
 // The app's own word list and sticker sets, read from its files, so the tests follow any change to them.
 const WORDS = JSON.parse(fs.readFileSync(path.join(ROOT, 'words.json'), 'utf8'));
-const { STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS } = vm.runInNewContext(
-  `${fs.readFileSync(path.join(ROOT, 'js', 'config.js'), 'utf8')};({ STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS })`);
+const { STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS, NEXT_WORDS } = vm.runInNewContext(
+  `${fs.readFileSync(path.join(ROOT, 'js', 'config.js'), 'utf8')};({ STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS, NEXT_WORDS })`);
 
 // Words to turn off so only the first four are on: a game then plays 4 words instead of 8, enough to check its
 // rules in half the time.
@@ -64,14 +64,27 @@ const exactly = (text) => new RegExp(`^${text.replace(/[.*+?^${}()|[\]\\]/g, '\\
 // The Grown-up corner's row for a word.
 const panelRow = (page, word) => page.locator('#panel-list li').filter({ has: page.locator('.panel-word', { hasText: exactly(word) }) });
 
-// The ⚙️ button opens the Grown-up corner after a press and hold.
-async function openGrownupCorner(page) {
+// The ⚙️ button opens the Grown-up corner after a press and hold. It opens on Progress; `pageName` goes on to
+// another of its pages.
+async function openGrownupCorner(page, pageName) {
   const box = await page.locator('#settings-btn').boundingBox();
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   await page.mouse.down();
   await page.waitForTimeout(1000);
   await page.mouse.up();
   await base.expect(page.locator('#parent-panel')).toBeVisible();
+  if (pageName) await openCornerPage(page, pageName);
 }
 
-module.exports = { test, expect: base.expect, WORDS, STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS, SHORT_GAME, openApp, savedProgress, savedItem, starred, exactly, panelRow, openGrownupCorner };
+// Goes to one of the Grown-up corner's pages: with its tab on a tablet, or from the ☰ menu on a phone.
+async function openCornerPage(page, pageName) {
+  if (await page.locator('#gc-menu-btn').isVisible()) {
+    await page.locator('#gc-menu-btn').click();
+    await page.locator(`.gc-menu-item[data-page="${pageName}"]`).click();
+  } else {
+    await page.locator(`.gc-tab[data-page="${pageName}"]`).click();
+  }
+  await base.expect(page.locator(`#page-${pageName}`)).toBeVisible();
+}
+
+module.exports = { test, expect: base.expect, WORDS, STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS, NEXT_WORDS, SHORT_GAME, openApp, savedProgress, savedItem, starred, exactly, panelRow, openGrownupCorner, openCornerPage };

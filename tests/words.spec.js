@@ -34,7 +34,7 @@ test('a turned-off word is skipped in rounds and games, and its sticker hides un
   await expect(page.locator('#home')).toBeVisible({ timeout: 15_000 });
 
   // Turned back on, its star and sticker return
-  await openGrownupCorner(page);
+  await openGrownupCorner(page, 'words');
   await panelRow(page, starredOff).locator('.word-switch').click();
   await page.locator('#panel-close').click();
   await expect(page.locator('#sticker-board .sticker-word').filter({ hasText: exactly(starredOff) })).toHaveCount(1);
@@ -48,7 +48,7 @@ test('the last word that\'s on can\'t be turned off', async ({ page }) => {
   await expect(page.locator('#listen-note')).toHaveText('Needs 2 words');
   await expect(page.locator('#listen-btn')).toBeDisabled();
 
-  await openGrownupCorner(page);
+  await openGrownupCorner(page, 'words');
   await expect(panelRow(page, last).locator('.word-switch')).toBeDisabled();
   await expect(panelRow(page, last).locator('.word-switch')).toBeChecked();
   // Turning a second word on lets the first one go off again

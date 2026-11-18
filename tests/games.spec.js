@@ -127,7 +127,7 @@ test('Reset all progress clears every reward but keeps turned-off words off', as
   });
   await expect(page.locator('#home')).toHaveAttribute('data-bg', 'beach');
 
-  await openGrownupCorner(page);
+  await openGrownupCorner(page, 'settings');
   await page.locator('#reset-btn').click();
   await page.locator('#reset-yes').click();
   await page.locator('#panel-close').click();

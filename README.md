@@ -26,7 +26,7 @@ Below a dotted line are the separate games:
 
 ## Learning order
 
-`words.json` lists the words in the order to learn them, and the Grown-up corner shows them in that order. Every round and game (all but the **Timed run**, which uses every word) includes the next 4 words without a star, so they keep coming back until **I know it!** gives them one. The rest of the round is picked as before, the words not shown for the longest first, which mixes in known and new words. Turned-off words are skipped. To change how many, edit `NEXT_WORDS` in `js/config.js`.
+`words.json` lists the words in the order to learn them, and the Grown-up corner's Words page shows them in that order, with the next ones under **Learning next** on its Progress page. Every round and game (all but the **Timed run**, which uses every word) includes the next 4 words without a star, so they keep coming back until **I know it!** gives them one. The rest of the round is picked as before, the words not shown for the longest first, which mixes in known and new words. Turned-off words are skipped. To change how many, edit `NEXT_WORDS` in `js/config.js`.
 
 The order starts with short, common words that make little sentences ("I can see the…"), spreads out tricky ones like *said* and *of*, and never puts look-alikes like *to* / *do* or *on* / *no* close together. New words go at the end in the order they should be learned.
 
@@ -119,15 +119,18 @@ To record them, run `python serve.py` in the project folder on a computer and op
 
 Press and hold the **⚙️** button in the top-right corner of the home screen for about a second. (A quick tap does nothing, so kids don't open it by accident.) The first time the app opens, a tip below **⚙️** says so: "Grown-ups: press and hold ⚙️ for settings." It shows only once, and goes away with **Got it** or when the corner is opened.
 
-From there you can see how many times each word was heard, give or take away stickers, or reset all progress (including the best time, medals, trophies, prize stickers and scenes). **Reset all progress** asks first, with the question covering the whole corner so it can't be missed.
+The corner fills the whole screen and has four pages. On a tablet, tabs below the title switch between them. On a phone (600 px wide or less), the tabs give way to the name of the page being shown, and **☰** in the top-right corner lists the pages. A tap outside the menu, or back, closes it. **← Back to the app** (just **←** on a phone), or back, closes the corner. It always opens on Progress.
 
-**📖 What's in this app** opens a guide for grown-ups in place of the word list: the games, how stars, stickers, medals and trophies are earned, what the on/off switches do, how to install the app for offline play, and a link to the privacy page. Its numbers, like the words in a round or the medals in a trophy, come from `js/config.js`, so they stay right when those change. **← Back** returns to the word list.
+- **📊 Progress:** how many words have a star and have been heard, trophies and medals, scenes unlocked and the best Timed run. Below them, **Learning next** shows the next words to learn, the ones every round and game includes until they have a star.
+- **📝 Words:** every word in learning order, with how many times it was heard, its sticker and its on/off switch. Tap a sticker button to give or take away a sticker. The buttons at the top show all the words, only those with a star, those still being learned, or those turned off.
+- **⚙️ Settings:** the voice (see below) and **Reset all progress**, which erases the best time, medals, trophies, prize stickers and scenes too. It asks first in a pop-up over the corner, with **Keep everything** already chosen (**Keep it all** on phones, so both answers fit side by side). Back closes the question and keeps everything.
+- **📖 Guide:** a guide for grown-ups: the games, how stars, stickers, medals and trophies are earned, what the on/off switches do, how to install the app for offline play, and a link to the privacy page. Its numbers, like the words in a round or the medals in a trophy, come from `js/config.js`, so they stay right when those change.
 
-Each word also has an on/off switch. A word that's turned off is skipped in every round and left out of the starred words in My Trophies, and its sticker is hidden until it's turned back on. Its sticker still counts toward its set. Turned-off words are saved separately from progress, so **Reset all progress** leaves them off. At least one word always stays on.
+Each word on the Words page has an on/off switch. A word that's turned off is skipped in every round and left out of the starred words in My Trophies, and its sticker is hidden until it's turned back on. Its sticker still counts toward its set. Turned-off words are saved separately from progress, so **Reset all progress** leaves them off. At least one word always stays on.
 
 ## Making the voice sound natural
 
-Recorded words and sounds (see above) sound the same everywhere. For anything not recorded yet, the app uses the voices built into the device and picks the most natural-sounding one it finds. To choose a different one, open the Grown-up corner, pick from **Voice**, and tap **🔊 Test**. The choice is saved on that device.
+Recorded words and sounds (see above) sound the same everywhere. For anything not recorded yet, the app uses the voices built into the device and picks the most natural-sounding one it finds. To choose a different one, open the Grown-up corner's **Settings** page, pick from **Voice**, and tap **🔊 Test**. The choice is saved on that device.
 
 Better voices you can add for free:
 
@@ -167,6 +170,7 @@ Every pull request plays the app in a real browser, at a phone size and a tablet
 | `back.spec.js` | Back goes home from a reading round or either game (stopping it), closes a pop-up, and in sticker play closes a pop-up first, then switches sticker play off. Closing things with their own buttons, or a round ending by itself, leaves no extra back steps, so back on the home screen leaves the app |
 | `font.spec.js` | The Andika font loads from the app's own `fonts/` folder, in regular and bold, and the app asks nothing of any other site |
 | `manifest.spec.js` | The manifest keeps the app's identity (its `id` is the start page, as installs had before it was set), says it's English, for education and kids, and lists icons that exist at the sizes it says, with a maskable one |
+| `grownup.spec.js` | The Grown-up corner opens on Progress with the star count and next words, the Words page's buttons show only the matching words, and phones switch pages from ☰ (which a tap outside or back closes) while tablets use the tabs, and Reset all progress asks in a pop-up that Keep everything or back closes without erasing |
 | `privacy.spec.js` | The grown-up guide links to the privacy page, which opens in its own tab, in the app's font, with nothing from another site |
 | `storage.spec.js` | Installed, the app asks the browser once to keep its progress; in a browser tab, or once it's kept, it never asks |
 | `order.spec.js` | `words.json` is in the approved learning order, and **Let's Read**, **Missing words**, **Listen & tap** and **Build the word** always include the next 4 words without a star, even ones just shown, skipping turned-off words |
@@ -214,7 +218,7 @@ The JavaScript lives in `js/`, as plain scripts loaded in order by `index.html` 
 | `listen.js` | The Listen & tap game |
 | `build.js` | The Build the word game |
 | `trophies.js` | The medal bar in the games, the trophy pill on the home screen, and the My Trophies pop-up |
-| `panel.js` | Grown-up corner |
+| `panel.js` | Grown-up corner: its pages, tabs and ☰ menu |
 | `offline.js` | Turning on offline play and offering new versions |
 | `back.js` | The back button: one history entry for each thing open, and closing the top one on back |
 | `devtools.js` | Developer tools, only on localhost |
