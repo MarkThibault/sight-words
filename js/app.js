@@ -74,6 +74,8 @@ async function init() {
   els.panel.querySelectorAll('[data-page]:is(button)').forEach((btn) => btn.addEventListener('click', () => showPanelPage(btn.dataset.page)));
   els.panelMenuBtn.addEventListener('click', togglePanelMenu);
   els.practiceStart.addEventListener('click', startPracticeRound);
+  els.weekPrev.addEventListener('click', () => showWeek(1));
+  els.weekNext.addEventListener('click', () => showWeek(0));
   els.panelMenu.addEventListener('close', () => els.panelMenuBtn.setAttribute('aria-expanded', 'false'));
   // a tap anywhere outside the ☰ menu closes it, and the menu goes when a phone turns wide enough for the tabs
   els.panel.addEventListener('click', (e) => {

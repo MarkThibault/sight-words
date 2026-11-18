@@ -95,3 +95,50 @@ test('Reset all progress asks in a pop-up over the Settings page, which Keep eve
   await expect(page.locator('#parent-panel')).toBeVisible();
   expect(await withStars()).toBe(0);
 });
+
+// Midnight on the Monday `weeksAgo` weeks back, as the app counts weeks, and a date as the app saves it.
+function monday(weeksAgo) {
+  const day = new Date();
+  day.setHours(0, 0, 0, 0);
+  day.setDate(day.getDate() - ((day.getDay() + 6) % 7) - 7 * weeksAgo);
+  return day;
+}
+const dateOf = (day) => day.toLocaleDateString('en-CA');
+
+test('This week shows the days played and the new stars, and ‹ shows last week', async ({ page }) => {
+  const lastMonday = monday(1);
+  const words = starred([WORDS[0], WORDS[1], WORDS[2]], (word, i) => ({
+    knownAt: [monday(3).getTime(), lastMonday.getTime() + 3_600_000, Date.now()][i], // weeks ago, last week, now
+  }));
+  await openApp(page, { progress: { words, daysPlayed: [dateOf(lastMonday), dateOf(new Date())] } });
+  await openGrownupCorner(page);
+
+  await expect(page.locator('#week-title')).toHaveText('📅 This week');
+  await expect(page.locator('#week-days .week-day')).toHaveCount(7);
+  await expect(page.locator('#week-days .played')).toHaveCount(1);
+  await expect(page.locator('#week-days .today')).toHaveClass(/played/);
+  await expect(page.locator('#week-played')).toHaveText('Played on 1 day');
+  await expect(page.locator('#week-stars .gc-word')).toHaveText([WORDS[2]]);
+  await expect(page.locator('#week-next')).toBeDisabled();
+
+  await page.locator('#week-prev').click();
+  await expect(page.locator('#week-title')).toHaveText('📅 Last week');
+  await expect(page.locator('#week-days .played')).toHaveCount(1);
+  await expect(page.locator('#week-days .week-day').first()).toHaveClass(/played/); // Monday
+  await expect(page.locator('#week-stars .gc-word')).toHaveText([WORDS[1]]);
+  await expect(page.locator('#week-prev')).toBeDisabled();
+  await page.locator('#week-next').click();
+  await expect(page.locator('#week-title')).toHaveText('📅 This week');
+});
+
+test('finishing a round saves today as a day played, keeping only this week and last', async ({ page }) => {
+  const old = dateOf(monday(2));
+  const lastWeek = dateOf(monday(1));
+  await openApp(page, { progress: { words: {}, daysPlayed: [old, lastWeek] } });
+  await page.evaluate(() => { state.devRoundWords = 1; }); // a one-word round
+  await page.locator('#start-btn').click();
+  await page.locator('#card').click(); // hearing it
+  await page.locator('#next-btn').click();
+  await expect(page.locator('#home')).toBeVisible();
+  expect((await savedProgress(page)).daysPlayed).toEqual([lastWeek, dateOf(new Date())]);
+});
