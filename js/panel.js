@@ -185,10 +185,15 @@ function renderWordsPage() {
     const isOn = !state.offWords.has(word);
     const row = document.createElement('li');
     row.classList.toggle('off', !isOn);
-    // The switch turns a word on or off for practice; at least one word always stays on.
+    // Its place in the learning order, which stays the same when the list is filtered
+    const number = make('span', 'panel-num', String(state.allWords.indexOf(word) + 1));
+    // The switch, at the end of the row, turns a word on or off for practice; at least one word always stays on.
+    // The word is its label, so tapping the word flips it too.
     const name = make('label', 'panel-word');
     const toggle = document.createElement('input');
     toggle.type = 'checkbox';
+    toggle.id = `word-switch-${number.textContent}`;
+    name.htmlFor = toggle.id;
     toggle.className = 'word-switch';
     toggle.setAttribute('role', 'switch');
     toggle.checked = isOn;
@@ -197,7 +202,7 @@ function renderWordsPage() {
       setWordOn(word, toggle.checked);
       renderPanel();
     });
-    name.append(toggle, word);
+    name.append(word);
     if (isOn && practiceNeed(word)) name.append(make('span', 'practice-mark', '🧡'));
     const heard = make('span', 'panel-heard', s.heard ? `heard ${s.heard}×` : 'not yet');
     const chip = make('button', `chip${s.known ? ' on' : ''}`, s.known ? `${stickerFor(word)} Sticker` : 'No sticker');
@@ -206,7 +211,7 @@ function renderWordsPage() {
       setKnown(word, !s.known);
       renderPanel();
     });
-    row.append(name, heard, chip);
+    row.append(number, name, heard, chip, toggle);
     return row;
   }));
 }
