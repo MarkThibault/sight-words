@@ -44,8 +44,9 @@ const savedItem = (page, key) => page.evaluate((k) => localStorage.getItem(k), k
 
 // The app's own word list and sticker sets, read from its files, so the tests follow any change to them.
 const WORDS = JSON.parse(fs.readFileSync(path.join(ROOT, 'words.json'), 'utf8'));
-const { STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS, NEXT_WORDS } = vm.runInNewContext(
-  `${fs.readFileSync(path.join(ROOT, 'js', 'config.js'), 'utf8')};({ STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS, NEXT_WORDS })`);
+const { STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS, NEXT_WORDS, PRACTICE } = vm.runInNewContext(
+  `${fs.readFileSync(path.join(ROOT, 'js', 'config.js'), 'utf8')};({ STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS, NEXT_WORDS,
+    PRACTICE: { SHOW: PRACTICE_SHOW, CLEAR: PRACTICE_CLEAR, STUCK: PRACTICE_STUCK_ROUNDS, MISSES: PRACTICE_MISSES, TRIES: PRACTICE_TRIES } })`);
 
 // Words to turn off so only the first four are on: a game then plays 4 words instead of 8, enough to check its
 // rules in half the time.
@@ -87,4 +88,4 @@ async function openCornerPage(page, pageName) {
   await base.expect(page.locator(`#page-${pageName}`)).toBeVisible();
 }
 
-module.exports = { test, expect: base.expect, WORDS, STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS, NEXT_WORDS, SHORT_GAME, openApp, savedProgress, savedItem, starred, exactly, panelRow, openGrownupCorner, openCornerPage };
+module.exports = { test, expect: base.expect, WORDS, STICKER_SETS, SET_SIZE, STICKER_EMOJI, MEDALS_PER_TROPHY, FALLBACK_WORDS, NEXT_WORDS, PRACTICE, SHORT_GAME, openApp, savedProgress, savedItem, starred, exactly, panelRow, openGrownupCorner, openCornerPage };

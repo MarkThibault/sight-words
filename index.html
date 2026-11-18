@@ -236,10 +236,19 @@
       <div id="gc-body" class="gc-body">
         <section id="page-progress" class="gc-page" role="tabpanel" data-page="progress">
           <div id="progress-tiles" class="gc-tiles"></div>
-          <div class="gc-card">
-            <h3>👉 Learning next</h3>
-            <p class="panel-tip">Every round and game includes these until they have a star.</p>
-            <div id="next-words" class="gc-words"></div>
+          <div class="gc-cards">
+            <div class="gc-card">
+              <h3>🧡 Needs practice</h3>
+              <p class="panel-tip">Words that keep getting missed, or skipped without a star. <span data-number="practiceClear"></span> right in a row takes a word off the list. Only you see this.</p>
+              <ul id="practice-list" class="practice-list"></ul>
+              <p id="practice-empty" class="practice-empty">Nothing yet. Words that need more practice show here after a few rounds and games.</p>
+              <p id="practice-more" class="panel-tip" hidden></p>
+            </div>
+            <div class="gc-card">
+              <h3>👉 Learning next</h3>
+              <p class="panel-tip">Every round and game includes these until they have a star.</p>
+              <div id="next-words" class="gc-words"></div>
+            </div>
           </div>
         </section>
 
@@ -284,6 +293,13 @@
           <h4>Medals and trophies</h4>
           <p>Finishing a game of <b>Listen &amp; tap</b> or <b>Build the word</b> earns a medal: bronze just for finishing, silver for <span data-number="silver"></span>% of the points, and gold for every word right the first time. A game left partway earns nothing. After two games of the same kind in a row, that game waits until your child plays the other game or a reading round, so medals come from a mix of play.</p>
           <p>Each medal fills the trophy pill at the bottom of the home screen: 1 for bronze, 2 for silver and 3 for gold. Every <span data-number="medalsPerTrophy"></span> earns a trophy, and each trophy lets your child pick a prize sticker for the board, with a 🏆 tag instead of a word. Tap the trophy pill (or <b>🏆</b> in the sticker corner) to see them all, or to pick a prize saved for later.</p>
+          <h4>🧡 Needs practice</h4>
+          <p>The <b>Progress</b> page lists up to <span data-number="practiceShow"></span> words your child finds hard, the most missed first, and the <b>Words</b> page marks every one with 🧡. Your child never sees it, and it never changes stars, stickers or medals. A word is on the list when either:</p>
+          <ul>
+            <li>it was missed <span data-number="practiceMisses"></span> times in its last <span data-number="practiceTries"></span> tries in the games: a wrong tap in <b>Listen &amp; tap</b>, which also notes the word tapped instead, or a wrong tile in <b>Build the word</b>. This counts words with a star too, since <b>I know it!</b> is your child's own tap.</li>
+            <li>or it has no star yet and was passed with <b>Next</b> in <span data-number="practiceStuck"></span> reading rounds.</li>
+          </ul>
+          <p>Getting it right the first time <span data-number="practiceClear"></span> times in a row in the games takes it off, and a star clears the reading rounds. It starts counting from this version of the app, so the list fills up over a few days of play. <b>Reset all progress</b> clears it.</p>
           <h4>Turning words on and off</h4>
           <p>Each word on the <b>Words</b> page has a switch. A word that's off is skipped in every round and game, and its sticker is hidden until it's back on. Words stay off even after <b>Reset all progress</b>, and at least one word always stays on.</p>
           <h4>Installing for offline play</h4>

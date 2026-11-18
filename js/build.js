@@ -139,6 +139,7 @@ function placeBuildTile(tile) {
   }
 
   game.busy = true;
+  noteTry(game.target, game.wordPoints === BUILD_WORD_POINTS ? 1 : 0); // for Needs practice in the Grown-up corner
   // The last part still gets its sound, then the whole word.
   saySound(id, () => { buildTimer = setTimeout(finishBuildWord, SOUND_GAP_MS); });
 }

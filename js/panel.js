@@ -10,6 +10,7 @@ const WORD_FILTERS = {
   all: { label: 'All', test: () => true },
   starred: { label: '⭐ Has a star', test: (word) => stats(word).known },
   learning: { label: 'Learning', test: (word) => !stats(word).known && !state.offWords.has(word) },
+  practice: { label: '🧡 Needs practice', test: (word) => !state.offWords.has(word) && practiceNeed(word) !== null },
   off: { label: 'Turned off', test: (word) => state.offWords.has(word) },
 };
 let wordFilter = 'all';
@@ -17,6 +18,7 @@ let wordFilter = 'all';
 function openPanel() {
   hideGrownupTip();
   wordFilter = 'all';
+  fillPanelNumbers();
   renderPanel();
   showPanelPage('progress');
   if (canSpeak) renderVoiceOptions();
@@ -28,7 +30,6 @@ function showPanelPage(page) {
   els.panel.querySelectorAll('.gc-tab').forEach((tab) => tab.setAttribute('aria-selected', String(tab.dataset.page === page)));
   els.panel.querySelectorAll('.gc-menu-item').forEach((item) => item.classList.toggle('on', item.dataset.page === page));
   els.panelPageTitle.textContent = PANEL_PAGES[page];
-  if (page === 'guide') fillGuideNumbers();
   els.panelBody.scrollTop = 0;
   els.panelMenu.close();
 }
@@ -63,10 +64,37 @@ function renderProgressPage() {
     tile(`🖼️ ${unlockedScenes().length} of ${STICKER_SETS.length}`, 'scenes unlocked'),
     tile(`⏱️ ${best === null ? '–' : formatTime(best)}`, best === null ? 'no Timed run yet' : 'best Timed run'),
   );
+  renderPracticeList();
   const next = nextWordsToLearn(state.words);
   els.nextWords.replaceChildren(...(next.length
     ? next.map((word) => make('span', 'gc-word', word))
     : [make('p', '', 'Every word has a star! 🎉')]));
+}
+
+// Needs practice: each word with why, and 🔊 to hear it. The Words page marks the rest, past PRACTICE_SHOW.
+function renderPracticeList() {
+  const needs = wordsToPractice();
+  els.practiceEmpty.hidden = needs.length > 0;
+  const more = needs.length - PRACTICE_SHOW;
+  els.practiceMore.hidden = more <= 0;
+  els.practiceMore.textContent = `And ${more} more, marked 🧡 on the Words page.`;
+  els.practiceList.replaceChildren(...needs.slice(0, PRACTICE_SHOW).map((need) => {
+    const row = document.createElement('li');
+    const why = make('span', 'practice-why');
+    const reasons = [];
+    if (need.misses) {
+      reasons.push([`Missed ${need.misses} of the last ${need.tries} tries in games`]);
+      if (need.mixedUp) reasons.push(['mixed up with ', make('b', '', need.mixedUp[0]), ` ${need.mixedUp[1]}×`]);
+    }
+    if (need.skipped) reasons.push([`Skipped in ${need.skipped} reading rounds, no star yet`]);
+    if (need.known) reasons.push(['has a star']);
+    reasons.forEach((parts, i) => why.append(...(i ? [' · '] : []), ...parts));
+    const hear = make('button', 'chip', '🔊');
+    hear.setAttribute('aria-label', `Hear ${need.word}`);
+    hear.addEventListener('click', () => sayWord(need.word));
+    row.append(make('span', 'practice-word', need.word), why, hear);
+    return row;
+  }));
 }
 
 function renderWordsPage() {
@@ -100,6 +128,7 @@ function renderWordsPage() {
       renderPanel();
     });
     name.append(toggle, word);
+    if (isOn && practiceNeed(word)) name.append(make('span', 'practice-mark', '🧡'));
     const heard = make('span', 'panel-heard', s.heard ? `heard ${s.heard}×` : 'not yet');
     const chip = make('button', `chip${s.known ? ' on' : ''}`, s.known ? `${stickerFor(word)} Sticker` : 'No sticker');
     chip.disabled = !isOn;
@@ -134,8 +163,8 @@ function showResetConfirm(show) {
   else els.resetConfirm.close();
 }
 
-// The guide's numbers come from config.js, so it stays right when they change.
-function fillGuideNumbers() {
+// The corner's numbers, in the guide and on Progress, come from config.js, so they stay right when they change.
+function fillPanelNumbers() {
   const numbers = {
     roundMax: ROUND_MAX_WORDS,
     nextWords: NEXT_WORDS,
@@ -143,8 +172,13 @@ function fillGuideNumbers() {
     silver: Math.round(GAME_MEDALS.find((m) => m.name === 'silver').share * 100),
     medalsPerTrophy: MEDALS_PER_TROPHY,
     setSize: SET_SIZE,
+    practiceTries: PRACTICE_TRIES,
+    practiceMisses: PRACTICE_MISSES,
+    practiceClear: PRACTICE_CLEAR,
+    practiceStuck: PRACTICE_STUCK_ROUNDS,
+    practiceShow: PRACTICE_SHOW,
   };
-  els.pageGuide.querySelectorAll('[data-number]').forEach((el) => {
+  els.panel.querySelectorAll('[data-number]').forEach((el) => {
     el.textContent = numbers[el.dataset.number];
   });
 }

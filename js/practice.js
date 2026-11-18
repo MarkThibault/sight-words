@@ -206,6 +206,7 @@ function goNext() {
     return;
   }
   stopAudio();
+  if (!stats(readingRound.word).known) noteSkipped(readingRound.word); // for Needs practice in the Grown-up corner
   showWord();
 }
 
