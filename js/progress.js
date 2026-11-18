@@ -76,10 +76,13 @@ function markHeard(word) {
 
 // A star comes with its sticker, given here. Taking the star away takes the sticker too, so earning it again gives
 // a new one, filling the gap in its set first.
-function setKnown(word, known) {
+// `byGrownup` marks a star given on the Words page, so This week only counts the child's own.
+function setKnown(word, known, byGrownup = false) {
   const s = stats(word);
   s.known = known;
   s.knownAt = known ? Date.now() : 0;
+  if (known && byGrownup) s.byGrownup = true;
+  else delete s.byGrownup;
   if (known) {
     giveSticker(word);
     delete s.skipped; // not stuck any more
@@ -181,7 +184,7 @@ const trophyCount = () => Math.floor(medalCount() / MEDALS_PER_TROPHY);
 // For the Grown-up corner only: the child never sees it, and it never changes stars, stickers or medals.
 // A word's `tries` are its last few tries in Listen & tap and Build the word, newest last: 1 for right the first time,
 // 0 for a miss in Build the word, or the word tapped by mistake in Listen & tap. `skipped` counts the reading rounds it
-// was shown in and passed with Next while it had no star; a star clears it. `forgot` marks a word with a star that was
+// was shown in and passed with Next while it had no star (not Timed runs); a star clears it. `forgot` marks a word with a star that was
 // passed with Skip in a Check-up; it keeps its star and sticker, and "I know it!" on it clears the mark.
 
 function noteTry(word, result) {
@@ -288,29 +291,33 @@ function noteRoundFinished() {
 }
 
 // ---------- Days played ----------
-// For the Grown-up corner's "This week": the days (YYYY-MM-DD, local time) with a finished round or game. Only this
-// week and last week are kept. Weeks start on Monday.
+// For the Grown-up corner's "This week": the days (YYYY-MM-DD, local time) a round or game was started, finished or
+// not. Only this week and last week are kept. Weeks start on Sunday.
 
-// Midnight on the Monday `weeksAgo` weeks back (0 is this week).
+// Midnight on the Sunday `weeksAgo` weeks back (0 is this week).
 function weekStart(weeksAgo = 0) {
   const day = new Date();
   day.setHours(0, 0, 0, 0);
-  day.setDate(day.getDate() - ((day.getDay() + 6) % 7) - 7 * weeksAgo);
+  day.setDate(day.getDate() - day.getDay() - 7 * weeksAgo);
   return day;
 }
 
 const daysPlayed = () => state.progress.daysPlayed || [];
 
+// Called as each round and game starts, and as it finishes, in case it ran past midnight.
 function notePlayedToday() {
+  if (daysPlayed().at(-1) === today()) return;
   const keepFrom = weekStart(1).toLocaleDateString('en-CA');
   state.progress.daysPlayed = [...daysPlayed().filter((day) => day >= keepFrom && day !== today()), today()];
+  saveProgress();
 }
 
-// The words that got their star in the week `weeksAgo` weeks back, in the order they got it.
+// The words the child got their star for in the week `weeksAgo` weeks back, in the order they got it. Stars a grown-up
+// gave on the Words page aren't the child's, so they're left out.
 function starsInWeek(weeksAgo) {
   const from = weekStart(weeksAgo).getTime();
   const to = weeksAgo ? weekStart(weeksAgo - 1).getTime() : Infinity;
-  return knownWords().filter((word) => stats(word).knownAt >= from && stats(word).knownAt < to);
+  return knownWords().filter((word) => !stats(word).byGrownup && stats(word).knownAt >= from && stats(word).knownAt < to);
 }
 
 // Saves medals from a finished game. Returns whether they completed a trophy.
