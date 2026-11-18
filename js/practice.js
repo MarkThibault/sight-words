@@ -29,6 +29,8 @@ function startRound(mode, timed = false) {
   };
   state.lastRound = null;
   els.timer.hidden = !timed;
+  // In a Check-up, Next is Skip: passing a word with a star puts it on Needs practice for the grown-up
+  els.next.textContent = mode === 'checkup' ? 'Skip ➜' : 'Next ➜';
   els.roundBar.setAttribute('aria-valuemax', String(deck.length));
   showScreen('practice');
   showWord();
@@ -190,6 +192,7 @@ function knowIt() {
     updateCounters();
     playEffect('starEarned');
   } else {
+    noteForgot(word, false); // read alone again, so off Needs practice
     showToast(randomCheer());
   }
 
@@ -210,7 +213,9 @@ function goNext() {
     return;
   }
   stopAudio();
-  if (!stats(readingRound.word).known) noteSkipped(readingRound.word); // for Needs practice in the Grown-up corner
+  // for Needs practice in the Grown-up corner
+  if (!stats(readingRound.word).known) noteSkipped(readingRound.word);
+  else if (readingRound.mode === 'checkup') noteForgot(readingRound.word, true);
   showWord();
 }
 

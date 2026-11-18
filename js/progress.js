@@ -181,7 +181,8 @@ const trophyCount = () => Math.floor(medalCount() / MEDALS_PER_TROPHY);
 // For the Grown-up corner only: the child never sees it, and it never changes stars, stickers or medals.
 // A word's `tries` are its last few tries in Listen & tap and Build the word, newest last: 1 for right the first time,
 // 0 for a miss in Build the word, or the word tapped by mistake in Listen & tap. `skipped` counts the reading rounds it
-// was shown in and passed with Next while it had no star; a star clears it.
+// was shown in and passed with Next while it had no star; a star clears it. `forgot` marks a word with a star that was
+// passed with Skip in a Check-up; it keeps its star and sticker, and "I know it!" on it clears the mark.
 
 function noteTry(word, result) {
   const s = stats(word);
@@ -198,15 +199,25 @@ function noteSkipped(word) {
   saveProgress();
 }
 
+function noteForgot(word, forgot) {
+  const s = stats(word);
+  if (Boolean(s.forgot) === forgot) return;
+  if (forgot) s.forgot = true;
+  else delete s.forgot;
+  saveProgress();
+}
+
 // Why a word needs practice, or null if it doesn't. `misses` of its last `tries` in the games, the word it was most
-// often `mixedUp` with ([word, times], or null), and the reading rounds `skipped` without a star.
+// often `mixedUp` with ([word, times], or null), the reading rounds `skipped` without a star, and whether it was
+// skipped in a Check-up (`forgot`).
 function practiceNeed(word) {
   const s = stats(word);
   const tries = s.tries || [];
   const misses = tries.filter((t) => t !== 1).length;
   const skipped = s.known ? 0 : s.skipped || 0;
   const missing = misses >= PRACTICE_MISSES;
-  if (!missing && skipped < PRACTICE_STUCK_ROUNDS) return null;
+  const forgot = Boolean(s.known && s.forgot);
+  if (!missing && skipped < PRACTICE_STUCK_ROUNDS && !forgot) return null;
   const mixups = {};
   tries.filter((t) => typeof t === 'string').forEach((t) => { mixups[t] = (mixups[t] || 0) + 1; });
   return {
@@ -216,6 +227,7 @@ function practiceNeed(word) {
     tries: tries.length,
     mixedUp: missing ? Object.entries(mixups).sort((a, b) => b[1] - a[1])[0] || null : null,
     skipped: skipped >= PRACTICE_STUCK_ROUNDS ? skipped : 0,
+    forgot,
   };
 }
 
