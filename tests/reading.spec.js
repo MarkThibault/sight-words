@@ -49,7 +49,7 @@ test('a sticker taken away leaves a gap that the next star fills, and the scene 
 
   // A grown-up takes away the second sticker of the set
   const gapWord = firstSet[1];
-  await openGrownupCorner(page);
+  await openGrownupCorner(page, 'words');
   await page.locator('#panel-list li').filter({ hasText: beach.stickers[1] }).locator('.chip').click();
   await page.locator('#panel-close').click();
   let progress = await savedProgress(page);
@@ -108,7 +108,7 @@ test('a Timed run keeps the best time, which only counts for the same number of 
   expect((await savedProgress(page)).bestTime).toEqual(best);
 
   // With another word turned on, the times don't compare, so it starts fresh
-  await openGrownupCorner(page);
+  await openGrownupCorner(page, 'words');
   await panelRow(page, WORDS[2]).locator('.word-switch').click();
   await page.locator('#panel-close').click();
   await expect(page.locator('#best-time')).toHaveText('No best time yet');

@@ -6,8 +6,7 @@ const { test, expect, openApp, openGrownupCorner } = require('./helpers');
 
 test('the grown-up guide links to the privacy page, which opens in its own tab and asks nothing of another site', async ({ page, context, baseURL }) => {
   await openApp(page);
-  await openGrownupCorner(page);
-  await page.locator('#guide-btn').click();
+  await openGrownupCorner(page, 'guide');
 
   const elsewhere = [];
   context.on('request', (request) => {
@@ -15,7 +14,7 @@ test('the grown-up guide links to the privacy page, which opens in its own tab a
     if (url.protocol !== 'data:' && url.origin !== new URL(baseURL).origin) elsewhere.push(request.url());
   });
   const opening = context.waitForEvent('page');
-  await page.locator('#guide-body a[href="privacy.html"]').click();
+  await page.locator('#page-guide a[href="privacy.html"]').click();
   const privacy = await opening;
   const errors = [];
   privacy.on('pageerror', (err) => errors.push(err.message));
@@ -29,5 +28,5 @@ test('the grown-up guide links to the privacy page, which opens in its own tab a
   expect(errors).toEqual([]);
 
   // The app is still there behind it, with the guide open
-  await expect(page.locator('#panel-guide')).toBeVisible();
+  await expect(page.locator('#page-guide')).toBeVisible();
 });

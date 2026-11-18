@@ -209,73 +209,106 @@
     </div>
   </dialog>
 
-  <dialog id="parent-panel" class="panel">
-    <h2>Grown-up Corner</h2>
-    <div id="panel-main" class="panel-view">
-      <div class="panel-top">
-        <p id="panel-summary"></p>
-        <button id="guide-btn" class="chip">📖 What's in this app</button>
-      </div>
-      <div id="voice-section" class="voice-section">
-        <div class="voice-row">
-          <label for="voice-select">Voice</label>
-          <select id="voice-select"></select>
-          <button id="voice-test" class="chip">🔊 Test</button>
-        </div>
-        <p class="panel-tip">For a more natural voice on iPad: Settings → Accessibility → Spoken Content → Voices → English, and download an “Enhanced” voice. Then reopen this app.</p>
-      </div>
-      <p class="panel-tip">Tap a sticker button to give or take away a sticker. Turn a word off to skip it in practice; it stays off even after a reset.</p>
-      <ul id="panel-list" class="panel-list"></ul>
-      <div class="panel-actions">
-        <button id="reset-btn" class="danger">Reset all progress</button>
-        <button id="panel-close" class="primary">Done</button>
+  <!-- The Grown-up Corner: a full-screen page with four pages of its own. Tablets switch pages with the tabs, and
+       phones with the ☰ menu, which shows the page's name in place of the tabs. -->
+  <dialog id="parent-panel" class="panel grownup-page" aria-labelledby="grownup-title">
+    <div id="panel-main" class="gc-main">
+      <header class="gc-head">
+        <button id="panel-close" class="primary gc-back" aria-label="Back to the app">← <span class="gc-back-text">Back to the app</span></button>
+        <h2 id="grownup-title">Grown-up Corner</h2>
+        <button id="gc-menu-btn" class="gc-menu-btn" aria-label="Pages" aria-haspopup="menu" aria-expanded="false" aria-controls="gc-menu">☰</button>
+      </header>
+      <nav class="gc-tabs" role="tablist" aria-label="Grown-up Corner pages">
+        <button class="gc-tab" role="tab" data-page="progress">📊 Progress</button>
+        <button class="gc-tab" role="tab" data-page="words">📝 Words</button>
+        <button class="gc-tab" role="tab" data-page="settings">⚙️ Settings</button>
+        <button class="gc-tab" role="tab" data-page="guide">📖 Guide</button>
+      </nav>
+      <p id="gc-page-title" class="gc-page-title" aria-hidden="true"></p>
+      <!-- Phones only: the pages, below ☰. A <dialog>, so back closes it first. -->
+      <dialog id="gc-menu" class="gc-menu" aria-label="Pages">
+        <button class="gc-menu-item" data-page="progress">📊 Progress</button>
+        <button class="gc-menu-item" data-page="words">📝 Words</button>
+        <button class="gc-menu-item" data-page="settings">⚙️ Settings</button>
+        <button class="gc-menu-item" data-page="guide">📖 Guide</button>
+      </dialog>
+
+      <div id="gc-body" class="gc-body">
+        <section id="page-progress" class="gc-page" role="tabpanel" data-page="progress">
+          <div id="progress-tiles" class="gc-tiles"></div>
+          <div class="gc-card">
+            <h3>👉 Learning next</h3>
+            <p class="panel-tip">Every round and game includes these until they have a star.</p>
+            <div id="next-words" class="gc-words"></div>
+          </div>
+        </section>
+
+        <section id="page-words" class="gc-page" role="tabpanel" data-page="words" hidden>
+          <p class="panel-tip">In learning order. Tap a sticker button to give or take away a sticker. Turn a word off to skip it in practice; it stays off even after a reset.</p>
+          <div id="word-filters" class="gc-filters" role="group" aria-label="Show"></div>
+          <ul id="panel-list" class="panel-list"></ul>
+          <p id="panel-list-empty" class="panel-tip" hidden>No words here.</p>
+        </section>
+
+        <section id="page-settings" class="gc-page" role="tabpanel" data-page="settings" hidden>
+          <div id="voice-section" class="voice-section">
+            <div class="voice-row">
+              <label for="voice-select">Voice</label>
+              <select id="voice-select"></select>
+              <button id="voice-test" class="chip">🔊 Test</button>
+            </div>
+            <p class="panel-tip">For a more natural voice on iPad: Settings → Accessibility → Spoken Content → Voices → English, and download an “Enhanced” voice. Then reopen this app.</p>
+          </div>
+          <div class="gc-start-over">
+            <h3>Start over</h3>
+            <p class="panel-tip">Erases all stars, stickers, best times, medals and trophies on this device. Turned-off words stay off.</p>
+            <button id="reset-btn" class="danger">Reset all progress</button>
+          </div>
+        </section>
+
+        <!-- A guide for grown-ups. The numbers in it come from js/config.js. -->
+        <section id="page-guide" class="gc-page guide-body" role="tabpanel" data-page="guide" hidden>
+          <h4>The games</h4>
+          <ul>
+            <li><b>Let's Read! ▶</b> shows up to <span data-number="roundMax"></span> words, one at a time. Tap the word to hear it, or <b>🧩 Sound it out</b> to hear it one sound at a time. When your child can read it, tap <b>I know it! ⭐</b>. Otherwise tap <b>Next ➜</b>.</li>
+            <li><b>🎯 Missing words</b> is the same, with only the words that don't have a star yet.</li>
+            <li><b>⏱️ Timed run</b> goes through every word against the clock and saves the best time.</li>
+            <li><b>👂 Listen &amp; tap</b>: hear a word, then find it among <span data-number="listenChoices"></span>.</li>
+            <li><b>🧱 Build the word</b>: hear a word, then put its sounds in order.</li>
+          </ul>
+          <p>Both games are open from the start and use every word that's turned on, including words without a star yet, so they're good practice for new words too. In the games, a wrong answer gets a soft sound and another try, never a failure.</p>
+          <p>The words are learned in a set order, starting with short, common ones like <i>I</i>, <i>a</i> and <i>the</i>. Every round and game includes the next <span data-number="nextWords"></span> words your child doesn't have a star for yet, so they keep coming back until they're learned. They're under <b>Learning next</b> on the <b>Progress</b> page. The rest of the round mixes in other words, known and new. The <b>Words</b> page lists them all in that order.</p>
+          <h4>Stars and stickers</h4>
+          <p>Only <b>I know it!</b> earns a star, and every star comes with a sticker. New stickers fly into the <b>🐵 / 🙈</b> switch and wait there until your child opens it. The switch in the top-left corner opens your child's sticker corner: it hides the title, buttons and ⚙️, and brings out <b>🏆</b>, <b>🎲</b> (tidies the stickers) and <b>🖼️</b>. Stickers can only be dragged there, and the switch slides back to bring everything back. A red bubble on the switch counts what's waiting: new stickers, prizes to pick and new scenes. The other games are practice and never change stars or stickers. You can also give or take away a sticker on the <b>Words</b> page.</p>
+          <p>Stickers come in themed sets of <span data-number="setSize"></span>. The star pill at the bottom of the home screen shows the set being collected, and finishing it unlocks a new scene behind the stickers, like the beach or outer space. Once the first scene is earned, <b>🖼️</b> in the sticker corner switches between them.</p>
+          <h4>Medals and trophies</h4>
+          <p>Finishing a game of <b>Listen &amp; tap</b> or <b>Build the word</b> earns a medal: bronze just for finishing, silver for <span data-number="silver"></span>% of the points, and gold for every word right the first time. A game left partway earns nothing. After two games of the same kind in a row, that game waits until your child plays the other game or a reading round, so medals come from a mix of play.</p>
+          <p>Each medal fills the trophy pill at the bottom of the home screen: 1 for bronze, 2 for silver and 3 for gold. Every <span data-number="medalsPerTrophy"></span> earns a trophy, and each trophy lets your child pick a prize sticker for the board, with a 🏆 tag instead of a word. Tap the trophy pill (or <b>🏆</b> in the sticker corner) to see them all, or to pick a prize saved for later.</p>
+          <h4>Turning words on and off</h4>
+          <p>Each word on the <b>Words</b> page has a switch. A word that's off is skipped in every round and game, and its sticker is hidden until it's back on. Words stay off even after <b>Reset all progress</b>, and at least one word always stays on.</p>
+          <h4>Installing for offline play</h4>
+          <ul>
+            <li><b>iPad / iPhone:</b> open the site in Safari, then <b>Share → Add to Home Screen</b>.</li>
+            <li><b>Android:</b> open the site in Chrome, then <b>⋮ → Install app</b> (or <b>Add to Home screen</b>).</li>
+          </ul>
+          <p>Open it once while online so everything is saved. When a new version is ready, an <b>Update</b> button shows at the bottom of the home screen.</p>
+          <p>Progress is saved on each device. On iPad and iPhone, the home-screen app keeps its own progress apart from Safari, so it starts fresh.</p>
+          <h4>Privacy</h4>
+          <p>Sight Words collects nothing: progress stays on this device and the app sends nothing anywhere. <a href="privacy.html" target="_blank" rel="noopener">Read the privacy page</a>.</p>
+        </section>
       </div>
     </div>
-    <!-- What's in this app: a guide for grown-ups. The numbers in it come from js/config.js. -->
-    <div id="panel-guide" class="panel-view" hidden>
-      <div id="guide-body" class="guide-body">
-        <h3>📖 What's in this app</h3>
-        <h4>The games</h4>
-        <ul>
-          <li><b>Let's Read! ▶</b> shows up to <span data-number="roundMax"></span> words, one at a time. Tap the word to hear it, or <b>🧩 Sound it out</b> to hear it one sound at a time. When your child can read it, tap <b>I know it! ⭐</b>. Otherwise tap <b>Next ➜</b>.</li>
-          <li><b>🎯 Missing words</b> is the same, with only the words that don't have a star yet.</li>
-          <li><b>⏱️ Timed run</b> goes through every word against the clock and saves the best time.</li>
-          <li><b>👂 Listen &amp; tap</b>: hear a word, then find it among <span data-number="listenChoices"></span>.</li>
-          <li><b>🧱 Build the word</b>: hear a word, then put its sounds in order.</li>
-        </ul>
-        <p>Both games are open from the start and use every word that's turned on, including words without a star yet, so they're good practice for new words too. In the games, a wrong answer gets a soft sound and another try, never a failure.</p>
-        <p>The words are learned in a set order, starting with short, common ones like <i>I</i>, <i>a</i> and <i>the</i>. Every round and game includes the next <span data-number="nextWords"></span> words your child doesn't have a star for yet, so they keep coming back until they're learned. The rest of the round mixes in other words, known and new. The word list in the Grown-up Corner is in that order.</p>
-        <h4>Stars and stickers</h4>
-        <p>Only <b>I know it!</b> earns a star, and every star comes with a sticker. New stickers fly into the <b>🐵 / 🙈</b> switch and wait there until your child opens it. The switch in the top-left corner opens your child's sticker corner: it hides the title, buttons and ⚙️, and brings out <b>🏆</b>, <b>🎲</b> (tidies the stickers) and <b>🖼️</b>. Stickers can only be dragged there, and the switch slides back to bring everything back. A red bubble on the switch counts what's waiting: new stickers, prizes to pick and new scenes. The other games are practice and never change stars or stickers. You can also give or take away a sticker here in the Grown-up Corner.</p>
-        <p>Stickers come in themed sets of <span data-number="setSize"></span>. The star pill at the bottom of the home screen shows the set being collected, and finishing it unlocks a new scene behind the stickers, like the beach or outer space. Once the first scene is earned, <b>🖼️</b> in the sticker corner switches between them.</p>
-        <h4>Medals and trophies</h4>
-        <p>Finishing a game of <b>Listen &amp; tap</b> or <b>Build the word</b> earns a medal: bronze just for finishing, silver for <span data-number="silver"></span>% of the points, and gold for every word right the first time. A game left partway earns nothing. After two games of the same kind in a row, that game waits until your child plays the other game or a reading round, so medals come from a mix of play.</p>
-        <p>Each medal fills the trophy pill at the bottom of the home screen: 1 for bronze, 2 for silver and 3 for gold. Every <span data-number="medalsPerTrophy"></span> earns a trophy, and each trophy lets your child pick a prize sticker for the board, with a 🏆 tag instead of a word. Tap the trophy pill (or <b>🏆</b> in the sticker corner) to see them all, or to pick a prize saved for later.</p>
-        <h4>Turning words on and off</h4>
-        <p>Each word has a switch. A word that's off is skipped in every round and game, and its sticker is hidden until it's back on. Words stay off even after <b>Reset all progress</b>, and at least one word always stays on.</p>
-        <h4>Installing for offline play</h4>
-        <ul>
-          <li><b>iPad / iPhone:</b> open the site in Safari, then <b>Share → Add to Home Screen</b>.</li>
-          <li><b>Android:</b> open the site in Chrome, then <b>⋮ → Install app</b> (or <b>Add to Home screen</b>).</li>
-        </ul>
-        <p>Open it once while online so everything is saved. When a new version is ready, an <b>Update</b> button shows at the bottom of the home screen.</p>
-        <p>Progress is saved on each device. On iPad and iPhone, the home-screen app keeps its own progress apart from Safari, so it starts fresh.</p>
-        <h4>Privacy</h4>
-        <p>Sight Words collects nothing: progress stays on this device and the app sends nothing anywhere. <a href="privacy.html" target="_blank" rel="noopener">Read the privacy page</a>.</p>
-      </div>
-      <div class="panel-actions">
-        <button id="guide-back" class="primary">← Back</button>
-      </div>
-    </div>
-    <!-- Covers the whole corner, so it's clear a new question is being asked -->
-    <div id="reset-confirm" class="reset-confirm" role="alertdialog" aria-labelledby="reset-question" aria-describedby="reset-detail" hidden>
-      <span class="reset-icon" aria-hidden="true">⚠️</span>
-      <p id="reset-question" class="reset-question">Erase all progress?</p>
-      <p id="reset-detail">This erases all stars, stickers, best times, medals and trophies on this device. Turned-off words stay off.</p>
-      <div class="reset-buttons">
-        <button id="reset-cancel" class="primary">Keep everything</button>
-        <button id="reset-yes" class="danger">Yes, erase</button>
-      </div>
+  </dialog>
+
+  <!-- "Are you sure?" for Reset all progress: a pop-up over the Grown-up Corner. Keep everything comes first, so it's
+       the one already chosen. -->
+  <dialog id="reset-confirm" class="panel reset-confirm" role="alertdialog" aria-labelledby="reset-question" aria-describedby="reset-detail">
+    <span class="reset-icon" aria-hidden="true">⚠️</span>
+    <p id="reset-question" class="reset-question">Erase all progress?</p>
+    <p id="reset-detail">This erases all stars, stickers, best times, medals and trophies on this device. Turned-off words stay off.</p>
+    <div class="reset-buttons">
+      <button id="reset-cancel" class="primary">Keep <span class="wide-only">everything</span><span class="phone-only">it all</span></button>
+      <button id="reset-yes" class="danger">Yes, erase</button>
     </div>
   </dialog>
 

@@ -71,8 +71,14 @@ async function init() {
   els.reset.addEventListener('click', () => showResetConfirm(true));
   els.resetCancel.addEventListener('click', () => showResetConfirm(false));
   els.resetYes.addEventListener('click', confirmReset);
-  els.guideBtn.addEventListener('click', () => showGuide(true));
-  els.guideBack.addEventListener('click', () => showGuide(false));
+  els.panel.querySelectorAll('[data-page]:is(button)').forEach((btn) => btn.addEventListener('click', () => showPanelPage(btn.dataset.page)));
+  els.panelMenuBtn.addEventListener('click', togglePanelMenu);
+  els.panelMenu.addEventListener('close', () => els.panelMenuBtn.setAttribute('aria-expanded', 'false'));
+  // a tap anywhere outside the ☰ menu closes it, and the menu goes when a phone turns wide enough for the tabs
+  els.panel.addEventListener('click', (e) => {
+    if (els.panelMenu.open && !els.panelMenu.contains(e.target) && !els.panelMenuBtn.contains(e.target)) els.panelMenu.close();
+  });
+  matchMedia(PHONE_CORNER_QUERY).addEventListener('change', () => els.panelMenu.close());
   els.grownupTipOk.addEventListener('click', hideGrownupTip);
 
   // Words are sized to fit their card, and stickers placed around the title and buttons, so both are measured again

@@ -1192,10 +1192,6 @@ h1 {
 /* Only the word list scrolls; the heading, voice settings and buttons stay put. */
 .panel[open] { display: flex; flex-direction: column; }
 .panel > * { flex: none; }
-/* the corner's two views, the word list and the guide, each fill the space below the heading */
-.panel > .panel-view { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
-.panel-view > * { flex: none; }
-.panel-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; }
 .panel::backdrop { background: rgba(43, 45, 66, 0.5); }
 .panel h2 { margin: 0 0 8px; font-size: 2rem; }
 .panel p { margin: 4px 0; }
@@ -1205,10 +1201,9 @@ h1 {
   display: grid;
   gap: 8px;
   flex: 1 1 auto;
-  min-height: 6rem;
-  margin: 16px 0;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  margin: 12px 0 0;
   padding: 0;
-  overflow: auto;
   list-style: none;
 }
 .panel-list li {
@@ -1274,35 +1269,116 @@ h1 {
 
 .panel-actions { display: flex; justify-content: space-between; gap: 12px; }
 .panel-actions button { padding: 12px 22px; border: 0; border-radius: 14px; font-size: 1.1rem; }
-.guide-body { flex: 1 1 auto; min-height: 6rem; margin: 8px 0 16px; padding-right: 4px; overflow: auto; }
-.guide-body h3 { margin: 0 0 4px; font-size: 1.4rem; }
+.guide-body { max-width: 44em; }
 .guide-body h4 { margin: 18px 0 4px; color: var(--accent); font-size: 1.15rem; }
+.guide-body h4:first-child { margin-top: 0; }
 .guide-body p { margin: 6px 0; }
 .guide-body ul { margin: 6px 0; padding-left: 1.3em; }
 .guide-body li { margin: 4px 0; }
-/* "are you sure?" covers the whole corner, so it can't be missed */
-.reset-confirm {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 32px;
-  overflow: auto;
-  background: #fff5f5;
-  text-align: center;
+/* The Grown-up Corner fills the screen: a header with ← and the title, the tabs (☰ and the page's name on phones),
+   and below them the page, which is all that scrolls. */
+.panel.grownup-page {
+  width: 100vw;
+  max-width: none;
+  height: 100vh;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  background: #fff;
 }
+.gc-main { display: flex; flex-direction: column; height: 100%; }
+.gc-main > * { flex: none; }
+.gc-head, .gc-tabs, .gc-page-title { background: var(--bg); }
+.gc-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: max(14px, env(safe-area-inset-top)) max(22px, env(safe-area-inset-right)) 0 max(22px, env(safe-area-inset-left));
+}
+.grownup-page h2 { flex: 1; margin: 0; }
+.gc-back { padding: 10px 18px; border: 0; border-radius: 14px; font-size: 1.05rem; font-weight: 700; }
+.gc-tabs { display: flex; gap: 6px; padding: 12px max(22px, env(safe-area-inset-left)) 0; overflow-x: auto; }
+.gc-tab { padding: 10px 18px; border: 0; border-radius: 16px 16px 0 0; background: transparent; color: #666; font-weight: 700; white-space: nowrap; }
+.gc-tab[aria-selected="true"] { background: #fff; color: var(--ink); }
+.gc-menu-btn, .gc-page-title { display: none; }
+.gc-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 20px max(22px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(22px, env(safe-area-inset-left));
+  overflow: auto;
+}
+.gc-page h3 { margin: 0 0 2px; font-size: 1.3rem; }
+.gc-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.gc-tile { padding: 12px 14px; border-radius: 18px; background: var(--bg); }
+.gc-tile b { display: block; font-size: 1.6rem; line-height: 1.2; }
+.gc-tile span { color: #555; font-size: 0.95rem; }
+.gc-card { padding: 14px 16px; border: 2px solid #f1f3f5; border-radius: 20px; }
+.gc-words { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.gc-word { padding: 4px 14px; border-radius: 12px; background: var(--bg); font-size: 1.4rem; font-weight: 700; }
+.gc-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+#page-settings { max-width: 720px; }
+.voice-section { margin-top: 0; }
+.gc-start-over { padding: 16px; border-radius: 18px; background: #fff5f5; }
+.gc-start-over p { margin-bottom: 12px; }
+.gc-start-over button { padding: 12px 22px; border: 0; border-radius: 14px; font-size: 1.1rem; }
+
+/* Phones: the tabs give way to ☰ in the top-right corner and the name of the page being shown */
+.gc-menu {
+  position: absolute;
+  top: calc(max(14px, env(safe-area-inset-top)) + 52px);
+  right: max(12px, env(safe-area-inset-right));
+  left: auto;
+  z-index: 1;
+  margin: 0;
+  padding: 8px;
+  border: 0;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 8px 28px rgba(43, 45, 66, 0.25);
+}
+.gc-menu[open] { display: grid; gap: 4px; }
+.gc-menu-item { padding: 12px 18px; border: 0; border-radius: 12px; background: transparent; font-size: 1.1rem; text-align: left; }
+.gc-menu-item.on { background: var(--bg); font-weight: 700; }
+@media (max-width: 600px) {
+  .gc-head { gap: 10px; padding: max(12px, env(safe-area-inset-top)) 12px 0; }
+  .gc-back { padding: 8px 14px; }
+  .gc-back-text { display: none; }
+  .gc-menu-btn { display: block; width: 46px; height: 46px; padding: 0; border: 0; border-radius: 14px; background: #fff; font-size: 1.5rem; }
+  .gc-tabs { display: none; }
+  .grownup-page .gc-page-title { display: block; margin: 0; padding: 10px 14px 10px; border-bottom: 2px solid #f1f3f5; font-size: 1.15rem; font-weight: 700; }
+  .gc-body { padding: 14px 14px max(20px, env(safe-area-inset-bottom)); }
+  .gc-tiles { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .gc-tile { padding: 10px 12px; }
+  .gc-tile b { font-size: 1.25rem; }
+}
+/* the narrowest phones: a smaller title, so it stays on one line */
+@media (max-width: 360px) {
+  .panel.grownup-page h2 { font-size: 1.2rem; }
+}
+/* sideways phones: a slimmer header, so more of the page fits */
+@media (max-height: 500px) {
+  .gc-head { padding-top: max(8px, env(safe-area-inset-top)); }
+  .grownup-page h2 { font-size: 1.4rem; }
+  .gc-back { padding: 6px 14px; }
+  .gc-tabs { padding-top: 6px; }
+  .gc-tab { padding: 6px 14px; }
+}
+
+/* "are you sure?" for Reset all progress: a pop-up over the corner */
+.panel.reset-confirm { width: min(92vw, 480px); padding: 28px; overflow: auto; background: #fff5f5; text-align: center; }
+.reset-confirm[open] { align-items: center; gap: 12px; }
 .reset-icon { font-size: 4rem; line-height: 1; }
 .panel .reset-question { margin: 0; color: #c92a2a; font-size: 1.8rem; font-weight: 700; }
 .reset-confirm p { max-width: 26em; }
 .reset-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 12px; }
 .reset-buttons button { padding: 14px 24px; border: 0; border-radius: 14px; font-size: 1.15rem; }
+.reset-buttons .phone-only { display: none; }
 /* sideways phones: no room for the big icon */
 @media (max-height: 500px) {
-  .reset-confirm { gap: 6px; padding: 16px 24px; }
+  .reset-confirm[open] { gap: 6px; }
+  .panel.reset-confirm { padding: 16px 24px; }
   .reset-icon { display: none; }
   .reset-buttons { margin-top: 6px; }
 }
@@ -1312,15 +1388,19 @@ h1 {
   .panel h2 { font-size: 1.5rem; }
   .panel-tip { font-size: 0.85rem; }
   .voice-section { margin: 8px 0 10px; padding-bottom: 8px; }
-  .panel-list { margin: 10px 0 14px; gap: 6px; }
+  .panel-list { grid-template-columns: 1fr; margin-top: 10px; gap: 6px; }
   .panel-list li { padding: 4px 10px; gap: 8px; }
   .panel-word { font-size: 1.3rem; }
   .panel-actions button { padding: 12px 16px; font-size: 1rem; }
-  .guide-body h3 { font-size: 1.2rem; }
   .guide-body h4 { margin-top: 14px; font-size: 1.05rem; }
-  .reset-confirm { padding: 20px; }
+  .panel.reset-confirm { padding: 20px; }
   .reset-icon { font-size: 3rem; }
   .panel .reset-question { font-size: 1.5rem; }
+  /* the two answers stay side by side, with "Keep it all" in place of "Keep everything" so they fit */
+  .reset-buttons { flex-wrap: nowrap; gap: 10px; }
+  .reset-buttons button { padding: 14px 16px; white-space: nowrap; }
+  .reset-buttons .wide-only { display: none; }
+  .reset-buttons .phone-only { display: inline; }
 }
 .danger { background: #ffe3e3; color: #c92a2a !important; }
 .primary { background: var(--blue); color: #fff !important; }

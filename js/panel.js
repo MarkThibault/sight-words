@@ -1,23 +1,88 @@
 'use strict';
 
-// Grown-up corner (press and hold the ⚙️ button): per-word progress, voice choice and reset.
+// Grown-up corner (press and hold the ⚙️ button): a full-screen page with four pages of its own. Progress (how it's
+// going and the next words), Words (per-word stickers and switches), Settings (voice and reset) and Guide.
+// Tablets switch pages with the tabs; phones with the ☰ menu, which shows the page's name in place of the tabs.
+
+const PHONE_CORNER_QUERY = '(max-width: 600px)'; // matches the phone layout in style.css
+const PANEL_PAGES = { progress: '📊 Progress', words: '📝 Words', settings: '⚙️ Settings', guide: '📖 Guide' };
+const WORD_FILTERS = {
+  all: { label: 'All', test: () => true },
+  starred: { label: '⭐ Has a star', test: (word) => stats(word).known },
+  learning: { label: 'Learning', test: (word) => !stats(word).known && !state.offWords.has(word) },
+  off: { label: 'Turned off', test: (word) => state.offWords.has(word) },
+};
+let wordFilter = 'all';
 
 function openPanel() {
   hideGrownupTip();
-  showGuide(false);
-  showResetConfirm(false);
+  wordFilter = 'all';
   renderPanel();
+  showPanelPage('progress');
   if (canSpeak) renderVoiceOptions();
   els.panel.showModal();
 }
 
+function showPanelPage(page) {
+  els.panel.querySelectorAll('.gc-page').forEach((section) => { section.hidden = section.dataset.page !== page; });
+  els.panel.querySelectorAll('.gc-tab').forEach((tab) => tab.setAttribute('aria-selected', String(tab.dataset.page === page)));
+  els.panel.querySelectorAll('.gc-menu-item').forEach((item) => item.classList.toggle('on', item.dataset.page === page));
+  els.panelPageTitle.textContent = PANEL_PAGES[page];
+  if (page === 'guide') fillGuideNumbers();
+  els.panelBody.scrollTop = 0;
+  els.panelMenu.close();
+}
+
+function togglePanelMenu() {
+  if (els.panelMenu.open) els.panelMenu.close();
+  else {
+    els.panelMenu.show();
+    els.panelMenuBtn.setAttribute('aria-expanded', 'true');
+  }
+}
+
 function renderPanel() {
+  renderProgressPage();
+  renderWordsPage();
+}
+
+// How it's going: a few numbers, and the words every round and game includes until they have a star.
+function renderProgressPage() {
+  const total = state.words.length;
   const off = state.offWords.size;
-  els.panelSummary.textContent =
-    `${knownWords().length} of ${state.words.length} words have a star · ` +
-    `${state.words.filter((w) => stats(w).heard > 0).length} heard so far` +
-    (off ? ` · ${off} turned off` : '');
-  els.panelList.replaceChildren(...state.allWords.map((word) => {
+  const best = bestTime();
+  const tile = (big, small) => {
+    const el = make('div', 'gc-tile');
+    el.append(make('b', '', big), make('span', '', small));
+    return el;
+  };
+  els.progressTiles.replaceChildren(
+    tile(`⭐ ${knownWords().length} of ${total}`, 'words have a star' + (off ? ` · ${off} turned off` : '')),
+    tile(`👂 ${state.words.filter((w) => stats(w).heard > 0).length} of ${total}`, 'words heard so far'),
+    tile(`🏆 ${trophyCount()}`, `${trophyCount() === 1 ? 'trophy' : 'trophies'} · 🏅 ${plural(medalCount(), 'medal')}`),
+    tile(`🖼️ ${unlockedScenes().length} of ${STICKER_SETS.length}`, 'scenes unlocked'),
+    tile(`⏱️ ${best === null ? '–' : formatTime(best)}`, best === null ? 'no Timed run yet' : 'best Timed run'),
+  );
+  const next = nextWordsToLearn(state.words);
+  els.nextWords.replaceChildren(...(next.length
+    ? next.map((word) => make('span', 'gc-word', word))
+    : [make('p', '', 'Every word has a star! 🎉')]));
+}
+
+function renderWordsPage() {
+  els.wordFilters.replaceChildren(...Object.entries(WORD_FILTERS).map(([id, filter]) => {
+    const chip = make('button', `chip${id === wordFilter ? ' on' : ''}`,
+      `${filter.label} ${state.allWords.filter(filter.test).length}`);
+    chip.setAttribute('aria-pressed', String(id === wordFilter));
+    chip.addEventListener('click', () => {
+      wordFilter = id;
+      renderWordsPage();
+    });
+    return chip;
+  }));
+  const words = state.allWords.filter(WORD_FILTERS[wordFilter].test);
+  els.panelListEmpty.hidden = words.length > 0;
+  els.panelList.replaceChildren(...words.map((word) => {
     const s = stats(word);
     const isOn = !state.offWords.has(word);
     const row = document.createElement('li');
@@ -63,24 +128,10 @@ function chooseVoice(uri) {
   speak('Let’s read!');
 }
 
-// Asks "are you sure?" over the whole panel, so it's clear the question has changed.
-// (confirm() is blocked in some browsers, such as embedded previews.)
+// Asks "are you sure?" in a pop-up over the corner. (confirm() is blocked in some browsers, such as embedded previews.)
 function showResetConfirm(show) {
-  els.panelMain.inert = show;
-  els.resetConfirm.hidden = !show;
-  (show ? els.resetCancel : els.reset).focus({ preventScroll: true });
-  els.panel.scrollTop = 0; // the cover sits over the top of the panel, so keep it in view
-}
-
-// "What's in this app": swaps the word list for a guide to the games, rewards, switches and installing.
-function showGuide(show) {
-  els.panelMain.hidden = show;
-  els.panelGuide.hidden = !show;
-  if (show) {
-    fillGuideNumbers();
-    els.guideBody.scrollTop = 0;
-  }
-  (show ? els.guideBack : els.guideBtn).focus();
+  if (show) els.resetConfirm.showModal();
+  else els.resetConfirm.close();
 }
 
 // The guide's numbers come from config.js, so it stays right when they change.
@@ -93,7 +144,7 @@ function fillGuideNumbers() {
     medalsPerTrophy: MEDALS_PER_TROPHY,
     setSize: SET_SIZE,
   };
-  els.panelGuide.querySelectorAll('[data-number]').forEach((el) => {
+  els.pageGuide.querySelectorAll('[data-number]').forEach((el) => {
     el.textContent = numbers[el.dataset.number];
   });
 }
