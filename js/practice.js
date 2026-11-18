@@ -116,6 +116,7 @@ function noteHeard() {
   markHeard(readingRound.word);
   els.hint.classList.add('off');
   readingRound.heard = true;
+  els.know.disabled = true; // a star means reading it alone, so once it's been heard, Next moves on instead
   setNextLocked(false);
 }
 
@@ -214,7 +215,7 @@ function goNext() {
 }
 
 function setButtonsDisabled(disabled) {
-  els.know.disabled = disabled;
+  els.know.disabled = disabled || readingRound.heard; // "I know it!" stays off once the word has been heard
   els.next.disabled = disabled;
   els.soundOut.disabled = disabled;
 }
