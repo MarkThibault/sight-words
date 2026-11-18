@@ -67,3 +67,40 @@ test('a file that isn\'t a Sight Words copy is turned away, and nothing changes'
   await expect(page.locator('#load-confirm')).toBeHidden();
   expect(Object.values((await savedProgress(page)).words).filter((w) => w.known)).toHaveLength(3);
 });
+
+test('a copy saved by a newer version of the app is turned away, and nothing changes', async ({ page }) => {
+  await openApp(page, { progress: { words: starred(WORDS.slice(0, 3)) } });
+  await openGrownupCorner(page, 'settings');
+  const copy = { app: 'sight-words', version: 2, savedAt: '2027-01-01T10:00:00.000Z',
+    data: { 'sightWords.progress.v1': JSON.stringify({ words: starred(WORDS.slice(0, 1)) }) } };
+  await page.locator('#backup-file').setInputFiles(copyFile(copy));
+  await expect(page.locator('#backup-note')).toHaveText('This copy was saved by a newer version of Sight Words. Update the app, then try again.');
+  await expect(page.locator('#load-confirm')).toBeHidden();
+
+  // A copy without a version number isn't one this app saved
+  await page.locator('#backup-file').setInputFiles(copyFile({ ...copy, version: undefined }));
+  await expect(page.locator('#backup-note')).toHaveText('That file isn’t a copy saved by Sight Words.');
+  await expect(page.locator('#load-confirm')).toBeHidden();
+  expect(Object.values((await savedProgress(page)).words).filter((w) => w.known)).toHaveLength(3);
+});
+
+test('Reset all progress offers to save a copy first, and still waits for an answer', async ({ page }) => {
+  await openApp(page, { progress: { words: starred(WORDS.slice(0, 2)) } });
+  await openGrownupCorner(page, 'settings');
+  await page.locator('#reset-btn').click();
+
+  const downloading = page.waitForEvent('download');
+  await page.locator('#reset-save').click();
+  const copy = JSON.parse(fs.readFileSync(await (await downloading).path(), 'utf8'));
+  expect(Object.values(JSON.parse(copy.data['sightWords.progress.v1']).words).filter((w) => w.known)).toHaveLength(2);
+
+  // The pop-up stays open, says where the copy went, and nothing is erased until "Yes, erase"
+  await expect(page.locator('#reset-confirm')).toBeVisible();
+  await expect(page.locator('#reset-saved')).toContainText('Saved');
+  expect(Object.values((await savedProgress(page)).words).filter((w) => w.known)).toHaveLength(2);
+
+  // Opening it again starts without the note
+  await page.locator('#reset-cancel').click();
+  await page.locator('#reset-btn').click();
+  await expect(page.locator('#reset-saved')).toBeHidden();
+});
