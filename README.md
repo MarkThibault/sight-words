@@ -121,10 +121,23 @@ Press and hold the **⚙️** button in the top-right corner of the home screen 
 
 The corner fills the whole screen and has four pages. On a tablet, tabs below the title switch between them. On a phone (600 px wide or less), the tabs give way to the name of the page being shown, and **☰** in the top-right corner lists the pages. A tap outside the menu, or back, closes it. **← Back to the app** (just **←** on a phone), or back, closes the corner. It always opens on Progress.
 
-- **📊 Progress:** how many words have a star and have been heard, trophies and medals, scenes unlocked and the best Timed run. Below them, **Learning next** shows the next words to learn, the ones every round and game includes until they have a star.
-- **📝 Words:** every word in learning order, with how many times it was heard, its sticker and its on/off switch. Tap a sticker button to give or take away a sticker. The buttons at the top show all the words, only those with a star, those still being learned, or those turned off.
+- **📊 Progress:** how many words have a star and have been heard, trophies and medals, scenes unlocked and the best Timed run. Below them, **🧡 Needs practice** (see below) and **Learning next**, the next words to learn, the ones every round and game includes until they have a star.
+- **📝 Words:** every word in learning order, with how many times it was heard, its sticker and its on/off switch. Tap a sticker button to give or take away a sticker. The buttons at the top show all the words, only those with a star, those still being learned, those that need practice (marked 🧡), or those turned off.
 - **⚙️ Settings:** the voice (see below) and **Reset all progress**, which erases the best time, medals, trophies, prize stickers and scenes too. It asks first in a pop-up over the corner, with **Keep everything** already chosen (**Keep it all** on phones, so both answers fit side by side). Back closes the question and keeps everything.
 - **📖 Guide:** a guide for grown-ups: the games, how stars, stickers, medals and trophies are earned, what the on/off switches do, how to install the app for offline play, and a link to the privacy page. Its numbers, like the words in a round or the medals in a trophy, come from `js/config.js`, so they stay right when those change.
+
+### Needs practice
+
+The Progress page lists the words a child finds hard, so a grown-up knows what to practice together. It shows up to 5, the most missed first, each with why and a 🔊 to hear it, and the Words page marks every one with 🧡. The child never sees any of it, and it never changes stars, stickers or medals. The Guide page explains it too.
+
+A turned-on word is on the list when either:
+
+- **It keeps getting missed in the games.** Each word keeps its last 6 tries in Listen & tap and Build the word: right the first time, or missed (any wrong tap or wrong tile while finding or building it). In Listen & tap a miss also notes the word tapped instead, shown as "mixed up with *saw* 2×". 3 misses among those tries put it on the list, whether it has a star or not, since **I know it!** is the child's own tap.
+- **It's stuck without a star.** It was shown in 8 reading rounds (Let's Read, Missing words or a Timed run) and passed with **Next** while it had no star. Being one of the next words to learn, it comes back every round, so this catches a word that isn't clicking.
+
+Right the first time 3 times in a row takes a word off, and drops its older misses, so it needs fresh misses to come back. A star clears its stuck count. Counting starts from the version that added it, so the list fills up over a few days of play. The numbers are `PRACTICE_TRIES`, `PRACTICE_MISSES`, `PRACTICE_CLEAR`, `PRACTICE_STUCK_ROUNDS` and `PRACTICE_SHOW` in `js/config.js`. It's saved with each word's progress (`tries` and `skipped`, see `js/progress.js`), so **Reset all progress** clears it.
+
+### Turning words on and off
 
 Each word on the Words page has an on/off switch. A word that's turned off is skipped in every round and left out of the starred words in My Trophies, and its sticker is hidden until it's turned back on. Its sticker still counts toward its set. Turned-off words are saved separately from progress, so **Reset all progress** leaves them off. At least one word always stays on.
 
@@ -171,6 +184,7 @@ Every pull request plays the app in a real browser, at a phone size and a tablet
 | `font.spec.js` | The Andika font loads from the app's own `fonts/` folder, in regular and bold, and the app asks nothing of any other site |
 | `manifest.spec.js` | The manifest keeps the app's identity (its `id` is the start page, as installs had before it was set), says it's English, for education and kids, and lists icons that exist at the sizes it says, with a maskable one |
 | `grownup.spec.js` | The Grown-up corner opens on Progress with the star count and next words, the Words page's buttons show only the matching words, and phones switch pages from ☰ (which a tap outside or back closes) while tablets use the tabs, and Reset all progress asks in a pop-up that Keep everything or back closes without erasing |
+| `practice.spec.js` | Listen & tap notes the word tapped by mistake and Build the word a wrong tile, Next on a word without a star counts a skipped round and a star clears it, Progress lists the words that need practice with why (at most 5, the rest counted), the Words page marks them, and 3 right in a row takes a word off |
 | `privacy.spec.js` | The grown-up guide links to the privacy page, which opens in its own tab, in the app's font, with nothing from another site |
 | `storage.spec.js` | Installed, the app asks the browser once to keep its progress; in a browser tab, or once it's kept, it never asks |
 | `order.spec.js` | `words.json` is in the approved learning order, and **Let's Read**, **Missing words**, **Listen & tap** and **Build the word** always include the next 4 words without a star, even ones just shown, skipping turned-off words |

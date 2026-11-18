@@ -1,7 +1,8 @@
 'use strict';
 
 // Saved progress: stars, stickers, heard counts, the best time, the medals earned in games, and the scenes unlocked.
-// Shape: { words: { the: { heard: 3, known: true, knownAt: 1729700000000, lastSeen: "2026-10-23", seenAt: 1729700000000, listenAt: 1729700000000, buildAt: 1729700000000, sticker: "🦀", set: "beach" } },
+// Shape: { words: { the: { heard: 3, known: true, knownAt: 1729700000000, lastSeen: "2026-10-23", seenAt: 1729700000000, listenAt: 1729700000000, buildAt: 1729700000000, sticker: "🦀", set: "beach",
+//                         tries: [1, 0, "saw", 1], skipped: 2 } },
 //          bestTime: { ms: 95000, count: 24 },
 //          medals: 13,
 //          scenes: ["beach"], scene: "beach", scenesToTry: ["space"], stickersToSee: ["the", "prize-0"],
@@ -12,6 +13,7 @@
 // `stickersToSee` are stickers earned outside sticker play, waiting inside the 🐵/🙈 switch until it's next opened.
 // `prizes` are the prize stickers picked with trophies, one per trophy, in the order they were picked.
 // `lastGame` is the game finished most recently and how many times in a row; a finished reading round clears it.
+// `tries` and `skipped` are for "Needs practice" in the Grown-up corner (see below).
 
 function loadProgress() {
   try {
@@ -76,8 +78,10 @@ function setKnown(word, known) {
   const s = stats(word);
   s.known = known;
   s.knownAt = known ? Date.now() : 0;
-  if (known) giveSticker(word);
-  else {
+  if (known) {
+    giveSticker(word);
+    delete s.skipped; // not stuck any more
+  } else {
     delete s.sticker;
     delete s.set;
   }
@@ -170,6 +174,52 @@ function medalCount() {
 
 const medalsTowardTrophy = () => medalCount() % MEDALS_PER_TROPHY;
 const trophyCount = () => Math.floor(medalCount() / MEDALS_PER_TROPHY);
+
+// ---------- Needs practice ----------
+// For the Grown-up corner only: the child never sees it, and it never changes stars, stickers or medals.
+// A word's `tries` are its last few tries in Listen & tap and Build the word, newest last: 1 for right the first time,
+// 0 for a miss in Build the word, or the word tapped by mistake in Listen & tap. `skipped` counts the reading rounds it
+// was shown in and passed with Next while it had no star; a star clears it.
+
+function noteTry(word, result) {
+  const s = stats(word);
+  s.tries = [...(s.tries || []), result].slice(-PRACTICE_TRIES);
+  // Right enough times in a row: it comes off the list, and older misses no longer count
+  const recent = s.tries.slice(-PRACTICE_CLEAR);
+  if (recent.length === PRACTICE_CLEAR && recent.every((t) => t === 1)) s.tries = recent;
+  saveProgress();
+}
+
+function noteSkipped(word) {
+  const s = stats(word);
+  s.skipped = (s.skipped || 0) + 1;
+  saveProgress();
+}
+
+// Why a word needs practice, or null if it doesn't. `misses` of its last `tries` in the games, the word it was most
+// often `mixedUp` with ([word, times], or null), and the reading rounds `skipped` without a star.
+function practiceNeed(word) {
+  const s = stats(word);
+  const tries = s.tries || [];
+  const misses = tries.filter((t) => t !== 1).length;
+  const skipped = s.known ? 0 : s.skipped || 0;
+  const missing = misses >= PRACTICE_MISSES;
+  if (!missing && skipped < PRACTICE_STUCK_ROUNDS) return null;
+  const mixups = {};
+  tries.filter((t) => typeof t === 'string').forEach((t) => { mixups[t] = (mixups[t] || 0) + 1; });
+  return {
+    word,
+    known: s.known,
+    misses: missing ? misses : 0,
+    tries: tries.length,
+    mixedUp: missing ? Object.entries(mixups).sort((a, b) => b[1] - a[1])[0] || null : null,
+    skipped: skipped >= PRACTICE_STUCK_ROUNDS ? skipped : 0,
+  };
+}
+
+// The turned-on words that need practice, the most missed first.
+const wordsToPractice = () => state.words.map(practiceNeed).filter(Boolean)
+  .sort((a, b) => b.misses - a.misses || b.skipped - a.skipped);
 
 // ---------- Prize stickers ----------
 // Each trophy lets the child pick a prize sticker for the board. It has a 🏆 tag instead of a word, and isn't part

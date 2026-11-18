@@ -1201,7 +1201,7 @@ h1 {
   display: grid;
   gap: 8px;
   flex: 1 1 auto;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   margin: 12px 0 0;
   padding: 0;
   list-style: none;
@@ -1263,7 +1263,8 @@ h1 {
 .word-switch:checked::before { translate: 18px 0; }
 .word-switch:disabled { opacity: 0.5; cursor: default; }
 .word-switch:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
-.panel-heard { color: #555; }
+.panel-heard { color: #555; white-space: nowrap; }
+.panel-list .chip { white-space: nowrap; }
 .chip { padding: 6px 14px; background: #fff; border: 2px solid #ced4da; border-radius: 999px; }
 .chip.on { background: #fff3bf; border-color: var(--yellow-dark); }
 
@@ -1315,6 +1316,14 @@ h1 {
 .gc-tile b { display: block; font-size: 1.6rem; line-height: 1.2; }
 .gc-tile span { color: #555; font-size: 0.95rem; }
 .gc-card { padding: 14px 16px; border: 2px solid #f1f3f5; border-radius: 20px; }
+.gc-cards { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; align-items: start; }
+.practice-list { display: grid; gap: 8px; margin: 10px 0 0; padding: 0; list-style: none; }
+.practice-list li { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 4px 12px; padding: 8px 12px; border-radius: 14px; background: #fff4e6; }
+.practice-word { min-width: 2.4em; font-size: 1.6rem; font-weight: 700; }
+.practice-why { color: #444; font-size: 0.95rem; }
+.practice-why b { color: var(--accent); }
+.grownup-page .practice-empty { margin-top: 10px; padding: 10px 12px; border-radius: 14px; background: #f8f9fa; color: #666; font-size: 0.95rem; }
+.practice-mark { font-size: 1rem; }
 .gc-words { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .gc-word { padding: 4px 14px; border-radius: 12px; background: var(--bg); font-size: 1.4rem; font-weight: 700; }
 .gc-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
@@ -1352,6 +1361,10 @@ h1 {
   .gc-tiles { grid-template-columns: 1fr 1fr; gap: 8px; }
   .gc-tile { padding: 10px 12px; }
   .gc-tile b { font-size: 1.25rem; }
+  .gc-cards { grid-template-columns: 1fr; gap: 12px; }
+  .practice-list li { padding: 6px 10px; gap: 4px 10px; }
+  .practice-word { font-size: 1.35rem; }
+  .practice-why { font-size: 0.85rem; }
 }
 /* the narrowest phones: a smaller title, so it stays on one line */
 @media (max-width: 360px) {

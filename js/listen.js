@@ -39,6 +39,7 @@ function showListenWord() {
   game.target = game.deck.shift();
   markShown(game.target, 'listenAt');
   game.wordPoints = LISTEN_WORD_POINTS;
+  game.mixedUpWith = null; // the first wrong word tapped, for Needs practice in the Grown-up corner
   game.busy = false;
   if (game.deck.length) loadClip(wordClip(game.deck[0])); // so the next word is ready to play
 
@@ -68,6 +69,7 @@ function tapListenChoice(choice, word) {
   if (word !== game.target) {
     // Gentle retry: this one is out and costs a point, the word is said again, and they keep looking.
     game.wordPoints = Math.max(0, game.wordPoints - 1);
+    game.mixedUpWith ??= word;
     choice.disabled = true;
     choice.classList.add('wrong');
     playAnim(choice, 'wiggle');
@@ -76,6 +78,7 @@ function tapListenChoice(choice, word) {
   }
 
   game.busy = true;
+  noteTry(game.target, game.mixedUpWith ?? 1);
   choice.classList.add('right');
   playAnim(choice, 'bounce');
   scoreWord(game, els.listenBar);

@@ -17,6 +17,12 @@ const ROUND_MAX_WORDS = 10;    // the most words in a round of Let's Read or Mis
 const GAME_MAX_WORDS = 8;      // the most words in a game of Listen & tap or Build the word
 const NEXT_WORDS = 4;          // every round and game includes this many next words to learn (the first without a star, in words.json order)
 const GAME_REPEAT_LIMIT = 2;   // games of one kind in a row before that game's button waits for the other game or a reading round
+// "Needs practice" in the Grown-up corner (never shown to the child):
+const PRACTICE_TRIES = 6;        // each word keeps its last this-many tries in Listen & tap and Build the word
+const PRACTICE_MISSES = 3;       // misses among them that put a word on the list
+const PRACTICE_CLEAR = 3;        // right the first time this many tries in a row takes it off again, and starts its count fresh
+const PRACTICE_STUCK_ROUNDS = 8; // or: reading rounds a word was shown in and passed with Next, with no star yet
+const PRACTICE_SHOW = 5;         // the most words on the Progress page (the Words page marks them all)
 // The medals in a game, and the share of its possible points that earns each one. Bronze has to stay at or below
 // the lowest possible score (1 point a word in both games), so finishing always earns it. Gold is every word right the first time.
 const GAME_MEDALS = [
