@@ -142,3 +142,16 @@ test('finishing a round saves today as a day played, keeping only this week and 
   await expect(page.locator('#home')).toBeVisible();
   expect((await savedProgress(page)).daysPlayed).toEqual([lastWeek, dateOf(new Date())]);
 });
+
+test('the Guide opens with a short Start here for busy grown-ups', async ({ page }) => {
+  await openApp(page);
+  await openGrownupCorner(page, 'guide');
+  const start = page.locator('#page-guide > :first-child');
+  await expect(start).toHaveClass(/guide-start/);
+  await expect(start.locator('h4')).toHaveText('👋 Start here');
+  await expect(start.locator('li')).toHaveCount(4);
+  await expect(start).toContainText('Let\'s Read');
+  await expect(start).toContainText('Needs practice');
+  await expect(start).toContainText('Save a copy');
+  await expect(start).toContainText('each page');
+});

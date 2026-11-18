@@ -1283,6 +1283,10 @@ html.calm *, html.calm *::before, html.calm *::after {
 .guide-body p { margin: 6px 0; }
 .guide-body ul { margin: 6px 0; padding-left: 1.3em; }
 .guide-body li { margin: 4px 0; }
+/* Start here: a pale yellow box at the top of the Guide, so it's the first thing read */
+.guide-start { margin-bottom: 18px; padding: 12px 18px; background: #fff9db; border: 3px solid var(--yellow); border-radius: 18px; }
+.guide-start h4 { margin-top: 0; }
+.guide-start ol { margin: 6px 0 0; padding-left: 1.4em; }
 /* The Grown-up Corner fills the screen: a header with ← and the title, the tabs (☰ and the page's name on phones),
    and below them the page, which is all that scrolls. */
 .panel.grownup-page {
