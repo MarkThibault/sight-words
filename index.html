@@ -246,10 +246,24 @@
               <p id="practice-tip" class="practice-tip" hidden></p>
               <button id="practice-start" class="practice-start" hidden>▶ Practice these words</button>
             </div>
-            <div class="gc-card">
-              <h3>👉 Learning next</h3>
-              <p class="panel-tip">Every round and game includes these until they have a star.</p>
-              <div id="next-words" class="gc-words"></div>
+            <div class="gc-cards-side">
+              <div class="gc-card">
+                <h3>👉 Learning next</h3>
+                <p class="panel-tip">Every round and game includes these until they have a star.</p>
+                <div id="next-words" class="gc-words"></div>
+              </div>
+              <!-- The arrows switch between this week and last week -->
+              <div class="gc-card">
+                <div class="week-head">
+                  <h3 id="week-title">📅 This week</h3>
+                  <button id="week-prev" class="chip week-arrow" aria-label="Last week">‹</button>
+                  <button id="week-next" class="chip week-arrow" aria-label="This week">›</button>
+                </div>
+                <p id="week-played" class="panel-tip"></p>
+                <ol id="week-days" class="week-days"></ol>
+                <h4 class="week-stars-title">🎉 New stars</h4>
+                <div id="week-stars" class="gc-words"></div>
+              </div>
             </div>
           </div>
         </section>
@@ -295,6 +309,8 @@
           <h4>Medals and trophies</h4>
           <p>Finishing a game of <b>Listen &amp; tap</b> or <b>Build the word</b> earns a medal: bronze just for finishing, silver for <span data-number="silver"></span>% of the points, and gold for every word right the first time. A game left partway earns nothing. After two games of the same kind in a row, that game waits until your child plays the other game or a reading round, so medals come from a mix of play.</p>
           <p>Each medal fills the trophy pill at the bottom of the home screen: 1 for bronze, 2 for silver and 3 for gold. Every <span data-number="medalsPerTrophy"></span> earns a trophy, and each trophy lets your child pick a prize sticker for the board, with a 🏆 tag instead of a word. Tap the trophy pill (or <b>🏆</b> in the sticker corner) to see them all, or to pick a prize saved for later.</p>
+          <h4>📅 This week</h4>
+          <p>On the <b>Progress</b> page, <b>This week</b> shows the days your child finished a round or a game, Monday to Sunday, and the words that got their star that week. The <b>‹</b> arrow shows last week. It starts counting days from this version of the app.</p>
           <h4>🧡 Needs practice</h4>
           <p>The <b>Progress</b> page lists up to <span data-number="practiceShow"></span> words your child finds hard, the most missed first, and the <b>Words</b> page marks every one with 🧡. Your child never sees it, and it never changes stars, stickers or medals. A word is on the list when either:</p>
           <ul>

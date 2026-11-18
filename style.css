@@ -1317,6 +1317,18 @@ h1 {
 .gc-tile span { color: #555; font-size: 0.95rem; }
 .gc-card { padding: 14px 16px; border: 2px solid #f1f3f5; border-radius: 20px; }
 .gc-cards { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; align-items: start; }
+.gc-cards-side { display: grid; gap: 16px; }
+.week-head { display: flex; align-items: center; gap: 8px; }
+.week-head h3 { flex: 1; }
+.week-arrow { width: 40px; padding: 4px 0; font-size: 1.2rem; font-weight: 700; line-height: 1.2; }
+.week-arrow:disabled { opacity: 0.35; }
+.week-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin: 8px 0 0; padding: 0; list-style: none; }
+.week-day { padding: 4px 0; border-radius: 8px; background: #fff3bf; color: #8a5a00; font-size: 0.9rem; font-weight: 700; text-align: center; }
+.week-day.played { background: var(--green); color: #fff; }
+.week-day.later { background: #f8f9fa; color: #adb5bd; }
+.week-day.today { outline: 2px solid var(--ink); outline-offset: 1px; }
+.grownup-page .week-stars-title { margin: 14px 0 0; font-size: 1.05rem; }
+.gc-word.new-star { background: #d3f9d8; }
 .practice-list { display: grid; gap: 8px; margin: 10px 0 0; padding: 0; list-style: none; }
 .practice-list li { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 4px 12px; padding: 8px 12px; border-radius: 14px; background: #fff4e6; }
 .practice-word { min-width: 2.4em; font-size: 1.6rem; font-weight: 700; }
@@ -1364,6 +1376,7 @@ h1 {
   .gc-tile { padding: 10px 12px; }
   .gc-tile b { font-size: 1.25rem; }
   .gc-cards { grid-template-columns: 1fr; gap: 12px; }
+  .gc-cards-side { gap: 12px; }
   .practice-list li { padding: 6px 10px; gap: 4px 10px; }
   .practice-word { font-size: 1.35rem; }
   .practice-why { font-size: 0.85rem; }

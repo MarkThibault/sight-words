@@ -14,6 +14,8 @@ const WORD_FILTERS = {
   off: { label: 'Turned off', test: (word) => state.offWords.has(word) },
 };
 let wordFilter = 'all';
+let weeksAgo = 0; // This week (0) or last week (1)
+const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 // Ideas for practicing the tricky words away from the screen, a different one each day. {words} is where they go.
 const PRACTICE_TIPS = [
@@ -29,6 +31,7 @@ const PRACTICE_TIPS = [
 function openPanel() {
   hideGrownupTip();
   wordFilter = 'all';
+  weeksAgo = 0;
   fillPanelNumbers();
   renderPanel();
   showPanelPage('progress');
@@ -76,10 +79,45 @@ function renderProgressPage() {
     tile(`⏱️ ${best === null ? '–' : formatTime(best)}`, best === null ? 'no Timed run yet' : 'best Timed run'),
   );
   renderPracticeList();
+  renderWeek();
   const next = nextWordsToLearn(state.words);
   els.nextWords.replaceChildren(...(next.length
     ? next.map((word) => make('span', 'gc-word', word))
     : [make('p', '', 'Every word has a star! 🎉')]));
+}
+
+// This week (or last): the days a round or game was finished, and the words that got their star.
+function renderWeek() {
+  const start = weekStart(weeksAgo);
+  const played = new Set(daysPlayed());
+  els.weekTitle.textContent = weeksAgo ? '📅 Last week' : '📅 This week';
+  els.weekPrev.disabled = weeksAgo === 1;
+  els.weekNext.disabled = weeksAgo === 0;
+  let count = 0;
+  els.weekDays.replaceChildren(...WEEKDAYS.map((name, i) => {
+    const day = new Date(start);
+    day.setDate(start.getDate() + i);
+    const date = day.toLocaleDateString('en-CA');
+    const cell = make('li', 'week-day', name[0]);
+    const isPlayed = played.has(date);
+    if (isPlayed) count += 1;
+    cell.classList.toggle('played', isPlayed);
+    cell.classList.toggle('today', date === today());
+    cell.classList.toggle('later', date > today());
+    cell.title = `${name}: ${isPlayed ? 'played' : 'not played'}`;
+    cell.setAttribute('aria-label', cell.title);
+    return cell;
+  }));
+  els.weekPlayed.textContent = count ? `Played on ${plural(count, 'day')}` : 'No rounds or games finished yet';
+  const stars = starsInWeek(weeksAgo);
+  els.weekStars.replaceChildren(...(stars.length
+    ? stars.map((word) => make('span', 'gc-word new-star', word))
+    : [make('p', 'panel-tip', weeksAgo ? 'No new stars last week.' : 'No new stars yet this week.')]));
+}
+
+function showWeek(ago) {
+  weeksAgo = ago;
+  renderWeek();
 }
 
 // Needs practice: each word with why, and 🔊 to hear it. The Words page marks the rest, past PRACTICE_SHOW.

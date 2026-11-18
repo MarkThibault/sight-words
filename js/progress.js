@@ -7,13 +7,15 @@
 //          medals: 13,
 //          scenes: ["beach"], scene: "beach", scenesToTry: ["space"], stickersToSee: ["the", "prize-0"],
 //          prizes: [{ emoji: "🐶", at: 1729700000000 }],
-//          lastGame: { game: "listen", inARow: 2 } }
+//          lastGame: { game: "listen", inARow: 2 },
+//          daysPlayed: ["2026-11-16", "2026-11-17"] }
 // A sticker without `set` was earned before sticker sets, and doesn't count toward one.
 // `scene` is the scene showing (none means the dots), and `scenesToTry` are the new scenes not looked at yet, counted on 🖼️.
 // `stickersToSee` are stickers earned outside sticker play, waiting inside the 🐵/🙈 switch until it's next opened.
 // `prizes` are the prize stickers picked with trophies, one per trophy, in the order they were picked.
 // `lastGame` is the game finished most recently and how many times in a row; a finished reading round clears it.
 // `tries` and `skipped` are for "Needs practice" in the Grown-up corner (see below).
+// `daysPlayed` are the days with a finished round or game, this week and last, for the Grown-up corner's "This week".
 
 function loadProgress() {
   try {
@@ -263,12 +265,40 @@ function gameWaiting(game) {
 function noteGameFinished(game) {
   const last = state.progress.lastGame;
   state.progress.lastGame = { game, inARow: last && last.game === game ? last.inARow + 1 : 1 };
+  notePlayedToday();
   saveProgress();
 }
 
 function noteRoundFinished() {
   delete state.progress.lastGame;
+  notePlayedToday();
   saveProgress();
+}
+
+// ---------- Days played ----------
+// For the Grown-up corner's "This week": the days (YYYY-MM-DD, local time) with a finished round or game. Only this
+// week and last week are kept. Weeks start on Monday.
+
+// Midnight on the Monday `weeksAgo` weeks back (0 is this week).
+function weekStart(weeksAgo = 0) {
+  const day = new Date();
+  day.setHours(0, 0, 0, 0);
+  day.setDate(day.getDate() - ((day.getDay() + 6) % 7) - 7 * weeksAgo);
+  return day;
+}
+
+const daysPlayed = () => state.progress.daysPlayed || [];
+
+function notePlayedToday() {
+  const keepFrom = weekStart(1).toLocaleDateString('en-CA');
+  state.progress.daysPlayed = [...daysPlayed().filter((day) => day >= keepFrom && day !== today()), today()];
+}
+
+// The words that got their star in the week `weeksAgo` weeks back, in the order they got it.
+function starsInWeek(weeksAgo) {
+  const from = weekStart(weeksAgo).getTime();
+  const to = weeksAgo ? weekStart(weeksAgo - 1).getTime() : Infinity;
+  return knownWords().filter((word) => stats(word).knownAt >= from && stats(word).knownAt < to);
 }
 
 // Saves medals from a finished game. Returns whether they completed a trophy.
