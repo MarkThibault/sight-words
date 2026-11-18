@@ -1,5 +1,10 @@
 'use strict';
 
+// How see-through the home screen's white panel is (HOME_PANEL_ALPHA in config.js).
+function setHomePanelAlpha(alpha) {
+  document.documentElement.style.setProperty('--home-panel-alpha', String(alpha));
+}
+
 // Home screen: mode buttons, the last round's summary, star counters and switching screens.
 
 function showScreen(name) {

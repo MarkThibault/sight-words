@@ -9,6 +9,7 @@ function fitAllWords() {
 }
 
 async function init() {
+  setHomePanelAlpha(HOME_PANEL_ALPHA);
   state.progress = loadProgress();
   setCalmAnimations(readSettings().calm === true, false);
 

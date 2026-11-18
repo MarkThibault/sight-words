@@ -74,10 +74,15 @@ button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulat
   z-index: 1;
   text-align: center;
   padding: 24px 40px 28px;
-  background: rgba(255, 246, 224, 0.92);
+  /* A white card with a yellow edge, like the word card and the Grown-up Corner. How much the stickers behind it
+     show through is HOME_PANEL_ALPHA in config.js. */
+  background: rgb(255 255 255 / var(--home-panel-alpha, 0.92));
+  border: 4px solid var(--yellow);
   border-radius: 40px;
-  box-shadow: 0 0 0 10px rgba(255, 246, 224, 0.6);
+  box-shadow: 0 6px 16px rgba(201, 138, 0, 0.18);
 }
+/* The title sits above a dotted line, like the one above the other games */
+.home-center h1 { margin-bottom: 20px; padding-bottom: 14px; border-bottom: 4px dashed var(--dots); }
 
 h1 {
   margin: 0 0 28px;
@@ -678,6 +683,7 @@ h1 {
   /* the full width, so it never changes size with a button's label, which would move the stickers around it */
   .home-center { width: 100%; padding: 10px 12px 14px; }
   h1 { margin-bottom: 12px; font-size: clamp(2.6rem, 12vw, 3.4rem); }
+  .home-center h1 { margin-bottom: 8px; padding-bottom: 6px; }
   .read-group .big-btn { width: 100%; min-height: 64px; font-size: 1.7rem; }
   .sticker-hint { margin-top: 12px; font-size: 1.1rem; }
   .summary-main { font-size: 1.2rem; }
@@ -700,6 +706,7 @@ h1 {
 @media (max-height: 640px) {
   .home-center { padding-top: 4px; padding-bottom: 8px; }
   h1 { margin-bottom: 8px; font-size: clamp(2rem, 11vw, 2.8rem); }
+  .home-center h1 { margin-bottom: 6px; padding-bottom: 4px; }
   .read-group .big-btn { min-height: 52px; font-size: 1.5rem; box-shadow: 0 5px 0 var(--btn-shadow); }
   .more-modes { margin-top: 10px; }
   .more-modes .mode-btn { min-height: 46px; padding: 2px 6px; }
@@ -727,6 +734,7 @@ h1 {
 /* Sideways phones: the home screen goes side by side, reading on the left and the other games on the right */
 @media (max-height: 520px) and (orientation: landscape) {
   .home-center { display: grid; grid-template-columns: auto auto; align-items: center; padding: 6px 16px 10px; box-shadow: none; border-radius: 24px; }
+  .home-center h1 { margin-bottom: 4px; padding-bottom: 4px; }
   h1 { grid-column: 1 / -1; margin-bottom: 6px; font-size: clamp(1.7rem, 10vh, 2.4rem); text-shadow: 0 3px 0 #ffd8a8; }
   .read-group .big-btn { width: 100%; min-height: 48px; padding: 0.2em 1em; font-size: 1.4rem; box-shadow: 0 4px 0 var(--btn-shadow); }
   .more-modes { flex-wrap: nowrap; gap: 8px; margin-top: 10px; }
