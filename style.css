@@ -649,9 +649,23 @@ h1 {
   line-height: 1.15;
   transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
-.build-slot { color: #dee2e6; transition: color 0.15s; }
+.build-slots { cursor: pointer; } /* a tap sounds out the parts so far and the first blank */
+.build-slot {
+  display: inline-block;
+  min-width: 0.5em; /* so a narrow part like "i" still has a blank long enough to see */
+  text-align: center;
+  text-decoration: underline 0.08em transparent;
+  text-underline-offset: 0.1em;
+  transition: color 0.15s, text-decoration-color 0.15s, scale 0.15s;
+}
+/* A blank: an underline on the line the letters sit on, as wide as its letters, which stay hidden until its tile is placed */
+.build-slot.blank { color: transparent; text-decoration-color: #ced4da; }
+.build-slot.on { scale: 1.12; color: #7048e8; }
+.build-slot.blank.on { color: transparent; text-decoration-color: #7048e8; }
 .build-slot.filled { color: var(--ink); }
 .build-slot.silent { color: var(--ink); opacity: 0.3; }
+.build-slot.silent.on { opacity: 1; }
+.build-slot.filled.on, .build-slot.silent.on { color: #7048e8; }
 .build-slots.right { background: #ebfbee; border-color: var(--green); box-shadow: 0 12px 0 var(--green-dark); }
 .build-slots.right .build-slot.filled { color: var(--green-dark); }
 .build-tiles {

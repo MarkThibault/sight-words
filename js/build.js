@@ -6,6 +6,7 @@
 
 let buildRound = null;       // the game being played: { deck, total, maxPoints, lit, result, points, wordPoints, target, parts, next, slots, busy }
 let buildTimer = null;       // the pause before the next word
+let buildSoundRun = 0;       // counts sound-outs of the word, so a stopped one knows to stop
 
 // Every word that's turned on, starred or not, with its parts listed in js/phonics.js.
 // A one-part word like "a" is just picking the right tile.
@@ -28,6 +29,7 @@ function startBuild() {
 // Leaving mid-game (the 🏠 button) just drops it, with no summary.
 function stopBuild() {
   clearTimeout(buildTimer);
+  buildSoundRun += 1;
   buildRound = null;
   stopAudio();
 }
@@ -51,7 +53,13 @@ function showBuildWord() {
   els.buildCount.textContent = `${position} / ${game.total}`;
   updateGameMeter(game, els.buildBar);
 
-  game.slots = game.parts.map(([letters]) => make('span', 'build-slot', letters)); // shown faintly until filled in
+  // Each part is a blank (an underline, its letters hidden) until its tile is placed, so it isn't just matching letters
+  game.slots = game.parts.map(([letters], i) => {
+    const slot = make('span', 'build-slot blank', letters);
+    slot.dataset.part = String(i);
+    return slot;
+  });
+  buildSoundRun += 1;
   els.buildSlots.classList.remove('right');
   els.buildSlots.replaceChildren(...game.slots);
 
@@ -121,6 +129,7 @@ function dragBuildTile(e, tile) {
 function placeBuildTile(tile) {
   const game = buildRound;
   if (!game || game.busy) return;
+  stopBuildSoundOut();
   const [letters, id] = game.parts[game.next];
   if (tile.textContent !== letters) {
     // Gentle retry: it costs a point, the tile stays in the tray, the sound they're looking for is played,
@@ -132,6 +141,7 @@ function placeBuildTile(tile) {
   }
 
   tile.classList.add('used');
+  game.slots[game.next].classList.remove('blank');
   game.slots[game.next].classList.add(isSilentSound(id) ? 'silent' : 'filled');
   game.next += 1;
   if (game.next < game.parts.length) {
@@ -155,6 +165,36 @@ function finishBuildWord() {
 
 function hearBuildWord() {
   if (!buildRound || buildRound.busy) return;
+  stopBuildSoundOut();
   sayWord(buildRound.target);
   playAnim(els.buildAgain, 'bounce');
+}
+
+// Tapping the word sounds it out like Sound it out in Let's Read, lighting each part as it plays: the parts placed so
+// far, then the first blank, so the child hears the sound they're looking for. It stops there, without the whole word.
+// A placed silent part has no sound to play, but a silent blank plays its own recording, like "silent e".
+function soundOutBuildWord() {
+  const game = buildRound;
+  if (!game || game.busy) return;
+  stopBuildSoundOut();
+  const run = buildSoundRun;
+  const steps = game.parts.slice(0, game.next + 1).map(([, id], i) => [game.slots[i], id])
+    .filter(([, id], i) => i === game.next || !isSilentSound(id));
+  let at = 0;
+  const step = () => {
+    if (run !== buildSoundRun) return;
+    game.slots.forEach((slot) => slot.classList.remove('on'));
+    if (at === steps.length) return;
+    const [slot, id] = steps[at++];
+    slot.classList.add('on');
+    saySound(id, () => setTimeout(step, SOUND_GAP_MS));
+  };
+  step();
+}
+
+function stopBuildSoundOut() {
+  buildSoundRun += 1;
+  if (!buildRound || !buildRound.slots) return;
+  if (buildRound.slots.some((slot) => slot.classList.contains('on'))) stopAudio();
+  buildRound.slots.forEach((slot) => slot.classList.remove('on'));
 }
