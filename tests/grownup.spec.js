@@ -30,6 +30,21 @@ test('the Words page lists every word, and its buttons show only the words with 
   await expect(rows).toHaveCount(WORDS.length - 4);
   await page.locator('#word-filters .chip', { hasText: 'Turned off' }).click();
   await expect(rows.locator('.panel-word')).toHaveText([exactly(off)]);
+  await expect(rows.locator('.panel-num')).toHaveText(['6']); // its place in the learning order, even when filtered
+});
+
+test('the Words page numbers the words in learning order, with each switch at the end of its row, named by its word', async ({ page }) => {
+  await openApp(page);
+  await openGrownupCorner(page, 'words');
+  const rows = page.locator('#panel-list li');
+  await expect(rows.locator('.panel-num')).toHaveText(WORDS.map((w, i) => String(i + 1)));
+  const first = rows.first();
+  await expect(first.locator(':scope > :last-child')).toHaveClass(/word-switch/);
+  await expect(first.getByRole('switch', { name: WORDS[0], exact: true })).toBeVisible();
+  // Every part of the row fits on one line, without spilling out of it
+  const fits = await rows.evaluateAll((items) => items.every((li) => li.scrollWidth <= li.clientWidth
+    && [...li.children].every((el) => Math.abs(el.getBoundingClientRect().top + el.offsetHeight / 2 - (li.getBoundingClientRect().top + li.offsetHeight / 2)) < 6)));
+  expect(fits).toBe(true);
 });
 
 test('the tabs work as tabs: linked to their pages, and the arrow keys move between them', async ({ page }) => {
