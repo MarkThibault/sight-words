@@ -74,8 +74,11 @@ async function init() {
   els.resetCancel.addEventListener('click', () => showResetConfirm(false));
   els.resetYes.addEventListener('click', confirmReset);
   els.panel.querySelectorAll('[data-page]:is(button)').forEach((btn) => btn.addEventListener('click', () => showPanelPage(btn.dataset.page)));
+  els.panel.querySelector('.gc-tabs').addEventListener('keydown', moveTab);
   els.panelMenuBtn.addEventListener('click', togglePanelMenu);
-  els.practiceStart.addEventListener('click', startPracticeRound);
+  els.practiceStart.addEventListener('click', showHandoff);
+  els.handoffGo.addEventListener('click', startPracticeRound);
+  els.handoffCancel.addEventListener('click', () => els.handoff.close());
   els.backupSave.addEventListener('click', () => saveBackup());
   els.resetSave.addEventListener('click', () => saveBackup(els.resetSaved));
   els.backupLoad.addEventListener('click', () => els.backupFile.click());
