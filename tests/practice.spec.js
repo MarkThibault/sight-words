@@ -172,13 +172,13 @@ test('with nothing to practice, there is no tip and no button to practice', asyn
   await expect(page.locator('#practice-start')).toBeHidden();
 });
 
-test('Skip in a Check-up keeps the star and sticker, and lists the word under Needs practice until "I know it!"', async ({ page }) => {
+test('"Practice it" in a Check-up keeps the star and sticker, and lists the word under Needs practice until "I know it!"', async ({ page }) => {
   const known = WORDS.slice(0, 3);
   await openApp(page, { progress: { words: starred(known) }, offWords: WORDS.slice(3) });
   const before = await savedProgress(page);
 
   await page.locator('#checkup-btn').click();
-  await expect(page.locator('#next-btn')).toHaveText('Skip ➜');
+  await expect(page.locator('#next-btn')).toHaveText('🔁 Practice it');
   const word = await page.evaluate(() => readingRound.word);
   await page.locator('#card').click(); // hearing it
   await page.locator('#next-btn').click();
@@ -190,7 +190,7 @@ test('Skip in a Check-up keeps the star and sticker, and lists the word under Ne
   await page.locator('#home-btn').click();
   await openGrownupCorner(page);
   const row = page.locator('#practice-list li').filter({ hasText: word });
-  await expect(row).toContainText('Skipped in a Check-up');
+  await expect(row).toContainText('Picked Practice it in a Check-up');
   await expect(row).toContainText('has a star');
   await page.locator('#panel-close').click();
 
