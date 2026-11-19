@@ -214,3 +214,28 @@ test('tapping the word in Build the word sounds out the placed parts and the fir
   // Nothing was placed or scored by listening
   expect(await page.evaluate(() => [buildRound.next, buildRound.wordPoints])).toEqual([2, 5]);
 });
+
+test('a wrong tile in Build the word lights the blank being looked for while its sound plays', async ({ page }) => {
+  await openApp(page, { offWords: WORDS.filter((w) => w !== 'said') });
+  await page.locator('#build-btn').click();
+  await page.waitForFunction(() => buildRound && !buildRound.busy && buildRound.next === 0);
+  await page.locator('#build-tiles .build-tile').filter({ hasText: exactly('s') }).first().click();
+  await page.waitForTimeout(1500); // the right tile's sound is over
+
+  // Which blanks are lit when the sound wanted plays
+  await page.evaluate(() => {
+    const play = playClip;
+    window.litWhenPlayed = {};
+    playClip = (path, ...rest) => {
+      litWhenPlayed[path] = [...document.querySelectorAll('#build-slots .build-slot.on')].map((el) => el.dataset.part);
+      return play(path, ...rest);
+    };
+  });
+  await page.locator('#build-tiles .build-tile:not(.used)').filter({ hasNotText: exactly('ai') }).first().click();
+  const slots = page.locator('#build-slots .build-slot');
+  await expect(slots.nth(1)).toHaveClass(/on/); // lit straight away, with the boop
+  await page.waitForFunction(() => 'audio/sounds/E.wav' in litWhenPlayed);
+  expect(await page.evaluate(() => litWhenPlayed['audio/sounds/E.wav'])).toEqual(['1']);
+  await expect(page.locator('#build-slots .build-slot.on')).toHaveCount(0, { timeout: 5000 }); // and off once it's said
+  await expect(slots.nth(1)).toHaveClass(/blank/);
+});
