@@ -146,3 +146,24 @@ test('Reset all progress clears every reward but keeps turned-off words off', as
   await expect(page.locator('#sticker-board .sticker')).toHaveCount(0);
   await expect(page.locator('#build-btn')).not.toHaveClass(/waiting/);
 });
+
+test('"Hear it again" sits below the cards in both games', async ({ page }) => {
+  await openApp(page);
+  const box = (selector) => page.locator(selector).evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    return { top: r.top, bottom: r.bottom };
+  });
+
+  await page.locator('#listen-btn').click();
+  await expect(page.locator('#listen-choices .listen-choice').first()).toBeVisible();
+  expect((await box('#listen-again')).top).toBeGreaterThanOrEqual((await box('#listen-choices')).bottom);
+  await expect(page.locator('#listen-again')).toBeInViewport({ ratio: 1 });
+  await page.locator('#listen-home-btn').click();
+
+  await page.locator('#build-btn').click();
+  await expect(page.locator('#build-tiles .build-tile').first()).toBeVisible();
+  const again = await box('#build-again');
+  expect(again.top).toBeGreaterThanOrEqual((await box('#build-slots')).bottom); // under the word...
+  expect(again.bottom).toBeLessThanOrEqual((await box('#build-tiles')).top); // ...above the tiles
+  await expect(page.locator('#build-again')).toBeInViewport({ ratio: 1 });
+});
