@@ -117,7 +117,7 @@ h1 {
   padding: 8px 18px;
   background: var(--mode);
   border: 0;
-  border-radius: 22px;
+  border-radius: 999px;  /* a pill, like the other buttons */
   box-shadow: 0 6px 0 var(--mode-dark);
   color: #fff;
   font-size: 1.4rem;
@@ -707,7 +707,7 @@ h1 {
   .more-modes .mode-btn { flex: 1 1 calc(50% - 10px); min-width: 0; min-height: 56px; padding: 6px 8px; font-size: 1.05rem; white-space: normal; }
   .more-modes .mode-btn small { font-size: 0.8rem; }
   .more-games { gap: 10px; margin-top: 14px; padding-top: 14px; }
-  .game-btn { min-width: 0; min-height: 60px; padding: 6px 4px; font-size: 1rem; border-radius: 18px; }
+  .game-btn { min-width: 0; min-height: 60px; padding: 6px 12px; font-size: 1rem; }
   .game-btn small { font-size: 0.8rem; }
   /* stacked: Next on top, "I know it!" below */
   .actions { flex-direction: column-reverse; gap: 16px; }
@@ -757,7 +757,7 @@ h1 {
   .sticker-hint { margin-top: 6px; font-size: 0.9rem; }
   .summary-main { font-size: 1rem; }
   .more-games { flex-direction: column; flex-wrap: nowrap; gap: 8px; margin: 0 0 0 16px; padding: 0 0 0 16px; border-top: 0; border-left: 4px dashed var(--dots); }
-  .game-btn { flex: none; min-width: 150px; min-height: 52px; padding: 4px 12px; border-radius: 16px; box-shadow: 0 4px 0 var(--mode-dark); font-size: 1rem; }
+  .game-btn { flex: none; min-width: 150px; min-height: 52px; padding: 4px 16px; box-shadow: 0 4px 0 var(--mode-dark); font-size: 1rem; }
   .game-btn small { font-size: 0.75rem; }
   .settings-btn { width: 44px; height: 44px; font-size: 1.3rem; }
   .grownup-tip { top: calc(max(16px, env(safe-area-inset-top)) + 58px); padding: 6px 6px 6px 14px; font-size: 1rem; }
