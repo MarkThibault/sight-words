@@ -157,7 +157,7 @@ function renderPracticeList() {
       if (need.mixedUp) reasons.push(['mixed up with ', make('b', '', need.mixedUp[0]), ` ${need.mixedUp[1]}×`]);
     }
     if (need.skipped) reasons.push([`Skipped in ${need.skipped} reading rounds, no star yet`]);
-    if (need.forgot) reasons.push(['Skipped in a Check-up']);
+    if (need.forgot) reasons.push(['Picked Practice it in a Check-up']);
     if (need.known) reasons.push(['has a star']);
     reasons.forEach((parts, i) => why.append(...(i ? [' · '] : []), ...parts));
     const hear = make('button', 'chip', '🔊');

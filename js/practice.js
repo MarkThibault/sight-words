@@ -29,8 +29,8 @@ function startRound(mode, timed = false) {
   };
   state.lastRound = null;
   els.timer.hidden = !timed;
-  // In a Check-up, Next is Skip: passing a word with a star puts it on Needs practice for the grown-up
-  els.next.textContent = mode === 'checkup' ? 'Skip ➜' : 'Next ➜';
+  // In a Check-up, Next is "Practice it": a word with a star the child doesn't know goes on Needs practice for the grown-up
+  els.next.textContent = mode === 'checkup' ? '🔁 Practice it' : 'Next ➜';
   els.roundBar.setAttribute('aria-valuemax', String(deck.length));
   showScreen('practice');
   notePlayedToday(); // for This week in the Grown-up corner, even if the round is left early

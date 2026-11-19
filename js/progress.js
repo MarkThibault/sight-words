@@ -185,7 +185,7 @@ const trophyCount = () => Math.floor(medalCount() / MEDALS_PER_TROPHY);
 // A word's `tries` are its last few tries in Listen & tap and Build the word, newest last: 1 for right the first time,
 // 0 for a miss in Build the word, or the word tapped by mistake in Listen & tap. `skipped` counts the reading rounds it
 // was shown in and passed with Next while it had no star (not Timed runs); a star clears it. `forgot` marks a word with a star that was
-// passed with Skip in a Check-up; it keeps its star and sticker, and "I know it!" on it clears the mark.
+// passed with "Practice it" in a Check-up; it keeps its star and sticker, and "I know it!" on it clears the mark.
 
 function noteTry(word, result) {
   const s = stats(word);
@@ -212,7 +212,7 @@ function noteForgot(word, forgot) {
 
 // Why a word needs practice, or null if it doesn't. `misses` of its last `tries` in the games, the word it was most
 // often `mixedUp` with ([word, times], or null), the reading rounds `skipped` without a star, and whether it was
-// skipped in a Check-up (`forgot`).
+// picked for practice in a Check-up (`forgot`).
 function practiceNeed(word) {
   const s = stats(word);
   const tries = s.tries || [];
