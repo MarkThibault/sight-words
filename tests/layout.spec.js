@@ -75,3 +75,23 @@ test('in sticker play, stickers stay out from behind 🏆 🎲 and 🖼️', asy
   });
   expect(behind).toEqual([]);
 });
+
+test('the dotted lines on the home screen have the same space above and below as each other', async ({ page }) => {
+  await openApp(page);
+  const spaces = () => page.evaluate(() => {
+    const px = (el, prop) => parseFloat(getComputedStyle(el)[prop]);
+    const title = document.querySelector('.home-center h1');
+    const games = document.querySelector('.more-games');
+    return {
+      title: [px(title, 'paddingBottom'), px(title, 'marginBottom')],
+      games: [px(games, 'marginTop'), px(games, 'paddingTop')],
+    };
+  });
+  // At this project's size, and on a short phone
+  for (const size of [null, { width: 360, height: 600 }]) {
+    if (size) await page.setViewportSize(size);
+    const { title, games } = await spaces();
+    expect(title[0], 'above and below the title line').toBe(title[1]);
+    expect(title, 'the title line and the games line').toEqual(games);
+  }
+});
