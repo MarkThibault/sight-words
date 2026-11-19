@@ -23,6 +23,11 @@ Devices: **T** = the tablet, **P** = a phone, **I** = the installed app (from th
 - [ ] T: the Corner looks like the rest of the app: dots, orange title, yellow-edged cards.
 - [ ] T: the home screen's white card, with stickers dragged behind it. Try 🛠️ Home panel levels on localhost and pick one for `HOME_PANEL_ALPHA`.
 
+## Games (#102 and Build the word blanks)
+
+- [ ] T: **Hear it again** sits below the cards in Listen & tap, and under the word in Build the word, and both are easy to reach.
+- [ ] T: Build the word shows blank lines, not letters. Tapping the word sounds out the placed parts and the next blank, then stops. Listen for the sounds being right, especially a silent "e" blank.
+
 ## Older, still untried on the tablet
 
 - [ ] T: medals, trophies and picking a prize sticker.

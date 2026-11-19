@@ -146,3 +146,50 @@ test('Reset all progress clears every reward but keeps turned-off words off', as
   await expect(page.locator('#sticker-board .sticker')).toHaveCount(0);
   await expect(page.locator('#build-btn')).not.toHaveClass(/waiting/);
 });
+
+test('Build the word shows blanks, not the letters, and a right tile fills its blank', async ({ page }) => {
+  await openApp(page, { offWords: WORDS.filter((w) => w !== 'said') });
+  await page.locator('#build-btn').click();
+  await page.waitForFunction(() => buildRound && !buildRound.busy && buildRound.next === 0);
+  const slots = page.locator('#build-slots .build-slot');
+  await expect(slots).toHaveCount(3);
+  // Each blank is an underline, with its letters hidden
+  const look = (i) => slots.nth(i).evaluate((el) => ({ color: getComputedStyle(el).color, line: getComputedStyle(el).textDecorationLine }));
+  expect(await look(0)).toEqual({ color: 'rgba(0, 0, 0, 0)', line: 'underline' });
+  await expect(slots.first()).toHaveClass(/blank/);
+
+  await page.locator('#build-tiles .build-tile').filter({ hasText: exactly('s') }).first().click();
+  await expect(slots.first()).toHaveClass(/filled/);
+  await expect(slots.first()).not.toHaveClass(/blank/);
+  expect((await look(0)).color).not.toBe('rgba(0, 0, 0, 0)');
+  expect((await look(1)).color).toBe('rgba(0, 0, 0, 0)');
+});
+
+test('tapping the word in Build the word sounds out the placed parts and the first blank, then stops', async ({ page }) => {
+  await openApp(page, { offWords: WORDS.filter((w) => w !== 'said') });
+  await page.locator('#build-btn').click();
+  await page.waitForFunction(() => buildRound && !buildRound.busy && buildRound.next === 0);
+  await page.locator('#build-tiles .build-tile').filter({ hasText: exactly('s') }).first().click();
+  await page.locator('#build-tiles .build-tile').filter({ hasText: exactly('ai') }).first().click();
+  await page.waitForTimeout(1500); // the last tile's sound is over
+
+  // Every clip played from here on, and each part lit as its sound plays
+  await page.evaluate(() => {
+    const play = playClip;
+    window.clipsPlayed = [];
+    window.litParts = [];
+    playClip = (path, ...rest) => {
+      clipsPlayed.push(path);
+      litParts.push([...document.querySelectorAll('#build-slots .build-slot.on')].map((el) => el.dataset.part));
+      return play(path, ...rest);
+    };
+  });
+  await page.locator('#build-slots').click();
+  await page.waitForFunction(() => clipsPlayed.length === 3);
+  await page.waitForTimeout(1500); // and nothing after: no whole word
+  expect(await page.evaluate(() => clipsPlayed)).toEqual(['audio/sounds/S.wav', 'audio/sounds/E.wav', 'audio/sounds/D.wav']);
+  expect(await page.evaluate(() => litParts)).toEqual([['0'], ['1'], ['2']]); // the blank lights up for its sound
+  await expect(page.locator('#build-slots .build-slot.on')).toHaveCount(0);
+  // Nothing was placed or scored by listening
+  expect(await page.evaluate(() => [buildRound.next, buildRound.wordPoints])).toEqual([2, 5]);
+});

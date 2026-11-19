@@ -40,6 +40,7 @@ async function init() {
     showScreen('home');
   });
   els.buildAgain.addEventListener('click', hearBuildWord);
+  els.buildSlots.addEventListener('click', soundOutBuildWord);
   els.card.addEventListener('click', hearWord);
   els.soundOut.addEventListener('click', soundOut);
   els.know.addEventListener('click', knowIt);
