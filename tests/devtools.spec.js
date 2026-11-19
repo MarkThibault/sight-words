@@ -128,9 +128,9 @@ test('the home panel is as see-through as config.js says, and 🛠️ tries othe
 
   const before = await savedNow(page);
   await page.locator('#dev-btn').click();
-  await page.locator('#dev-panel button[data-alpha="0.75"]').click();
-  expect(await panelAlpha()).toBeCloseTo(0.75, 2);
-  await expect(page.locator('#dev-panel button[data-alpha="0.75"]')).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('#dev-panel button[data-alpha="0.85"]').click();
+  expect(await panelAlpha()).toBeCloseTo(0.85, 2);
+  await expect(page.locator('#dev-panel button[data-alpha="0.85"]')).toHaveAttribute('aria-pressed', 'true');
   expect(await savedNow(page)).toEqual(before);
 
   // It's only a preview: opening the app again shows the level from config.js
