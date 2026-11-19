@@ -21,7 +21,7 @@ Devices: **T** = the tablet, **P** = a phone, **I** = the installed app (from th
 - [ ] I (tablet): **Load a copy** with that file brings the progress back (try it on a second device or after a reset).
 - [ ] T: 🔁 **Check-up** on the home screen plays only starred words.
 - [ ] T: the Corner looks like the rest of the app: dots, orange title, yellow-edged cards.
-- [ ] T: the home screen's white card, with stickers dragged behind it. Try 🛠️ Home panel levels on localhost and pick one for `HOME_PANEL_ALPHA`.
+- [ ] T: the home screen's white card, with stickers dragged behind it. Check the stickers show through a little (75%, `HOME_PANEL_ALPHA`) and the words and buttons stay easy to read.
 
 ## Games (#102 and Build the word blanks)
 
