@@ -74,10 +74,15 @@ button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulat
   z-index: 1;
   text-align: center;
   padding: 24px 40px 28px;
-  background: rgba(255, 246, 224, 0.92);
+  /* A white card with a yellow edge, like the word card and the Grown-up Corner. How much the stickers behind it
+     show through is HOME_PANEL_ALPHA in config.js. */
+  background: rgb(255 255 255 / var(--home-panel-alpha, 0.92));
+  border: 4px solid var(--yellow);
   border-radius: 40px;
-  box-shadow: 0 0 0 10px rgba(255, 246, 224, 0.6);
+  box-shadow: 0 6px 16px rgba(201, 138, 0, 0.18);
 }
+/* The title sits above a dotted line, like the one above the other games */
+.home-center h1 { margin-bottom: 20px; padding-bottom: 14px; border-bottom: 4px dashed var(--dots); }
 
 h1 {
   margin: 0 0 28px;
@@ -678,6 +683,7 @@ h1 {
   /* the full width, so it never changes size with a button's label, which would move the stickers around it */
   .home-center { width: 100%; padding: 10px 12px 14px; }
   h1 { margin-bottom: 12px; font-size: clamp(2.6rem, 12vw, 3.4rem); }
+  .home-center h1 { margin-bottom: 8px; padding-bottom: 6px; }
   .read-group .big-btn { width: 100%; min-height: 64px; font-size: 1.7rem; }
   .sticker-hint { margin-top: 12px; font-size: 1.1rem; }
   .summary-main { font-size: 1.2rem; }
@@ -700,6 +706,7 @@ h1 {
 @media (max-height: 640px) {
   .home-center { padding-top: 4px; padding-bottom: 8px; }
   h1 { margin-bottom: 8px; font-size: clamp(2rem, 11vw, 2.8rem); }
+  .home-center h1 { margin-bottom: 6px; padding-bottom: 4px; }
   .read-group .big-btn { min-height: 52px; font-size: 1.5rem; box-shadow: 0 5px 0 var(--btn-shadow); }
   .more-modes { margin-top: 10px; }
   .more-modes .mode-btn { min-height: 46px; padding: 2px 6px; }
@@ -727,6 +734,7 @@ h1 {
 /* Sideways phones: the home screen goes side by side, reading on the left and the other games on the right */
 @media (max-height: 520px) and (orientation: landscape) {
   .home-center { display: grid; grid-template-columns: auto auto; align-items: center; padding: 6px 16px 10px; box-shadow: none; border-radius: 24px; }
+  .home-center h1 { margin-bottom: 4px; padding-bottom: 4px; }
   h1 { grid-column: 1 / -1; margin-bottom: 6px; font-size: clamp(1.7rem, 10vh, 2.4rem); text-shadow: 0 3px 0 #ffd8a8; }
   .read-group .big-btn { width: 100%; min-height: 48px; padding: 0.2em 1em; font-size: 1.4rem; box-shadow: 0 4px 0 var(--btn-shadow); }
   .more-modes { flex-wrap: nowrap; gap: 8px; margin-top: 10px; }
@@ -1215,7 +1223,7 @@ html.calm *, html.calm *::before, html.calm *::after {
 }
 .panel-list li {
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 2ch 1fr auto auto auto;
   align-items: center;
   gap: 12px;
   padding: 8px 12px;
@@ -1271,6 +1279,8 @@ html.calm *, html.calm *::before, html.calm *::after {
 .word-switch:disabled { opacity: 0.5; cursor: default; }
 .word-switch:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
 .panel-heard { color: #555; white-space: nowrap; }
+.panel-num { color: #a08c6c; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+.panel-list li.off .panel-num { color: #ced4da; }
 .panel-list .chip { white-space: nowrap; }
 .chip { padding: 6px 14px; background: #fff; border: 2px solid #ced4da; border-radius: 999px; }
 .chip.on { background: #fff3bf; border-color: var(--yellow-dark); }
@@ -1406,8 +1416,6 @@ html.calm *, html.calm *::before, html.calm *::after {
   .gc-head { padding-top: max(8px, env(safe-area-inset-top)); }
   .grownup-page h2 { font-size: 1.4rem; }
   .gc-back { padding: 6px 14px; }
-  .gc-tabs { padding-top: 6px; }
-  .gc-tab { padding: 6px 14px; }
 }
 
 /* ---- The Grown-up Corner's look: the same as the app and its recorder and sound effects pages ----
@@ -1432,30 +1440,43 @@ html.calm *, html.calm *::before, html.calm *::after {
   white-space: nowrap;
 }
 .gc-menu-btn { order: 2; }
-.grownup-page :is(.gc-back, .gc-menu-btn, .gc-tab, .chip, .practice-start, .gc-start-over button, .gc-menu-item) {
+.grownup-page :is(.gc-back, .gc-menu-btn, .chip, .practice-start, .gc-start-over button, .gc-menu-item) {
   transition: translate 0.08s, box-shadow 0.08s;
 }
 
-/* Tabs: chunky pills, like the recorder's Words and Sounds, with the page shown filled yellow */
-.gc-tabs { gap: 10px; padding: 12px max(22px, env(safe-area-inset-left)) 8px; }
+/* Tabs: one rounded pale-yellow track with the page shown in white, so they read as places, not buttons.
+   No pressing edge, unlike the buttons. The gap below the track keeps it apart from the page. */
+.gc-tabs {
+  gap: 4px;
+  width: fit-content;
+  max-width: calc(100% - 2 * max(22px, env(safe-area-inset-left)));
+  margin: 12px max(22px, env(safe-area-inset-left)) 8px;
+  padding: 5px;
+  background: #fff3bf;
+  border: 3px solid var(--yellow);
+  border-radius: 999px;
+}
 .gc-tab {
   padding: 8px 20px;
-  background: #fff;
-  border: 3px solid var(--yellow-dark);
   border-radius: 999px;
-  box-shadow: 0 4px 0 var(--yellow-dark);
-  color: var(--ink);
+  color: #8a6d1f;
   font-size: 1.1rem;
 }
-.gc-tab[aria-selected="true"] { background: var(--yellow); }
+.gc-tab[aria-selected="true"] { background: #fff; color: var(--ink); box-shadow: 0 2px 6px rgba(201, 138, 0, 0.3); }
+.gc-tab:focus-visible { outline: 3px solid var(--blue); outline-offset: 1px; }
+@media (max-height: 500px) {
+  .gc-tabs { margin-top: 6px; }
+  .gc-tab { padding: 6px 14px; }
+}
 .gc-body { padding-top: 12px; }
 
-/* White cards with a yellow edge, like the word card. Words, Settings and the Guide are each one big card. */
+/* White cards with a yellow edge, like the word card. Words, Settings and the Guide are each one big card.
+   A soft shadow, not the solid edge the buttons have, so cards don't look like something to tap. */
 .gc-tile, .gc-card, #page-words, #page-settings, #page-guide {
   background: #fff;
   border: 4px solid var(--yellow);
   border-radius: 24px;
-  box-shadow: 0 5px 0 var(--yellow-dark);
+  box-shadow: 0 6px 16px rgba(201, 138, 0, 0.18);
 }
 .gc-tile { padding: 12px 16px; }
 .gc-tile b { color: var(--ink); }
@@ -1467,6 +1488,23 @@ html.calm *, html.calm *::before, html.calm *::after {
 .grownup-page .panel-tip { color: #6b6155; }
 .panel-list li { background: var(--bg); }
 .voice-section, .setting-row, .setting-block { border-bottom: 2px dashed var(--dots); }
+/* Settings: the same space above and below every dotted line, and room under Save and Load's pressing edge */
+.grownup-page .voice-section { margin: 0; padding-bottom: 12px; }
+.grownup-page .setting-buttons { margin-bottom: 4px; }
+.grownup-page .gc-start-over { margin-top: 16px; }
+/* The Guide: a dotted line before each part, like Settings, so each one reads on its own */
+.grownup-page .guide-body h4:not(:first-child) { margin-top: 16px; padding-top: 14px; border-top: 2px dashed var(--dots); }
+/* This week's ‹ ›: round, with the arrow in the middle */
+.grownup-page .week-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0 0 2px;
+  border-radius: 50%;
+  line-height: 1;
+}
 
 /* Chunky pill buttons, like the app's: a colored edge that presses down */
 .grownup-page .chip {
@@ -1493,7 +1531,7 @@ html.calm *, html.calm *::before, html.calm *::after {
   box-shadow: 0 4px 0 #c92a2a;
   font-weight: 700;
 }
-.grownup-page :is(.gc-back, .gc-tab, .chip, .practice-start, .gc-start-over button):active:not(:disabled) {
+.grownup-page :is(.gc-back, .chip, .practice-start, .gc-start-over button):active:not(:disabled) {
   translate: 0 3px;
   box-shadow: 0 1px 0 var(--mode, var(--yellow-dark));
 }
@@ -1525,6 +1563,13 @@ html.calm *, html.calm *::before, html.calm *::after {
 .reset-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 12px; }
 .reset-buttons button { padding: 14px 24px; border: 0; border-radius: 14px; font-size: 1.15rem; }
 .reset-buttons .phone-only { display: none; }
+/* The hand-off before ▶ Practice these words: big and friendly, since the child taps Let's read */
+.panel.handoff-card { width: min(92vw, 440px); padding: 28px; text-align: center; }
+.handoff-card[open] { align-items: center; gap: 14px; }
+.handoff-icon { font-size: 4rem; line-height: 1; }
+.handoff-title { margin: 0; color: var(--accent); font-size: 1.8rem; font-weight: 700; }
+.handoff-card .big-btn { width: 100%; }
+.handoff-cancel { padding: 6px 16px; background: none; border: 0; color: #6b6155; font-size: 1.05rem; text-decoration: underline; }
 /* Save a copy first: a chunky pill like the corner's, quieter than the two answers below it */
 .reset-save {
   padding: 8px 18px;

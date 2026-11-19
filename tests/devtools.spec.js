@@ -116,3 +116,24 @@ test('"Next round: 2 words" makes only the next Let\'s Read round 2 words long',
   await page.locator('#start-btn').click();
   expect(await page.evaluate(() => readingRound.total)).toBeGreaterThan(2);
 });
+
+test('the home panel is as see-through as config.js says, and 🛠️ tries other levels without saving', async ({ page }) => {
+  await openApp(page);
+  const panelAlpha = () => page.locator('#home-center').evaluate((el) => {
+    const [, , , a = '1'] = getComputedStyle(el).backgroundColor.match(/[\d.]+/g);
+    return Number(a);
+  });
+  const configured = await page.evaluate(() => HOME_PANEL_ALPHA);
+  expect(await panelAlpha()).toBeCloseTo(configured, 2);
+
+  const before = await savedNow(page);
+  await page.locator('#dev-btn').click();
+  await page.locator('#dev-panel button[data-alpha="0.75"]').click();
+  expect(await panelAlpha()).toBeCloseTo(0.75, 2);
+  await expect(page.locator('#dev-panel button[data-alpha="0.75"]')).toHaveAttribute('aria-pressed', 'true');
+  expect(await savedNow(page)).toEqual(before);
+
+  // It's only a preview: opening the app again shows the level from config.js
+  await page.reload();
+  expect(await panelAlpha()).toBeCloseTo(configured, 2);
+});

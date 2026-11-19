@@ -2,7 +2,7 @@
 
 // Settings and content lists. Edit these to change how the app looks and sounds.
 
-const APP_VERSION = '1.42.0'; // shown at the bottom of the home screen; bumped automatically when a PR merges into main
+const APP_VERSION = '1.46.0'; // shown at the bottom of the home screen; bumped automatically when a PR merges into main
 const STORAGE_KEY = 'sightWords.progress.v1';
 const VOICE_KEY = 'sightWords.voice.v1';
 const STICKER_SPOTS_KEY = 'sightWords.stickerSpots.v1'; // where stickers were dragged to on the home screen
@@ -13,6 +13,7 @@ const GROWNUP_TIP_KEY = 'sightWords.grownupTipSeen.v1'; // the "press and hold �
 const SPEECH_RATE = 0.9;     // a little slower than normal speech (much slower sounds robotic)
 const SOUND_RATE = 0.75;     // sounds not recorded yet, said by the device's voice when sounding a word out
 const SOUND_GAP_MS = 300;    // the pause between sounds when sounding a word out
+const HOME_PANEL_ALPHA = 0.92;   // how solid the home screen's white panel is: 1 hides the stickers behind it, lower lets them show through (try levels with 🛠️ on localhost)
 const SOUND_EFFECTS_VOLUME = 1; // how loud the sound effects in js/sound-effects.js are (0.5 is half as loud)
 const ROUND_MAX_WORDS = 10;    // the most words in a round of Let's Read or Check-up (a Timed run uses them all)
 const GAME_MAX_WORDS = 8;      // the most words in a game of Listen & tap or Build the word

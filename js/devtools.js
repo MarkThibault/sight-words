@@ -1,7 +1,7 @@
 'use strict';
 
 // Developer tools, only on localhost: the 🛠️ button on the home screen previews the update statuses, jumps to the
-// moment just before a reward, and shortens the next reading round. Offline play is off on localhost, so nothing here touches a real update.
+// moment just before a reward, shortens the next reading round, and tries how see-through the home panel is. Offline play is off on localhost, so nothing here touches a real update.
 // The jumps change this browser's saved progress, so the first one keeps a backup that "Restore my progress" puts back.
 
 const DEV_BACKUP_KEY = 'devTools.progressBackup'; // not sightWords.*, so a backup never backs itself up
@@ -38,6 +38,14 @@ function startDevTools() {
     showDevNote('The next Let\'s Read or Check-up round has 2 words.');
   });
   $('dev-restore').addEventListener('click', restoreProgress);
+  const alphaButtons = els.devPanel.querySelectorAll('button[data-alpha]');
+  for (const button of alphaButtons) {
+    button.setAttribute('aria-pressed', String(Number(button.dataset.alpha) === HOME_PANEL_ALPHA));
+    button.addEventListener('click', () => {
+      for (const other of alphaButtons) other.setAttribute('aria-pressed', String(other === button));
+      setHomePanelAlpha(Number(button.dataset.alpha)); // saves nothing, so no backup
+    });
+  }
   $('dev-restore').hidden = !readStorage(DEV_BACKUP_KEY);
 }
 

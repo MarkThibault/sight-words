@@ -21,6 +21,7 @@ function startBuild() {
   state.lastRound = null;
   els.buildBar.setAttribute('aria-valuemax', String(maxPoints));
   showScreen('build');
+  notePlayedToday();
   showBuildWord();
 }
 
