@@ -21,6 +21,7 @@ Devices: **T** = the tablet, **P** = a phone, **I** = the installed app (from th
 - [ ] I (tablet): **Load a copy** with that file brings the progress back (try it on a second device or after a reset).
 - [ ] T: 🔁 **Check-up** on the home screen plays only starred words.
 - [ ] T: the Corner looks like the rest of the app: dots, orange title, yellow-edged cards.
+- [ ] T: the home screen's white card, with stickers dragged behind it. Try 🛠️ Home panel levels on localhost and pick one for `HOME_PANEL_ALPHA`.
 
 ## Older, still untried on the tablet
 
