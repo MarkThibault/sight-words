@@ -27,6 +27,7 @@ Devices: **T** = the tablet, **P** = a phone, **I** = the installed app (from th
 
 - [ ] T: **Hear it again** sits below the cards in Listen & tap, and under the word in Build the word, and both are easy to reach.
 - [ ] T: Build the word shows blank lines, not letters. Tapping the word sounds out the placed parts and the next blank, then stops. Listen for the sounds being right, especially a silent "e" blank.
+- [ ] T: A wrong tile in Build the word lights up the blank being looked for (purple) while its sound plays, then it goes back to a plain line.
 
 ## Older, still untried on the tablet
 

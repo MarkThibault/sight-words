@@ -132,11 +132,17 @@ function placeBuildTile(tile) {
   stopBuildSoundOut();
   const [letters, id] = game.parts[game.next];
   if (tile.textContent !== letters) {
-    // Gentle retry: it costs a point, the tile stays in the tray, the sound they're looking for is played,
-    // and they keep trying.
+    // Gentle retry: it costs a point, the tile stays in the tray, and they keep trying. The blank they're looking
+    // for lights up while its sound plays, like in the sound-out.
     game.wordPoints = Math.max(BUILD_MIN_WORD_POINTS, game.wordPoints - 1);
     playAnim(tile, 'wiggle');
-    playEffect('wrong', () => saySound(id));
+    const run = buildSoundRun;
+    const blank = game.slots[game.next];
+    blank.classList.add('on');
+    playEffect('wrong', () => {
+      if (run !== buildSoundRun) return;
+      saySound(id, () => { if (run === buildSoundRun) blank.classList.remove('on'); });
+    });
     return;
   }
 
